@@ -2,27 +2,16 @@ function showPriorityLevel() {
   var priorityLevel = document.querySelectorAll(".cardPriority > select");
   for (let selectedLeverl of priorityLevel) {
     if (selectedLeverl.value == "medium") {
-      selectedLeverl.classList.add("blue", "blueBorder");
-      selectedLeverl.classList.remove(
-        "green",
-        "red",
-        "greenBorder",
-        "redBorder"
-      );
+      selectedLeverl.classList.add("blue");
+      selectedLeverl.classList.remove("low", "red");
     } else if (selectedLeverl.value == "low") {
-      selectedLeverl.classList.add("green", "greenBorder");
-      selectedLeverl.classList.remove("red", "blue", "redBorder", "blueBorder");
+      selectedLeverl.classList.add("green");
+      selectedLeverl.classList.remove("red", "blue");
     } else if (selectedLeverl.value == "heigh") {
       selectedLeverl.classList.add("red");
-      selectedLeverl.classList.add("redBorder");
-      selectedLeverl.classList.remove(
-        "blue",
-        "green",
-        "greenBorder",
-        "blueBorder"
-      );
+      selectedLeverl.classList.remove("blue", "green");
     }
-    selectedLeverl.blur();
+    selectedLeverl.blur()
   }
 }
 showPriorityLevel();

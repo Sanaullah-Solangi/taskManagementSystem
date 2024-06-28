@@ -402,21 +402,16 @@ header {
 }
 .blue {
   color: blue;
-}
-.blueBorder {
   border: 2px solid blue;
 }
+
 .red {
   color: red;
-}
-.redBorder {
-  border-color: red;
   border: 2px solid red;
 }
+
 .green {
   color: green;
-}
-.greenBorder {
   border: 2px solid green;
 }
 .todoProjectsContainer > .addTodosBtn {
