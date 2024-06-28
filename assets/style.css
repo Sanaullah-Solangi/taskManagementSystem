@@ -189,11 +189,11 @@ html {
   -o-border-radius: 5%;
 }
 .transition-3ms {
-  transition: all 0.3s linear;
-  -webkit-transition: all 0.3s linear;
-  -moz-transition: all 0.3s linear;
-  -ms-transition: all 0.3s linear;
-  -o-transition: all 0.3s linear;
+  transition: all 0.1s linear;
+  -webkit-transition: all 0.1s linear;
+  -moz-transition: all 0.1s linear;
+  -ms-transition: all 0.1s linear;
+  -o-transition: all 0.1s linear;
 }
 .btn {
   border: none;
@@ -210,7 +210,7 @@ html {
   width: 5rem;
   height: 5rem;
   background: var(--bg-gradient);
-  color: var(--black);
+  color: var(--white);
   animation-name: border-animation;
   animation-iteration-count: infinite;
   animation-timing-function: linear;
@@ -339,6 +339,13 @@ header {
   gap: 2rem;
 }
 /*!=============== TODO'S CARD STYLING ===============*/
+
+
+.heightWidth {
+  min-height: 200px;
+  min-width: 100%;
+}
+
 .todoCardList > .card,
 .todoProjectsContainer > .addTodosBtn {
   width: 98%;
@@ -352,6 +359,8 @@ header {
   padding: 2rem 3rem;
   background-color: #fff;
   margin-bottom: 1rem;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  border: 2px solid transparent;
 }
 
 .todoCardList > .card > .cardTitle {
