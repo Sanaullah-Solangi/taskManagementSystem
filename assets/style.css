@@ -1,0 +1,387 @@
+/*!========== common use css ==========*/
+
+* {
+  margin: 0%;
+  padding: 0%;
+  box-sizing: border-box;
+  text-decoration: none !important;
+  list-style: none;
+  scroll-behavior: smooth;
+  font-family: "jost";
+  text-transform: capitalize;
+}
+
+.black {
+  color: black;
+}
+
+.white {
+  color: white;
+}
+
+html {
+  font-size: 62.5%;
+}
+
+.main-container,
+.header {
+  max-width: 1440px;
+}
+
+.main-container {
+  margin-top: 7rem;
+}
+
+.section {
+  padding: 2rem 5rem;
+}
+
+/*!========== website theme ==========*/
+
+:root {
+  --mainColor1: rgb(55, 32, 81);
+  --mainColor2: rgb(210, 149, 232);
+  --mainColor3: rgb(68, 46, 107);
+  --bg-gradient: linear-gradient(130deg, var(--mainColor1), var(--mainColor2));
+  --bg-gradient2: linear-gradient(to bottom, rgb(86, 63, 114), rgb(45, 23, 71));
+  --btn-bg: rgb(207, 159, 241);
+  --black: #000;
+  --white: #fff;
+}
+
+/*!========== ReuseAble Code ==========*/
+
+/*todo===== all flex properties =====*/
+
+.d-flex {
+  display: flex;
+}
+
+/*?=== justify content properties ===*/
+
+.jc-center {
+  justify-content: center;
+}
+.jc-start {
+  justify-content: start;
+}
+.jc-end {
+  justify-content: end;
+}
+.jc-between {
+  justify-content: space-between;
+}
+.jc-evenly {
+  justify-content: space-evenly;
+}
+.jc-around {
+  justify-content: space-around;
+}
+
+/*?=== aling items properties ===*/
+
+.al-center {
+  align-items: center;
+}
+.al-start {
+  align-items: start;
+}
+.al-end {
+  align-items: end;
+}
+
+/*?=== flex directions properties ===*/
+
+.dir-col {
+  flex-direction: column;
+}
+.dir-col-reverse {
+  flex-direction: column-reverse;
+}
+
+/*todo===== all grid properties =====*/
+
+.grid {
+  display: grid;
+}
+
+/*?=== template columns properties ===*/
+
+.grid-two-cols {
+  grid-template-columns: repeat(2, 1fr);
+}
+.grid-three-cols {
+  grid-template-columns: repeat(3, 1fr);
+}
+.grid-four-cols {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+/*?=== justify items properties ===*/
+
+.ji-center {
+  justify-items: center;
+}
+.ji-start {
+  justify-items: start;
+}
+.ji-end {
+  justify-items: end;
+}
+
+/*todo===== all txt properties =====*/
+
+.txt-up {
+  text-transform: uppercase;
+}
+.txt-low {
+  text-transform: lowercase;
+}
+.txt-cap {
+  text-transform: capitalize;
+}
+.txt-center {
+  text-align: center;
+}
+.bold {
+  font-weight: bold;
+}
+
+/*todo===== all position properties =====*/
+
+.p-relative {
+  position: relative;
+}
+.p-absolute {
+  content: "";
+  position: absolute;
+}
+.p-fixed {
+  content: "";
+  position: fixed;
+}
+
+/*todo===== all other properties =====*/
+
+.d-none {
+  display: none;
+}
+.w-100 {
+  width: 100%;
+}
+.h-100 {
+  height: 100%;
+}
+.m-auto {
+  margin: auto;
+}
+.pointer {
+  cursor: pointer;
+}
+.border-none {
+  border: none;
+}
+.radius-50per {
+  border-radius: 5%;
+  -webkit-border-radius: 5%;
+  -moz-border-radius: 5%;
+  -ms-border-radius: 5%;
+  -o-border-radius: 5%;
+}
+.transition-3ms {
+  transition: all 0.3s linear;
+  -webkit-transition: all 0.3s linear;
+  -moz-transition: all 0.3s linear;
+  -ms-transition: all 0.3s linear;
+  -o-transition: all 0.3s linear;
+}
+.btn {
+  border: none;
+  outline: none;
+}
+
+/*!========== drop up css ==========*/
+.drop-up {
+  bottom: 3%;
+  right: 4%;
+}
+.drop-up a i {
+  font-size: 2.5rem;
+  width: 5rem;
+  height: 5rem;
+  color: var(--black);
+  animation-name: border-animation;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+  animation-duration: 2.5s;
+}
+@keyframes border-animation {
+  0%,
+  100% {
+    border-radius: 76% 24% 58% 42%/17% 76% 24% 83%;
+    -webkit-border-radius: 76% 24% 58% 42%/17% 76% 24% 83%;
+    -moz-border-radius: 76% 24% 58% 42%/17% 76% 24% 83%;
+    -ms-border-radius: 76% 24% 58% 42%/17% 76% 24% 83%;
+    -o-border-radius: 76% 24% 58% 42%/17% 76% 24% 83%;
+  }
+  50% {
+    border-radius: 30%70%70%30%/30%30%70%70%;
+    -webkit-border-radius: 30%70%70%30%/30%30%70%70%;
+    -moz-border-radius: 30%70%70%30%/30%30%70%70%;
+    -ms-border-radius: 30%70%70%30%/30%30%70%70%;
+    -o-border-radius: 30%70%70%30%/30%30%70%70%;
+    -webkit-border-radius: 30% 70% 70% 30%/30% 30% 70% 70%;
+  }
+}
+/*!=============== HEADAER SECTION ===============*/
+body {
+  background-color: #e3e1e1;
+}
+header {
+  background-color: var(--mainColor3);
+  padding: 10px 30px;
+  margin-bottom: 20px;
+  color: var(--white);
+  font-size: 2.5rem;
+}
+
+.logo {
+  font-size: 2rem;
+}
+.formBtns > button,
+.logInBtn,
+.signUpBtn {
+  background-color: var(--btn-bg);
+  color: var(--mainColor3);
+  border: 1px solid transparent;
+  transition: all 0.1s linear;
+  -webkit-transition: all 0.1s linear;
+  -moz-transition: all 0.1s linear;
+  -ms-transition: all 0.1s linear;
+  -o-transition: all 0.1s linear;
+}
+.formBtns > button:hover,
+.logInBtn:hover,
+.signUpBtn:hover {
+  background-color: var(--mainColor3);
+  color: var(--btn-bg);
+  border: 1px solid var(--btn-bg);
+}
+.formBtns > button {
+  font-size: 2rem;
+  padding: 10px 20px;
+  border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  -o-border-radius: 10px;
+}
+
+/*!=============== SAME STYLING OF ALL TODOS ===============*/
+
+/*?=== MAIN CONTAINER ===*/
+
+.hero-container {
+  gap: 3rem;
+  flex-wrap: wrap;
+}
+
+/*?=== ALL TODOS CONTAINER ===*/
+.hero-container > .todoProjectsContainer {
+  flex: 1 1 30%;
+}
+
+/*?=== ALL TODOS HEADER ===*/
+.todoHeader {
+  background-color: var(--mainColor1);
+  margin-bottom: 1rem;
+  border-radius: 6px;
+  -webkit-border-radius: 6px;
+  -moz-border-radius: 6px;
+  -ms-border-radius: 6px;
+  -o-border-radius: 6px;
+}
+
+.todoHeader,
+.todoProjectsContainer > .addTodosBtn {
+  padding: 1rem 2rem;
+}
+
+/*?=== ALL ICONS IN HEADER ===*/
+.todoProjectsContainer > .todoHeader i {
+  font-size: 1.8rem;
+  background-color: var(--mainColor2);
+  color: var(--mainColor1);
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  -ms-border-radius: 50%;
+  -o-border-radius: 50%;
+}
+
+/*?=== DROP DOWN ICON OF HEADER ===*/
+.todoProjectsContainer .todoHeader .dropDown {
+  font-size: 3rem;
+}
+
+/*?=== HEADING OF ALL TODOS ===*/
+.todoProjectsContainer .todoHeader > .todoHeading {
+  color: var(--white);
+  width: 150px;
+}
+.todoProjectsContainer .todoHeader > .todoHeading,
+.todoProjectsContainer > .addTodosBtn {
+  font-size: 2rem;
+  gap: 2rem;
+}
+/*!=============== TODO'S CARD STYLING ===============*/
+.todoCardList > .card,
+.todoProjectsContainer > .addTodosBtn {
+  width: 98%;
+  border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  -o-border-radius: 10px;
+}
+.todoCardList > .card {
+  padding: 2rem 3rem;
+  background-color: #fff;
+  margin-bottom: 1rem;
+}
+
+.todoCardList > .card > .cardTitle {
+  font-size: 3rem;
+}
+
+.todoCardList > .card > .cardDescription {
+  margin-block: 1rem;
+}
+
+.todoCardList > .card > :is(.cardDeadLine, .cardStatus, select) {
+  margin-bottom: 0.5rem;
+}
+
+.todoCardList
+  > .card
+  > :is(.cardDescription, .cardDeadLine, .cardStatus, select) {
+  font-size: 1.8rem;
+}
+
+.todos > .card > .cardStatus {
+  color: red;
+}
+
+.inProgress > .card > .cardStatus {
+  color: blue;
+}
+
+.completed > .card > .cardStatus {
+  color: green;
+}
+
+.todoProjectsContainer > .addTodosBtn {
+  background-color: #f8f6f6;
+}

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!--!== facicon link ===-->
+    <link
+      rel="shortcut icon"
+      href="./assets/images/Logo.png"
+      type="image/x-icon"
+    />
+    <!--!== font awesome cdn ===-->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+      ,
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <!--!== style sheets ===-->
+    <link rel="stylesheet" href="./assets/style.css" />
+    <link rel="stylesheet" href="./assets/responsive.css" />
+    <title></title>
+  </head>
+  <body>
+    <!--!========== HEADER SECTION ==========-->
+    <div class="header-container w-100">
+      <header class="header transition-3ms m-auto d-flex jc-between p-relative">
+        <!-- LOGO -->
+        <a class="logo d-flex al-center jc-center">kanBan</a>
+
+        <!-- FORM BTNS -->
+        <div class="formBtns">
+          <button class="btn signUp pointer" onclick="showSignUpForm()">
+            sign Up
+          </button>
+          <button class="btn logIn pointer" onclick="showLogInForm()">
+            Log In
+          </button>
+        </div>
+      </header>
+    </div>
+    <div class="main-container m-auto">
+      <!--!========== HERO SECTION ==========-->
+      <main id="home" class="section hero-container d-flex jc-center">
+        <!--todo======= TODO PROJECTS =======-->
+        <div class="todoProjectsContainer">
+          <!--?=== TODO HEADER ===-->
+          <div class="todoHeader d-flex jc-between al-center">
+            <div class="todoHeading d-flex al-center jc-start">
+              <i
+                class="fa-solid fa-caret-down d-flex al-center jc-center dropDown"
+              ></i>
+              <span>todos</span>
+            </div>
+            <i class="fa-solid fa-grip d-flex al-center jc-center grip"></i>
+          </div>
+          <!--?=== TODOS LIST ===-->
+          <ul class="todoCardList todos m-auto pointer">
+            <li class="card" draggable="true">
+              <p class="cardTitle">title</p>
+              <p class="cardDescription">
+                this is my first todos card and I will copy past rest of the
+                cards
+              </p>
+              <p class="cardDeadLine d-flex jc-between">
+                <strong>dead line :</strong> 6 Jul 2024
+              </p>
+              <p class="cardStatus d-flex jc-between">
+                <strong>status :</strong>todo
+              </p>
+              <select class="w-100 pointer" name="priority" id="priority">
+                <option value="heigh">heigh</option>
+                <option value="medium">medium</option>
+                <option value="low">low</option>
+              </select>
+            </li>
+
+            <li class="card" draggable="true">
+              <p class="cardTitle">title</p>
+              <p class="cardDescription">
+                this is my first todos card and I will copy past rest of the
+                cards
+              </p>
+              <p class="cardDeadLine d-flex jc-between">
+                <strong>dead line :</strong> 6 Jul 2024
+              </p>
+              <p class="cardStatus d-flex jc-between">
+                <strong>status :</strong>todo
+              </p>
+              <select class="w-100 pointer" name="priority" id="priority">
+                <option value="heigh">heigh</option>
+                <option value="medium">medium</option>
+                <option value="low">low</option>
+              </select>
+            </li>
+
+            <li class="card" draggable="true">
+              <p class="cardTitle">title</p>
+              <p class="cardDescription">
+                this is my first todos card and I will copy past rest of the
+                cards
+              </p>
+              <p class="cardDeadLine d-flex jc-between">
+                <strong>dead line :</strong> 6 Jul 2024
+              </p>
+              <p class="cardStatus d-flex jc-between">
+                <strong>status :</strong>todo
+              </p>
+              <select class="w-100 pointer" name="priority" id="priority">
+                <option value="heigh">heigh</option>
+                <option value="medium">medium</option>
+                <option value="low">low</option>
+              </select>
+            </li>
+          </ul>
+
+          <!--?=== ADD TODO BTN ===-->
+          <button
+            class="addTodosBtn btn w-100 d-flex jc-center al-center pointer"
+          >
+            <i class="fa-solid fa-plus"></i> <span>add new task</span>
+          </button>
+        </div>
+
+        <!--todo======= IN PROGRESS PROJECTS =======-->
+        <div class="todoProjectsContainer">
+          <!--?=== TODO HEADER ===-->
+          <div class="todoHeader d-flex jc-between al-center">
+            <div class="todoHeading d-flex al-center jc-start">
+              <i
+                class="fa-solid fa-caret-down d-flex al-center jc-center dropDown"
+              ></i>
+              <span>In progress</span>
+            </div>
+            <i class="fa-solid fa-grip d-flex al-center jc-center grip"></i>
+          </div>
+          <!--?=== IN PROGRESS LIST ===-->
+          <ul class="todoCardList inProgress m-auto pointer">
+            <li class="card" draggable="true">
+              <p class="cardTitle">title</p>
+              <p class="cardDescription">
+                this is my first todos card and I will copy past rest of the
+                cards
+              </p>
+              <p class="cardDeadLine d-flex jc-between">
+                <strong>dead line :</strong> 6 Jul 2024
+              </p>
+              <p class="cardStatus d-flex jc-between">
+                <strong>status :</strong>in progress
+              </p>
+              <select class="w-100 pointer" name="priority" id="priority">
+                <option value="heigh">heigh</option>
+                <option value="medium">medium</option>
+                <option value="low">low</option>
+              </select>
+            </li>
+          </ul>
+
+          <!--?=== ADD IN PROGRESS BTN ===-->
+          <button
+            class="addTodosBtn btn w-100 d-flex jc-center al-center pointer"
+          >
+            <i class="fa-solid fa-plus"></i> <span>add In progress todos</span>
+          </button>
+        </div>
+
+        <!--todo======= COMPLETED PROJECTS =======-->
+        <div class="todoProjectsContainer">
+          <!--?=== TODO HEADER ===-->
+          <div class="todoHeader d-flex jc-between al-center">
+            <div class="todoHeading d-flex al-center jc-start">
+              <i
+                class="fa-solid fa-caret-down d-flex al-center jc-center dropDown"
+              ></i>
+              <span>completed</span>
+            </div>
+            <i class="fa-solid fa-grip d-flex al-center jc-center grip"></i>
+          </div>
+          <!--?=== COMPLETED LIST ===-->
+          <ul class="todoCardList completed m-auto pointer">
+            <li class="card" draggable="true">
+              <p class="cardTitle">title</p>
+              <p class="cardDescription">
+                this is my first todos card and I will copy past rest of the
+                cards
+              </p>
+              <p class="cardDeadLine d-flex jc-between">
+                <strong>dead line :</strong> 6 Jul 2024
+              </p>
+              <p class="cardStatus d-flex jc-between">
+                <strong>status :</strong>completed
+              </p>
+              <select class="w-100 pointer" name="priority" id="priority">
+                <option value="heigh">heigh</option>
+                <option value="medium">medium</option>
+                <option value="low">low</option>
+              </select>
+            </li>
+          </ul>
+
+          <!--?=== ADD COMPLETED BTN ===-->
+          <button
+            class="addTodosBtn btn w-100 d-flex jc-center al-center pointer"
+          >
+            <i class="fa-solid fa-plus"></i> <span>add completed todos</span>
+          </button>
+        </div>
+      </main>
+    </div>
+    <!--!========== DROP UP SECTION ==========-->
+    <div class="drop-up d-flex al-center jc-center p-fixed">
+      <a href="#home"
+        ><i class="fa-solid fa-angle-up d-flex jc-center al-center"></i
+      ></a>
+    </div>
+    <!--!========== JAVASCRIPT SECTION ==========-->
+    <script src="./assets/app.js"></script>
+  </body>
+</html>

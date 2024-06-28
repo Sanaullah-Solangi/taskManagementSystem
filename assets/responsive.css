@@ -1,0 +1,10 @@
+@media (width <= 565px) {
+  .formBtns > button {
+    font-size: 1.6rem;
+    font-weight: bold;
+    padding: 10px;
+  }
+  .logo {
+    font-size: 1.8rem;
+  }
+}
