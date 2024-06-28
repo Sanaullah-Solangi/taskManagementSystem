@@ -44,9 +44,9 @@
       <!--!========== HERO SECTION ==========-->
       <main id="home" class="section hero-container d-flex jc-center">
         <!--todo======= TODO PROJECTS =======-->
-        <div class="todoProjectsContainer">
+        <div class="todoProjectsContainer d-flex dir-col al-center">
           <!--?=== TODO HEADER ===-->
-          <div class="todoHeader d-flex jc-between al-center">
+          <div class="todoHeader w-100 d-flex jc-between al-center">
             <div class="todoHeading d-flex al-center jc-start">
               <i
                 class="fa-solid fa-caret-down d-flex al-center jc-center dropDown"
@@ -56,7 +56,7 @@
             <i class="fa-solid fa-grip d-flex al-center jc-center grip"></i>
           </div>
           <!--?=== TODOS LIST ===-->
-          <ul class="todoCardList todos m-auto pointer">
+          <ul class="todoCardList todos pointer">
             <li class="card" draggable="true">
               <p class="cardTitle">title</p>
               <p class="cardDescription">
@@ -67,13 +67,22 @@
                 <strong>dead line :</strong> 6 Jul 2024
               </p>
               <p class="cardStatus d-flex jc-between">
-                <strong>status :</strong>todo
+                <strong>status :</strong><span class="status">todo</span>
               </p>
-              <select class="w-100 pointer" name="priority" id="priority">
-                <option value="heigh">heigh</option>
-                <option value="medium">medium</option>
-                <option value="low">low</option>
-              </select>
+
+              <p class="cardPriority d-flex jc-between al-center">
+                <strong>priority :</strong>
+                <select
+                  onchange="showPriorityLevel()"
+                  class="pointer"
+                  name="priority"
+                  id="priority"
+                >
+                  <option value="heigh">heigh</option>
+                  <option value="medium">medium</option>
+                  <option value="low">low</option>
+                </select>
+              </p>
             </li>
 
             <li class="card" draggable="true">
@@ -86,13 +95,22 @@
                 <strong>dead line :</strong> 6 Jul 2024
               </p>
               <p class="cardStatus d-flex jc-between">
-                <strong>status :</strong>todo
+                <strong>status :</strong><span class="status">todo</span>
               </p>
-              <select class="w-100 pointer" name="priority" id="priority">
-                <option value="heigh">heigh</option>
-                <option value="medium">medium</option>
-                <option value="low">low</option>
-              </select>
+
+              <p class="cardPriority d-flex jc-between al-center">
+                <strong>priority :</strong>
+                <select
+                  onchange="showPriorityLevel()"
+                  class="pointer"
+                  name="priority"
+                  id="priority"
+                >
+                  <option value="heigh">heigh</option>
+                  <option value="medium">medium</option>
+                  <option value="low">low</option>
+                </select>
+              </p>
             </li>
 
             <li class="card" draggable="true">
@@ -105,13 +123,22 @@
                 <strong>dead line :</strong> 6 Jul 2024
               </p>
               <p class="cardStatus d-flex jc-between">
-                <strong>status :</strong>todo
+                <strong>status :</strong><span class="status">todo</span>
               </p>
-              <select class="w-100 pointer" name="priority" id="priority">
-                <option value="heigh">heigh</option>
-                <option value="medium">medium</option>
-                <option value="low">low</option>
-              </select>
+
+              <p class="cardPriority d-flex jc-between al-center">
+                <strong>priority :</strong>
+                <select
+                  onchange="showPriorityLevel()"
+                  class="pointer"
+                  name="priority"
+                  id="priority"
+                >
+                  <option value="heigh">heigh</option>
+                  <option value="medium">medium</option>
+                  <option value="low">low</option>
+                </select>
+              </p>
             </li>
           </ul>
 
@@ -124,9 +151,9 @@
         </div>
 
         <!--todo======= IN PROGRESS PROJECTS =======-->
-        <div class="todoProjectsContainer">
+        <div class="todoProjectsContainer d-flex dir-col al-center" >
           <!--?=== TODO HEADER ===-->
-          <div class="todoHeader d-flex jc-between al-center">
+          <div class="todoHeader w-100 d-flex jc-between al-center">
             <div class="todoHeading d-flex al-center jc-start">
               <i
                 class="fa-solid fa-caret-down d-flex al-center jc-center dropDown"
@@ -147,13 +174,22 @@
                 <strong>dead line :</strong> 6 Jul 2024
               </p>
               <p class="cardStatus d-flex jc-between">
-                <strong>status :</strong>in progress
+                <strong>status :</strong><span class="status">in progress</span>
               </p>
-              <select class="w-100 pointer" name="priority" id="priority">
-                <option value="heigh">heigh</option>
-                <option value="medium">medium</option>
-                <option value="low">low</option>
-              </select>
+
+              <p class="cardPriority d-flex jc-between al-center">
+                <strong>priority :</strong>
+                <select
+                  onchange="showPriorityLevel()"
+                  class="pointer"
+                  name="priority"
+                  id="priority"
+                >
+                  <option value="heigh">heigh</option>
+                  <option value="medium">medium</option>
+                  <option value="low">low</option>
+                </select>
+              </p>
             </li>
           </ul>
 
@@ -166,9 +202,9 @@
         </div>
 
         <!--todo======= COMPLETED PROJECTS =======-->
-        <div class="todoProjectsContainer">
+        <div class="todoProjectsContainer d-flex dir-col al-center">
           <!--?=== TODO HEADER ===-->
-          <div class="todoHeader d-flex jc-between al-center">
+          <div class="todoHeader w-100 d-flex jc-between al-center">
             <div class="todoHeading d-flex al-center jc-start">
               <i
                 class="fa-solid fa-caret-down d-flex al-center jc-center dropDown"
@@ -189,13 +225,22 @@
                 <strong>dead line :</strong> 6 Jul 2024
               </p>
               <p class="cardStatus d-flex jc-between">
-                <strong>status :</strong>completed
+                <strong>status :</strong><span class="status">completed</span>
               </p>
-              <select class="w-100 pointer" name="priority" id="priority">
-                <option value="heigh">heigh</option>
-                <option value="medium">medium</option>
-                <option value="low">low</option>
-              </select>
+
+              <p class="cardPriority d-flex jc-between al-center">
+                <strong>priority :</strong>
+                <select
+                  onchange="showPriorityLevel()"
+                  class="pointer"
+                  name="priority"
+                  id="priority"
+                >
+                  <option value="heigh">heigh</option>
+                  <option value="medium">medium</option>
+                  <option value="low">low</option>
+                </select>
+              </p>
             </li>
           </ul>
 

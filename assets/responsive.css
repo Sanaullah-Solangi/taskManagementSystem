@@ -8,3 +8,43 @@
     font-size: 1.8rem;
   }
 }
+@media (width <=1050px) {
+  /*?=== MAIN CONTAINER ===*/
+  .hero-container {
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+}
+
+@media (width <=990px) {
+  .todoCardList > .card {
+    padding: 2rem 2rem;
+  }
+}
+
+@media (width <=960px) {
+  /*?=== ALL TODOS CONTAINER ===*/
+  .hero-container > .todoProjectsContainer {
+    flex: 1 1 45%;
+  }
+  .section {
+    padding: 2rem 3rem;
+  }
+}
+
+@media (width <=960px) {
+  .section {
+    padding: 2rem 2rem;
+  }
+  /*?=== ALL TODOS CONTAINER ===*/
+  .hero-container > .todoProjectsContainer {
+    flex: 1 1 100%;
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+  .todoCardList,
+  .todoCardList > .card,
+  .todoProjectsContainer > .addTodosBtn {
+    width: 100%;
+  }
+}

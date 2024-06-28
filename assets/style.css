@@ -209,6 +209,7 @@ html {
   font-size: 2.5rem;
   width: 5rem;
   height: 5rem;
+  background: var(--bg-gradient);
   color: var(--black);
   animation-name: border-animation;
   animation-iteration-count: infinite;
@@ -288,7 +289,8 @@ header {
 
 /*?=== ALL TODOS CONTAINER ===*/
 .hero-container > .todoProjectsContainer {
-  flex: 1 1 30%;
+  flex: 1 1 25%;
+  height: fit-content;
 }
 
 /*?=== ALL TODOS HEADER ===*/
@@ -366,22 +368,57 @@ header {
 
 .todoCardList
   > .card
-  > :is(.cardDescription, .cardDeadLine, .cardStatus, select) {
+  > :is(.cardDescription, .cardDeadLine, .cardStatus, .cardPriority) {
   font-size: 1.8rem;
 }
-
-.todos > .card > .cardStatus {
+.todoCardList .card > .cardStatus > .status {
+  font-weight: bold;
+}
+.todos > .card > .cardStatus > .status {
   color: red;
 }
 
-.inProgress > .card > .cardStatus {
+.inProgress > .card > .cardStatus > .status {
   color: blue;
 }
 
-.completed > .card > .cardStatus {
+.completed > .card > .cardStatus > .status {
   color: green;
 }
 
+.todoCardList > .card > .cardPriority > select,
+.todoCardList > .card > .cardPriority > select > option {
+  border-radius: 3px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -ms-border-radius: 3px;
+  -o-border-radius: 3px;
+  padding: 0.4rem 1rem;
+  font-weight: bold;
+}
+
+.todoCardList > .card > .cardPriority > select > option {
+  color: black;
+}
+.blue {
+  color: blue;
+}
+.blueBorder {
+  border: 2px solid blue;
+}
+.red {
+  color: red;
+}
+.redBorder {
+  border-color: red;
+  border: 2px solid red;
+}
+.green {
+  color: green;
+}
+.greenBorder {
+  border: 2px solid green;
+}
 .todoProjectsContainer > .addTodosBtn {
   background-color: #f8f6f6;
 }
