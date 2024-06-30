@@ -42,7 +42,7 @@ html {
   --mainColor1: rgb(55, 32, 81);
   --mainColor2: rgb(210, 149, 232);
   --mainColor3: rgb(68, 46, 107);
-  --bg-gradient: linear-gradient(130deg, var(--mainColor1), var(--mainColor2));
+  --bg-gradient: linear-gradient(150deg, var(--mainColor1), var(--mainColor2));
   --bg-gradient2: linear-gradient(to bottom, rgb(86, 63, 114), rgb(45, 23, 71));
   --btn-bg: rgb(207, 159, 241);
   --black: #000;
@@ -103,6 +103,7 @@ html {
 
 .grid {
   display: grid;
+  gap: 1rem;
 }
 
 /*?=== template columns properties ===*/
@@ -189,6 +190,14 @@ html {
   -o-border-radius: 5%;
 }
 .transition-3ms {
+  transition: all 0.3s linear;
+  -webkit-transition: all 0.3s linear;
+  -moz-transition: all 0.3s linear;
+  -ms-transition: all 0.3s linear;
+  -o-transition: all 0.3s linear;
+}
+
+.transition-1ms {
   transition: all 0.1s linear;
   -webkit-transition: all 0.1s linear;
   -moz-transition: all 0.1s linear;
@@ -235,7 +244,8 @@ html {
   }
 }
 /*!=============== HEADAER SECTION ===============*/
-body {
+body,
+.modalContainer {
   background-color: #e3e1e1;
 }
 header {
@@ -278,6 +288,80 @@ header {
   -o-border-radius: 10px;
 }
 
+/*!=============== WELCOME SECTION STYLING ===============*/
+/*?=== WELCOME CONTAINER ===*/
+.welcomeContainer {
+  height: 100vh;
+}
+
+/*?=== WELCOME MAIN HEADING ===*/
+.welcomeHeading {
+  font-size: 4rem;
+  margin-top: 1rem;
+}
+
+/*?=== WELCOME MAIN & SUB BOTH HEADINGS ===*/
+.welcomeHeading,
+#about h2 {
+  color: var(--mainColor3);
+}
+#about h2 {
+  font-size: 3rem;
+}
+
+/*?=== SUB HEADINGS ===*/
+h2 {
+  font-size: 4rem;
+  font-weight: 600;
+  margin-bottom: 2rem;
+}
+
+/*?=== ABOUT SECTION PARA ===*/
+#about > p {
+  font-size: 2.5rem;
+}
+
+/*?=== ALL PARAGRAPHS IN WELCOME SECTION ===*/
+.welcomeContainer p {
+  font-size: 1.8rem;
+}
+/*todo===== WELCOME CONTENT =====*/
+.welcomeContent {
+  gap: 4rem;
+}
+/*?=== BOXES STYLING ===*/
+#features,
+#listTypes {
+  margin-block: 2rem;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  padding: 2rem;
+  background: var(--bg-gradient);
+  color: #fff;
+}
+
+#features > ul li {
+  font-size: 2rem;
+  text-align: left;
+  margin-bottom: 1rem;
+  list-style-position: inside;
+}
+
+#features > ul > li::marker {
+  content: " ⭐ ";
+}
+
+#listTypes h3 {
+  font-size: 2.5rem;
+  font-weight: 500;
+}
+#listTypes > .list {
+  width: 70%;
+  margin-bottom: 1rem;
+}
+#listTypes > .list > :is(h3, p) {
+  text-align: left;
+}
+
 /*!=============== SAME STYLING OF ALL TODOS ===============*/
 
 /*?=== MAIN CONTAINER ===*/
@@ -305,7 +389,9 @@ header {
 }
 
 .todoHeader,
-.todoProjectsContainer > .addTodosBtn {
+.todoProjectsContainer > .addTodosBtn,
+.modalContent,
+.addTodos {
   padding: 1rem 2rem;
 }
 
@@ -340,13 +426,17 @@ header {
 }
 /*!=============== TODO'S CARD STYLING ===============*/
 
-
 .heightWidth {
-  min-height: 200px;
+  font-size: 2.5rem;
+  min-height: 250px;
   min-width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
-
-.todoCardList > .card,
+#features,
+#listTypes,
+.taskCardList > .task,
 .todoProjectsContainer > .addTodosBtn {
   width: 98%;
   border-radius: 10px;
@@ -355,7 +445,7 @@ header {
   -ms-border-radius: 10px;
   -o-border-radius: 10px;
 }
-.todoCardList > .card {
+.taskCardList > .task {
   padding: 2rem 3rem;
   background-color: #fff;
   margin-bottom: 1rem;
@@ -363,40 +453,40 @@ header {
   border: 2px solid transparent;
 }
 
-.todoCardList > .card > .cardTitle {
+.taskCardList > .task > .taskTitle {
   font-size: 3rem;
 }
 
-.todoCardList > .card > .cardDescription {
+.taskCardList > .task > .taskDescription {
   margin-block: 1rem;
 }
 
-.todoCardList > .card > :is(.cardDeadLine, .cardStatus, select) {
+.taskCardList > .task > :is(.taskDeadLine, .taskStatus, select) {
   margin-bottom: 0.5rem;
 }
 
-.todoCardList
-  > .card
-  > :is(.cardDescription, .cardDeadLine, .cardStatus, .cardPriority) {
+.taskCardList
+  > .task
+  > :is(.taskDescription, .taskDeadLine, .taskStatus, .taskPriority) {
   font-size: 1.8rem;
 }
-.todoCardList .card > .cardStatus > .status {
+.taskCardList .task > .taskStatus > .status {
   font-weight: bold;
 }
-.todos > .card > .cardStatus > .status {
+.toDos > .task > .taskStatus > .status {
   color: red;
 }
 
-.inProgress > .card > .cardStatus > .status {
+.inProgress > .task > .taskStatus > .status {
   color: blue;
 }
 
-.completed > .card > .cardStatus > .status {
+.completed > .task > .taskStatus > .status {
   color: green;
 }
 
-.todoCardList > .card > .cardPriority > select,
-.todoCardList > .card > .cardPriority > select > option {
+.taskCardList > .task > .taskPriority > select,
+.taskCardList > .task > .taskPriority > select > option {
   border-radius: 3px;
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
@@ -406,7 +496,7 @@ header {
   font-weight: bold;
 }
 
-.todoCardList > .card > .cardPriority > select > option {
+.taskCardList > .task > .taskPriority > select > option {
   color: black;
 }
 .blue {
@@ -425,4 +515,82 @@ header {
 }
 .todoProjectsContainer > .addTodosBtn {
   background-color: #f8f6f6;
+}
+
+/*!=============== MODAL STYLING ===============*/
+.modalContainer {
+  border: none;
+}
+.modalContent,
+.modalHeading {
+  border-radius: 1rem;
+  -webkit-border-radius: 1rem;
+  -moz-border-radius: 1rem;
+  -ms-border-radius: 1rem;
+  -o-border-radius: 1rem;
+}
+
+.modalContent {
+  height: 75%;
+  width: 50%;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.modalContent
+  > .modalContentBody
+  :is(input, textarea, select, .dialoge, .addTodos) {
+  width: 100%;
+  border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+}
+.modalHeading {
+  font-size: 3rem;
+  color: #fff;
+  padding: 1rem 0%;
+  font-weight: 500;
+  background-color: var(--mainColor1);
+}
+
+.modalContent > .modalContentBody :is(input, textarea, select) {
+  width: 100%;
+  font-size: 1.8rem;
+  padding: 1rem;
+  resize: none;
+  color: #000;
+  box-shadow: none;
+  border: none;
+  outline: none;
+}
+.modalContent,
+.modalContent > .modalContentBody :is(input, textarea, select),
+.addTodos {
+  border: 2px solid var(--mainColor1);
+}
+
+.modalContent > .modalContentBody :is(input, textarea, select):focus {
+  border: 3px solid var(--mainColor1);
+}
+
+label,
+.addTodos {
+  display: block;
+  font-size: 2rem;
+  font-weight: 500;
+  margin: 1.5rem 0 0.5rem;
+}
+
+.addTodos {
+  background-color: var(--mainColor1);
+  color: #fff;
+}
+
+.modalContent > i {
+  font-size: 4rem;
+  right: 5%;
+  top: 4%;
+  color: #fff;
 }

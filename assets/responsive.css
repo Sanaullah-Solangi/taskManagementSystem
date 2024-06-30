@@ -1,13 +1,19 @@
-@media (width <= 565px) {
-  .formBtns > button {
-    font-size: 1.6rem;
-    font-weight: bold;
-    padding: 10px;
+@media (width <=1075px) {
+  .welcomeContent {
+    gap: 1rem;
+    grid-template-columns: 1fr;
   }
-  .logo {
-    font-size: 1.8rem;
+  /*?=== BOXES STYLING ===*/
+  #features,
+  #listTypes {
+    margin-block: 1rem;
+  }
+
+  #listTypes > .list {
+    width: 50%;
   }
 }
+
 @media (width <=1050px) {
   /*?=== MAIN CONTAINER ===*/
   .hero-container {
@@ -17,7 +23,7 @@
 }
 
 @media (width <=990px) {
-  .todoCardList > .card {
+  .taskCardList > .task {
     padding: 2rem 2rem;
   }
 }
@@ -30,9 +36,6 @@
   .section {
     padding: 2rem 3rem;
   }
-}
-
-@media (width <=960px) {
   .section {
     padding: 2rem 2rem;
   }
@@ -40,11 +43,61 @@
   .hero-container > .todoProjectsContainer {
     flex: 1 1 100%;
     margin-bottom: 2rem;
-    text-align: center;
   }
-  .todoCardList,
-  .todoCardList > .card,
+  .taskCardList,
+  .taskCardList > .task,
   .todoProjectsContainer > .addTodosBtn {
     width: 100%;
+  }
+
+  .modalContent {
+    width: 80%;
+  }
+}
+
+@media (width <=811px) {
+  #listTypes > .list {
+    width: 70%;
+  }
+}
+
+@media (width <=615px){
+  .welcomeHeading{
+    line-height: 4.5rem;
+    margin-bottom: 1rem;
+  }
+
+  #about > p{
+    margin-bottom: 2rem;
+  }
+
+  #features{
+    padding-left: 4rem;
+  }
+  #features > ul li {
+    list-style-position: outside;
+  }
+}
+@media (width <= 565px) {
+  .modalContent {
+    height: 100%;
+  }
+  .grid-two-cols {
+    grid-template-columns: 1fr;
+  }
+  .formBtns > button {
+    font-size: 1.6rem;
+    font-weight: bold;
+    padding: 10px;
+  }
+  .logo {
+    font-size: 1.8rem;
+  }
+
+  .modalContent {
+    width: 90%;
+  }
+  #listTypes > .list {
+    width: 90%;
   }
 }

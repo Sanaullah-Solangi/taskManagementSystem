@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!--!== facicon link ===-->
+    <link
+      rel="shortcut icon"
+      href="./assets/images/Logo.png"
+      type="image/x-icon"
+    />
+    <!--!== font awesome cdn ===-->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+      ,
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+
+    <!--!== animate css cdn ===-->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+    />
+    <!--!== style sheets ===-->
+    <link rel="stylesheet" href="./assets/style.css" />
+    <link rel="stylesheet" href="./assets/responsive.css" />
+    <title></title>
+  </head>
+  <body>
+    <!--!========== HEADER SECTION ==========-->
+    <div class="header-container w-100">
+      <header class="header transition-3ms m-auto d-flex jc-between p-relative">
+        <!-- LOGO -->
+        <a class="logo d-flex al-center jc-center">kanBan</a>
+
+        <!-- FORM BTNS -->
+        <div class="formBtns">
+          <button class="btn signUp pointer" onclick="showSignUpForm()">
+            sign Up
+          </button>
+          <button class="btn logIn pointer" onclick="showLogInForm()">
+            Log In
+          </button>
+        </div>
+      </header>
+    </div>
+    <div class="main-container m-auto">
+      <!--!========== HERO SECTION ==========-->
+      <main id="home" class="section hero-container d-flex jc-center al-start">
+        <!--todo======= TODO PROJECTS =======-->
+        <div class="todoProjectsContainer d-flex dir-col al-center">
+          <!--?=== TODO HEADER ===-->
+          <div class="todoHeader w-100 d-flex jc-between al-center">
+            <div class="todoHeading d-flex al-center jc-start">
+              <i
+                class="fa-solid fa-caret-down d-flex al-center jc-center dropDown"
+              ></i>
+              <span>todos</span>
+            </div>
+            <i class="fa-solid fa-grip d-flex al-center jc-center grip"></i>
+          </div>
+          <!--?=== TODOS LIST ===-->
+          <ul
+            ondragover="dragOver(event)"
+            ondrop="drop(event)"
+            class="taskCardList d-flex dir-col al-center toDos pointer"
+          ></ul>
+
+          <!--?=== ADD TODO BTN ===-->
+          <button
+            onclick="showModalAndHideUls(event)"
+            class="addTodosBtn btn w-100 d-flex jc-center al-center pointer"
+          >
+            <i class="fa-solid fa-plus"></i> <span>creak new task</span>
+          </button>
+        </div>
+
+        <!--todo======= IN PROGRESS PROJECTS =======-->
+        <div class="todoProjectsContainer d-flex dir-col al-center">
+          <!--?=== TODO HEADER ===-->
+          <div class="todoHeader w-100 d-flex jc-between al-center">
+            <div class="todoHeading d-flex al-center jc-start">
+              <i
+                class="fa-solid fa-caret-down d-flex al-center jc-center dropDown"
+              ></i>
+              <span>In progress</span>
+            </div>
+            <i class="fa-solid fa-grip d-flex al-center jc-center grip"></i>
+          </div>
+          <!--?=== IN PROGRESS LIST ===-->
+          <ul
+            ondragover="dragOver(event)"
+            ondrop="drop(event)"
+            class="taskCardList d-flex dir-col al-center inProgress pointer"
+          ></ul>
+
+          <!--?=== ADD IN PROGRESS BTN ===-->
+          <button
+            onclick="showModalAndHideUls(event)"
+            class="addPregressTodosBtn addTodosBtn btn w-100 d-flex jc-center al-center pointer"
+          >
+            <i class="fa-solid fa-plus"></i> <span>add In progress todos</span>
+          </button>
+        </div>
+
+        <!--todo======= COMPLETED PROJECTS =======-->
+        <div class="todoProjectsContainer d-flex dir-col al-center">
+          <!--?=== TODO HEADER ===-->
+          <div class="todoHeader w-100 d-flex jc-between al-center">
+            <div class="todoHeading d-flex al-center jc-start">
+              <i
+                class="fa-solid fa-caret-down d-flex al-center jc-center dropDown"
+              ></i>
+              <span>completed</span>
+            </div>
+            <i class="fa-solid fa-grip d-flex al-center jc-center grip"></i>
+          </div>
+          <!--?=== COMPLETED LIST ===-->
+          <ul
+            ondragover="dragOver(event)"
+            ondrop="drop(event)"
+            class="taskCardList d-flex dir-col al-center completed pointer"
+          ></ul>
+
+          <!--?=== ADD COMPLETED BTN ===-->
+          <button
+            onclick="showModalAndHideUls(event)"
+            class="addCompletedTodosBtn addTodosBtn btn w-100 d-flex jc-center al-center pointer"
+          >
+            <i class="fa-solid fa-plus"></i> <span>add completed todos</span>
+          </button>
+        </div>
+
+        <!--todo=== TODO MODAL TO ADD TODOS ===-->
+        <dialog
+          class="todoModal modalContainer transition-3ms d-none jc-center w-100 h-100"
+        >
+          <!--?=== MODAL CONTENT ===-->
+          <div
+            class="modalContent transition-3ms p-relative animate__animated animate__bounceIn"
+          >
+            <!--?=== CANCEL BTN ===-->
+            <i
+              class="fa-solid fa-xmark p-absolute pointer"
+              onclick="hideModalAndShowUls()"
+            ></i>
+            <!--?=== MODAL HEADING ===-->
+            <h1 class="modalHeading txt-center">add new task</h1>
+            <!--?=== CONTENT BODY ===-->
+            <div class="modalContentBody">
+              <!--*======= ROW 1 =======-->
+              <div class="row grid grid-two-cols">
+                <!--=== COL 1 ===-->
+                <div class="col1">
+                  <label for="modalTile">add title</label>
+                  <input
+                    type="text"
+                    id="modalTitle"
+                    placeholder="Enter task title"
+                  />
+                </div>
+
+                <!--=== COL 2 ===-->
+                <div class="col2">
+                  <label for="modalDeadLine">add dead line</label>
+                  <input type="date" class="pointer" id="modalDeadLine" />
+                </div>
+              </div>
+
+              <!--*======= ROW 2 =======-->
+              <div class="row grid grid-two-cols">
+                <!--=== COL 1 ===-->
+                <div class="col1">
+                  <label for="modalStatus">set status</label>
+                  <select class="pointer" name="modalStatus" id="modalStatus">
+                    <option value="todo">todo</option>
+                    <option value="inProgress">in progress</option>
+                    <option value="completed">completed</option>
+                  </select>
+                </div>
+
+                <!--=== COL 2 ===-->
+                <div class="col2">
+                  <label for="modalPriority">set priority level</label>
+                  <select
+                    class="pointer"
+                    name="modalPriority"
+                    id="modalPriority"
+                  >
+                    <option value="heigh">heigh</option>
+                    <option value="medium">medium</option>
+                    <option value="low">low</option>
+                  </select>
+                </div>
+              </div>
+
+              <!--*======= ROW 3 =======-->
+              <label for="modalDescription">add description</label>
+              <textarea
+                placeholder="Enter task description"
+                name="modalDescription"
+                id="modalDescription"
+              ></textarea>
+
+              <!--*======= ADD BTN =======-->
+              <button
+                onclick="createTodoCardFromModal()"
+                class="addTodos addTodosBtn btn w-100 d-flex jc-center al-center pointer"
+              >
+                <i class="fa-solid fa-plus"></i> <span>add new task</span>
+              </button>
+            </div>
+          </div>
+        </dialog>
+      </main>
+    </div>
+    <!--!========== DROP UP SECTION ==========-->
+    <div class="drop-up d-flex al-center jc-center p-fixed">
+      <a href="#home"
+        ><i class="fa-solid fa-angle-up d-flex jc-center al-center"></i
+      ></a>
+    </div>
+    <!--!========== JAVASCRIPT SECTION ==========-->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="./assets/app.js"></script>
+  </body>
+</html>
