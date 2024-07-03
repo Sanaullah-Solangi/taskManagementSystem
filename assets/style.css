@@ -679,6 +679,8 @@ label,
   display: block;
   font-size: 1.8rem;
 }
+
+
 :is(.logInContainer, .signUpContainer) input {
   width: 100%;
   padding: 10px 10px;

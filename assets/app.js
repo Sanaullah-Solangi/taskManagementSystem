@@ -4,6 +4,7 @@ var navLogOutBtn = document.querySelector(".navLogOutBtn");
 var navDelAllBtn = document.querySelector(".navDelAllBtn");
 var formLogInBtn = document.querySelector(".formLogInBtn");
 var navSignUpBtn = document.querySelector(".navSignUpBtn");
+var navLogo = document.querySelector(".logo");
 var formSignUpBtn = document.querySelector(".formSignUpBtn");
 var todId;
 let toDosList = document.querySelector(".toDos");
@@ -378,6 +379,7 @@ function saveDataToLocalStorageFromModal() {
       taskDeaLine: modalDeadLine,
       taskStatus: modalStatus,
       taskPriority: modalPriority,
+      taskPriorityId: `ID${taskId}`,
     };
     if (flagForUl.classList.contains("toDos")) {
       userObj.todos.push(todoData);
@@ -600,6 +602,30 @@ function updateStatus() {
   }
 }
 
+//* FUNCTION TO UPDATE TASK PRIORITY
+function updateTaskPriority(event) {
+  let priorityOptionId = event.target.id;
+  let updatedPriority = event.target.value;
+  let usersData = getData();
+  let currentUserEmail = getLoggedUser();
+  for (user of usersData) {
+    if (user.email == currentUserEmail) {
+      for (arrayOfObject in user) {
+        if (typeof user[arrayOfObject] == "object") {
+          user[arrayOfObject].forEach((obj, index) => {
+            if (obj.taskPriorityId == priorityOptionId) {
+              obj.taskPriority = updatedPriority;
+            }
+          });
+        }
+      }
+    }
+  }
+  setDataCollection(usersData);
+  console.log(event.target.value);
+  console.log(priorityOptionId);
+  showPriorityLevel();
+}
 //* FUNCTION TO CHANGE COLOR BASED ON PRIORITY LEVEL
 function showPriorityLevel() {
   var priorityLevel = document.querySelectorAll(".taskPriority > select");
@@ -663,7 +689,7 @@ function resizeUl() {
   }
 }
 resizeUl();
-
+//!
 //* FUNCTION TO RETRIEVE DATA FROM LOCAL STORAGE, CHECK THE LOGGED-IN USER'S ID, AND DISPLAY THEIR DATA
 function displayUserTasks() {
   let getUsersData = getData();
@@ -673,6 +699,7 @@ function displayUserTasks() {
   for (user of getUsersData) {
     for (arrayOfObject in user) {
       if (user.email == getCurrentUserEmail) {
+        navLogo.innerHTML = `<i class="fa-solid fa-user"></i>&nbsp;&nbsp;Hi, ${user.userName}`;
         if (typeof user[arrayOfObject] == "object") {
           if (arrayOfObject == "todos") {
             for (objsOfArray in user[arrayOfObject]) {
@@ -713,10 +740,10 @@ function displayUserTasks() {
                 <p class="taskPriority d-flex jc-between al-center">
                 <strong>priority :</strong>
                 <select
-                onchange="showPriorityLevel()"
+                onchange="updateTaskPriority(event)"
                 class="pointer"
                 name="priority"
-                id="priority"
+                id="${user[arrayOfObject][objsOfArray].taskPriorityId}"
               >
                 <option value="heigh" ${
                   user[arrayOfObject][objsOfArray].taskPriority == "heigh"
@@ -777,10 +804,10 @@ function displayUserTasks() {
                 <p class="taskPriority d-flex jc-between al-center">
                 <strong>priority :</strong>
                 <select
-                onchange="showPriorityLevel()"
+                onchange="updateTaskPriority(event)"
                 class="pointer"
                 name="priority"
-                id="priority"
+                id="${user[arrayOfObject][objsOfArray].taskPriorityId}"
               >
                 <option value="heigh" ${
                   user[arrayOfObject][objsOfArray].taskPriority == "heigh"
@@ -841,10 +868,10 @@ function displayUserTasks() {
                 <p class="taskPriority d-flex jc-between al-center">
                 <strong>priority :</strong>
                 <select
-                onchange="showPriorityLevel()"
+                onchange="updateTaskPriority(event)"
                 class="pointer"
                 name="priority"
-                id="priority"
+                id="${user[arrayOfObject][objsOfArray].taskPriorityId}"
               >
                 <option value="heigh" ${
                   user[arrayOfObject][objsOfArray].taskPriority == "heigh"
