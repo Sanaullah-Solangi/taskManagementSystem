@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!--!== facicon link ===-->
+    <link
+      rel="shortcut icon"
+      href="./assets/images/Logo.png"
+      type="image/x-icon"
+    />
+    <!--!== font awesome cdn ===-->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+      ,
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+
+    <!--!== animate css cdn ===-->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+    />
+    <!--!== style sheets ===-->
+    <link rel="stylesheet" href="./assets/style.css" />
+    <link rel="stylesheet" href="./assets/responsive.css" />
+    <title></title>
+  </head>
+  <body>
+    <!--!========== HEADER SECTION ==========-->
+    <div class="header-container w-100">
+      <header class="header transition-3ms m-auto d-flex jc-between p-relative">
+        <!-- LOGO -->
+        <a class="logo d-flex al-center jc-center">kanBan</a>
+
+        <!-- FORM BTNS -->
+        <div class="formBtns">
+          <a href="./signUp.html" class="btn navSignUpBtn pointer">sign up</a>
+          <a href="./logIn.html" class="btn navLogInBtn pointer">log In</a>
+          <a href="#" class="btn d-none navLogOutBtn pointer">log Out</a>
+        </div>
+      </header>
+    </div>
+    <div class="main-container m-auto">
+      <!--!=============== LOGIN SECTION STARTS ===============-->
+      <div class="logInContainer">
+        <!--todo=== headianag ===-->
+        <h1 class="heading txt-center">log In</h1>
+
+        <!--todo=== email ===-->
+        <label for="logInEmail">email</label>
+        <input
+          required
+          class="btn txt-none"
+          type="text"
+          name="logInEmail"
+          id="logInEmail"
+          placeholder="Enter Your Email"
+        />
+        <!--todo===  password ===-->
+        <label for="logInPassword"> Password</label>
+        <input
+          class="btn txt-none"
+          type="password"
+          name="logInPassword"
+          id="logInPassword"
+          placeholder="Enter your Password"
+        />
+
+        <!--todo=== logIn Btn ===-->
+        <button
+          class="formLogInBtn btn pointer d-flex jc-center al-center"
+          onclick="logIn()"
+        >
+          log in
+        </button>
+      </div>
+    </div>
+    <!--!========== DROP UP SECTION ==========-->
+    <div class="drop-up d-flex al-center jc-center p-fixed">
+      <a href="#home"
+        ><i class="fa-solid fa-angle-up d-flex jc-center al-center"></i
+      ></a>
+    </div>
+    <!--!========== JAVASCRIPT SECTION ==========-->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="./assets/app.js"></script>
+  </body>
+</html>
