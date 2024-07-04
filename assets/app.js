@@ -72,8 +72,10 @@ function validateLengthOfPassword() {
   if (newPassword.value.length < 8) {
     Swal.fire({
       customClass: {
+        container: "sweatContainer",
+        popup: "sweatPopup",
         title: "sweatTitle",
-        htmlContainer: "sweatContainer",
+        htmlContainer: "sweatPara",
         confirmButton: "sweatBtn",
         cancelButton: "sweatBtn",
       },
@@ -109,8 +111,10 @@ function signUpAndStoreUserData() {
       if (usersData[i].email == signingEmail.value) {
         Swal.fire({
           customClass: {
+            container: "sweatContainer",
+            popup: "sweatPopup",
             title: "sweatTitle",
-            htmlContainer: "sweatContainer",
+            htmlContainer: "sweatPara",
             confirmButton: "sweatBtn",
             cancelButton: "sweatBtn",
           },
@@ -125,8 +129,10 @@ function signUpAndStoreUserData() {
     if (newPassword.value != confirmPassword.value) {
       Swal.fire({
         customClass: {
+          container: "sweatContainer",
+          popup: "sweatPopup",
           title: "sweatTitle",
-          htmlContainer: "sweatContainer",
+          htmlContainer: "sweatPara",
           confirmButton: "sweatBtn",
           cancelButton: "sweatBtn",
         },
@@ -162,8 +168,10 @@ function signUpAndStoreUserData() {
     //* SHOWING ALERT FOR SUCCESSFULLY SIGNING UP
     Swal.fire({
       customClass: {
+        container: "sweatContainer",
+        popup: "sweatPopup",
         title: "sweatTitle",
-        htmlContainer: "sweatContainer",
+        htmlContainer: "sweatPara",
         confirmButton: "sweatBtn",
         cancelButton: "sweatBtn",
       },
@@ -181,8 +189,10 @@ function signUpAndStoreUserData() {
   else {
     Swal.fire({
       customClass: {
+        container: "sweatContainer",
+        popup: "sweatPopup",
         title: "sweatTitle",
-        htmlContainer: "sweatContainer",
+        htmlContainer: "sweatPara",
         confirmButton: "sweatBtn",
         cancelButton: "sweatBtn",
       },
@@ -230,8 +240,10 @@ function logIn() {
       });
       Swal.fire({
         customClass: {
+          container: "sweatContainer",
+          popup: "sweatPopup",
           title: "sweatTitle",
-          htmlContainer: "sweatContainer",
+          htmlContainer: "sweatPara",
           confirmButton: "sweatBtn",
           cancelButton: "sweatBtn",
         },
@@ -248,8 +260,10 @@ function logIn() {
     } else if (emailFlag && !passwordFlag) {
       Swal.fire({
         customClass: {
+          container: "sweatContainer",
+          popup: "sweatPopup",
           title: "sweatTitle",
-          htmlContainer: "sweatContainer",
+          htmlContainer: "sweatPara",
           confirmButton: "sweatBtn",
           cancelButton: "sweatBtn",
         },
@@ -260,8 +274,10 @@ function logIn() {
     } else if (!emailFlag) {
       Swal.fire({
         customClass: {
+          container: "sweatContainer",
+          popup: "sweatPopup",
           title: "sweatTitle",
-          htmlContainer: "sweatContainer",
+          htmlContainer: "sweatPara",
           confirmButton: "sweatBtn",
           cancelButton: "sweatBtn",
         },
@@ -274,8 +290,10 @@ function logIn() {
   else {
     Swal.fire({
       customClass: {
+        container: "sweatContainer",
+        popup: "sweatPopup",
         title: "sweatTitle",
-        htmlContainer: "sweatContainer",
+        htmlContainer: "sweatPara",
         confirmButton: "sweatBtn",
         cancelButton: "sweatBtn",
       },
@@ -291,8 +309,10 @@ function logIn() {
 function logOut() {
   Swal.fire({
     customClass: {
+      container: "sweatContainer",
+      popup: "sweatPopup",
       title: "sweatTitle",
-      htmlContainer: "sweatContainer",
+      htmlContainer: "sweatPara",
       confirmButton: "sweatBtn",
       cancelButton: "sweatBtn",
     },
@@ -307,8 +327,10 @@ function logOut() {
     if (result.isConfirmed) {
       Swal.fire({
         customClass: {
+          container: "sweatContainer",
+          popup: "sweatPopup",
           title: "sweatTitle",
-          htmlContainer: "sweatContainer",
+          htmlContainer: "sweatPara",
           confirmButton: "sweatBtn",
           cancelButton: "sweatBtn",
         },
@@ -353,8 +375,10 @@ function saveDataToLocalStorageFromModal() {
     if (!currentUserEmail) {
       Swal.fire({
         customClass: {
+          container: "sweatContainer",
+          popup: "sweatPopup",
           title: "sweatTitle",
-          htmlContainer: "sweatContainer",
+          htmlContainer: "sweatPara",
           confirmButton: "sweatBtn",
           cancelButton: "sweatBtn",
         },
@@ -401,8 +425,10 @@ function saveDataToLocalStorageFromModal() {
   } else {
     Swal.fire({
       customClass: {
+        container: "sweatContainer",
+        popup: "sweatPopup",
         title: "sweatTitle",
-        htmlContainer: "sweatContainer",
+        htmlContainer: "sweatPara",
         confirmButton: "sweatBtn",
         cancelButton: "sweatBtn",
       },
@@ -425,6 +451,20 @@ function getLoggedUser() {
   var currentUserEmail = localStorage.getItem("loggedInUserEmail");
   return currentUserEmail;
 }
+function extractUserData() {
+  var userData = JSON.parse(localStorage.getItem("dataCollection")) ?? []; // COLLECTION OF USER DATA'S OBJECTS / ARRAY OF OBJECTS
+  let userTodos = [];
+  for (user of userData) {
+    if (user.email == getLoggedUser()) {
+      for (arrayOfObject in user) {
+        if (Array.isArray(user[arrayOfObject])) {
+          userTodos.push(user[arrayOfObject]);
+        }
+      }
+    }
+  }
+  return userTodos;
+}
 
 //* FUNCTION TO SET DATA TO LOCAL STORAGE
 function setDataCollection(usersData) {
@@ -439,8 +479,10 @@ function setLoggedUserEmail(currentUserEmail) {
 function deleteAllTasks() {
   Swal.fire({
     customClass: {
+      container: "sweatContainer",
+      popup: "sweatPopup",
       title: "sweatTitle",
-      htmlContainer: "sweatContainer",
+      htmlContainer: "sweatPara",
       confirmButton: "sweatBtn",
       cancelButton: "sweatBtn",
     },
@@ -455,8 +497,10 @@ function deleteAllTasks() {
     if (result.isConfirmed) {
       Swal.fire({
         customClass: {
+          container: "sweatContainer",
+          popup: "sweatPopup",
           title: "sweatTitle",
-          htmlContainer: "sweatContainer",
+          htmlContainer: "sweatPara",
           confirmButton: "sweatBtn",
           cancelButton: "sweatBtn",
         },
@@ -526,6 +570,7 @@ function dragStart(event) {
           });
         }
       }
+      break;
     }
   }
   setDataCollection(usersData);
@@ -563,17 +608,13 @@ function drop(event) {
     if (user.email == currentUserEmail) {
       if (targetedUl.classList.contains("toDos")) {
         user.todos.push(taskToDrop[0]);
-        setDataCollection(usersData);
-        break;
       } else if (targetedUl.classList.contains("inProgress")) {
         user.inProgress.push(taskToDrop[0]);
-        setDataCollection(usersData);
-        break;
       } else if (targetedUl.classList.contains("completed")) {
         user.completed.push(taskToDrop[0]);
-        setDataCollection(usersData);
-        break;
       }
+      setDataCollection(usersData);
+      break;
     }
   }
 
@@ -604,8 +645,8 @@ function updateStatus() {
 
 //* FUNCTION TO UPDATE TASK PRIORITY
 function updateTaskPriority(event) {
-  let priorityOptionId = event.target.id;
-  let updatedPriority = event.target.value;
+  let selectedPriorityId = event.target.id;
+  let selectedPriority = event.target.value;
   let usersData = getData();
   let currentUserEmail = getLoggedUser();
   for (user of usersData) {
@@ -613,8 +654,8 @@ function updateTaskPriority(event) {
       for (arrayOfObject in user) {
         if (typeof user[arrayOfObject] == "object") {
           user[arrayOfObject].forEach((obj, index) => {
-            if (obj.taskPriorityId == priorityOptionId) {
-              obj.taskPriority = updatedPriority;
+            if (obj.taskPriorityId == selectedPriorityId) {
+              obj.taskPriority = selectedPriority;
             }
           });
         }
@@ -623,7 +664,7 @@ function updateTaskPriority(event) {
   }
   setDataCollection(usersData);
   console.log(event.target.value);
-  console.log(priorityOptionId);
+  console.log(selectedPriorityId);
   showPriorityLevel();
 }
 //* FUNCTION TO CHANGE COLOR BASED ON PRIORITY LEVEL
@@ -692,13 +733,13 @@ resizeUl();
 //!
 //* FUNCTION TO RETRIEVE DATA FROM LOCAL STORAGE, CHECK THE LOGGED-IN USER'S ID, AND DISPLAY THEIR DATA
 function displayUserTasks() {
-  let getUsersData = getData();
-  let getCurrentUserEmail = getLoggedUser();
+  let UsersData = getData();
+  let CurrentUserEmail = getLoggedUser();
   resizeUl();
 
-  for (user of getUsersData) {
+  for (user of UsersData) {
     for (arrayOfObject in user) {
-      if (user.email == getCurrentUserEmail) {
+      if (user.email == CurrentUserEmail) {
         navLogo.innerHTML = `<i class="fa-solid fa-user"></i>&nbsp;&nbsp;Hi, ${user.userName}`;
         if (typeof user[arrayOfObject] == "object") {
           if (arrayOfObject == "todos") {
