@@ -104,6 +104,7 @@ function signUpAndStoreUserData() {
   }
   //* IF NO INPUT IS EMPTY CODE WILL BE EXECUTED
   if (formDataCompleted) {
+    validateLengthOfPassword();
     var usersData = getData(); // GETTING COMPLETE DATA OF USERS
     // COLLECTION OF USER DATA'S OBJECTS / ARRAY OF OBJECTS
     //* ENSURES THE SAME EMAIL CANNOT BE USED MORE THAN ONCE.
@@ -477,53 +478,73 @@ function setLoggedUserEmail(currentUserEmail) {
 
 //* FUNCTION TO DELETE ALL TASKS
 function deleteAllTasks() {
-  Swal.fire({
-    customClass: {
-      container: "sweatContainer",
-      popup: "sweatPopup",
-      title: "sweatTitle",
-      htmlContainer: "sweatPara",
-      confirmButton: "sweatBtn",
-      cancelButton: "sweatBtn",
-    },
-    title: "Are you sure?",
-    text: "This will delete all your tasks!",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonColor: "#3085d6",
-    cancelButtonColor: "#d33",
-    confirmButtonText: "Yes, delete all!",
-  }).then((result) => {
-    if (result.isConfirmed) {
-      Swal.fire({
-        customClass: {
-          container: "sweatContainer",
-          popup: "sweatPopup",
-          title: "sweatTitle",
-          htmlContainer: "sweatPara",
-          confirmButton: "sweatBtn",
-          cancelButton: "sweatBtn",
-        },
-        title: "Deleted!",
-        text: "All your tasks have been deleted.",
-        icon: "success",
-      }).then(() => {
-        let usersData = getData();
-        let currentUserEmail = getLoggedUser();
-        for (user of usersData) {
-          if (user.email == currentUserEmail) {
-            for (arrayOfObject in user) {
-              if (typeof user[arrayOfObject] == "object") {
+  let usersData = getData();
+  let currentUserEmail = getLoggedUser();
+  for (user of usersData) {
+    if (user.email == currentUserEmail) {
+      for (arrayOfObject in user) {
+        if (
+          typeof user[arrayOfObject] == "object" &&
+          user[arrayOfObject].length != 0
+        ) {
+          Swal.fire({
+            customClass: {
+              container: "sweatContainer",
+              popup: "sweatPopup",
+              title: "sweatTitle",
+              htmlContainer: "sweatPara",
+              confirmButton: "sweatBtn",
+              cancelButton: "sweatBtn",
+            },
+            title: "Are you sure?",
+            text: "This will delete all your tasks!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete all!",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              Swal.fire({
+                customClass: {
+                  container: "sweatContainer",
+                  popup: "sweatPopup",
+                  title: "sweatTitle",
+                  htmlContainer: "sweatPara",
+                  confirmButton: "sweatBtn",
+                  cancelButton: "sweatBtn",
+                },
+                title: "Deleted!",
+                text: "All your tasks have been deleted.",
+                icon: "success",
+              }).then(() => {
                 user[arrayOfObject] = [];
-                setDataCollection(usersData);
-              }
+
+                displayUserTasks();
+              });
             }
-          }
+          });
+          user[arrayOfObject] = [];
+          displayUserTasks();
+          setDataCollection(usersData);
+        } else {
+          Swal.fire({
+            customClass: {
+              container: "sweatContainer",
+              popup: "sweatPopup",
+              title: "sweatTitle",
+              htmlContainer: "sweatPara",
+              confirmButton: "sweatBtn",
+              cancelButton: "sweatBtn",
+            },
+            title: "No Tasks",
+            text: "There are no tasks to delete.",
+            icon: "info",
+          });
         }
-        displayUserTasks();
-      });
+      }
     }
-  });
+  }
 }
 
 //* FUNCTION TO DELET TARGETD TASK
@@ -686,6 +707,57 @@ function showPriorityLevel() {
 }
 showPriorityLevel();
 
+//* FUNCTION TO DUBLICATE TASK
+function copyTask(event) {
+  let taskUl = event.target.closest("ul");
+  let taskTitle = taskUl.querySelector(".taskTitle");
+  let taskDescription = taskUl.querySelector(".taskDescription");
+  let taskStatus = taskUl.querySelector(".taskStatus > .status");
+  let taskPriority = taskUl.querySelector(".taskPriority > select");
+  let taskDeadLine = taskUl.querySelector(".taskDeadLine > span");
+  let taskId = Math.round(Math.random() * 100000);
+
+  var duplicateData = {
+    todoTaskId: taskId,
+    taskTitle: taskTitle.innerHTML.trim(),
+    taskDescription: taskDescription.innerHTML.trim(),
+    taskDeaLine: taskDeadLine.innerHTML.trim(),
+    taskStatus: taskStatus.innerHTML.trim(),
+    taskPriority: taskPriority.value,
+    taskPriorityId: `ID${taskId}`,
+  };
+  let usersData = getData();
+  let currentUserEmail = getLoggedUser();
+  for (user of usersData) {
+    if (user.email == currentUserEmail) {
+      for (arrayOfObject in user) {
+        if (Array.isArray(user[arrayOfObject])) {
+          if (taskUl.classList.contains("toDos")) {
+            console.log(user.todos);
+            user.todos.push(duplicateData);
+            break;
+          } else if (taskUl.classList.contains("inProgress")) {
+            console.log(user.inProgress);
+            user.inProgress.push(duplicateData);
+            break;
+          } else if (taskUl.classList.contains("completed")) {
+            console.log(user.completed);
+            user.completed.push(duplicateData);
+            break;
+          }
+        }
+      }
+    }
+  }
+  setDataCollection(usersData);
+  displayUserTasks();
+}
+
+//* FUNCTION TO DUBLICATE TASK
+function editTask(event) {
+  // showModalAndHideUls();
+}
+
 //* FUNCTION TO ADJUST THE HEIGHT AND WIDTH OF EMPTY UL ELEMENTS
 function resizeUl() {
   // RESIZING UL
@@ -752,9 +824,13 @@ function displayUserTasks() {
                 ondragend="dragEnd(event)"
                 >
                 <!--?=== CANCEL BTN ===-->
-                    <div onclick="deleteTask(event)" class="cancelBtn p-absolute d-flex jc-center al-center pointer transition-1ms">
-                      <i class="fa-solid fa-xmark" ></i>
-                    </div>
+                    <div
+                      class="taskBtns p-absolute d-flex jc-center al-center pointer"
+                    >
+                    <i class="fa-regular fa-pen-to-square edit transition-1ms" onclick="editTask()"></i>
+                    <i class="fa-regular fa-copy transition-1ms" onclick="copyTask(event)"></i>
+                    <i class="fa-solid fa-xmark transition-1ms cancelBtn" onclick="deleteTask(event)"></i>
+                  </div>
                     <p class="taskTitle">${
                       user[arrayOfObject][objsOfArray].taskTitle ||
                       "not mentioned"
@@ -766,10 +842,12 @@ function displayUserTasks() {
                     }
                     </p>
                       <p class="taskDeadLine d-flex jc-between">
-                      <strong>dead line :</strong> ${
+                      <strong>dead line :</strong> 
+                      <span>${
                         user[arrayOfObject][objsOfArray].taskDeaLine ||
                         "not mentioned"
-                      }
+                      }</span> 
+                      
                   </p>
                   <p class="taskStatus d-flex jc-between">
                     <strong>status :</strong><span class="status">${
@@ -816,9 +894,13 @@ function displayUserTasks() {
                 ondragend="dragEnd(event)"
                 >
                 <!--?=== CANCEL BTN ===-->
-                    <div onclick="deleteTask(event)" class="cancelBtn p-absolute d-flex jc-center al-center pointer transition-1ms">
-                      <i class="fa-solid fa-xmark" ></i>
-                    </div>
+                    <div
+                      class="taskBtns p-absolute d-flex jc-center al-center pointer"
+                    >
+                    <i class="fa-regular fa-pen-to-square edit transition-1ms" onclick="editTask()"></i>
+                    <i class="fa-regular fa-copy transition-1ms" onclick="copyTask(event)"></i>
+                    <i class="fa-solid fa-xmark transition-1ms cancelBtn" onclick="deleteTask(event)"></i>
+                  </div>
                     <p class="taskTitle">${
                       user[arrayOfObject][objsOfArray].taskTitle ||
                       "not mentioned"
@@ -830,10 +912,12 @@ function displayUserTasks() {
                     }
                     </p>
                       <p class="taskDeadLine d-flex jc-between">
-                      <strong>dead line :</strong> ${
+                      <strong>dead line :</strong> 
+                      <span>${
                         user[arrayOfObject][objsOfArray].taskDeaLine ||
                         "not mentioned"
-                      }
+                      }</span> 
+                      
                   </p>
                   <p class="taskStatus d-flex jc-between">
                     <strong>status :</strong><span class="status">${
@@ -880,9 +964,13 @@ function displayUserTasks() {
                 ondragend="dragEnd(event)"
                 >
                 <!--?=== CANCEL BTN ===-->
-                    <div onclick="deleteTask(event)" class="cancelBtn p-absolute d-flex jc-center al-center pointer transition-1ms">
-                      <i class="fa-solid fa-xmark" ></i>
-                    </div>
+                    <div
+                      class="taskBtns p-absolute d-flex jc-center al-center pointer"
+                    >
+                    <i class="fa-regular fa-pen-to-square edit transition-1ms" onclick="editTask()"></i>
+                    <i class="fa-regular fa-copy transition-1ms" onclick="copyTask(event)"></i>
+                    <i class="fa-solid fa-xmark transition-1ms cancelBtn" onclick="deleteTask(event)"></i>
+                  </div>
                     <p class="taskTitle">${
                       user[arrayOfObject][objsOfArray].taskTitle ||
                       "not mentioned"
@@ -894,10 +982,12 @@ function displayUserTasks() {
                     }
                     </p>
                       <p class="taskDeadLine d-flex jc-between">
-                      <strong>dead line :</strong> ${
+                      <strong>dead line :</strong> 
+                      <span>${
                         user[arrayOfObject][objsOfArray].taskDeaLine ||
                         "not mentioned"
-                      }
+                      }</span> 
+                      
                   </p>
                   <p class="taskStatus d-flex jc-between">
                     <strong>status :</strong><span class="status">${

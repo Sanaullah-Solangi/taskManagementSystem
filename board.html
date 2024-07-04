@@ -72,15 +72,28 @@
             ondrop="drop(event)"
             class="taskCardList w-100 d-flex dir-col al-center toDos pointer"
           >
-            <!-- <li
+            <li
               id="${user[arrayOfObject][objsOfArray].todoTaskId}"
               class="task w-100 transition-1ms p-relative"
               draggable="true"
               ondragstart="dragStart(event)"
               ondragend="dragEnd(event)"
             >
-              <div class="cancelBtn p-absolute d-flex jc-center al-center pointer transition-1ms">
-                <i class="fa-solid fa-xmark" onclick="deleteTask()"></i>
+              <div
+                class="taskBtns p-absolute d-flex jc-center al-center pointer"
+              >
+                <i
+                  class="fa-solid fa-xmark transition-1ms cancelBtn"
+                  onclick="deleteTask()"
+                ></i>
+                <i
+                  class="fa-regular fa-pen-to-square transition-1ms"
+                  onclick="editTask()"
+                ></i>
+                <i
+                  class="fa-regular fa-copy transition-1ms"
+                  onclick="copyTask(event)"
+                ></i>
               </div>
 
               <p class="taskTitle">title</p>
@@ -105,7 +118,7 @@
                   <option value="low">low</option>
                 </select>
               </p>
-            </li> -->
+            </li>
           </ul>
 
           <!--?=== ADD TODO BTN ===-->

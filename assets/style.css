@@ -447,32 +447,41 @@ h2 {
 .todoProjectsContainer > .addTodosBtn {
   width: 98%;
   border-radius: 10px;
-  -webkit-border-radius: 10px;
-  -moz-border-radius: 10px;
-  -ms-border-radius: 10px;
-  -o-border-radius: 10px;
+  -webkit-border-radius:;
+  -moz-border-radius:;
+  -ms-border-radius:;
+  -o-border-radius:;
 }
 .taskCardList > .task {
   padding: 2rem 3rem;
   background-color: #fff;
   margin-bottom: 1rem;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  border: 2px solid transparent;
   overflow: hidden;
 }
 
-.taskCardList > .task > .cancelBtn {
+.taskCardList > .task > .taskBtns {
   right: 0%;
   top: 0%;
-  font-size: 1.5rem;
+  font-size: 2rem;
   background-color: #3085d6;
   background-color: var(--mainColor1);
-  padding: 1rem;
-  border-bottom-left-radius: 30%;
   color: #fff;
 }
-.taskCardList > .task > .cancelBtn:hover {
+
+.taskCardList > .task > .taskBtns,
+.taskCardList > .task > .taskBtns > .edit {
+  border-bottom-left-radius: 1.5rem;
+}
+.taskCardList > .task > .taskBtns .cancelBtn:hover {
   background-color: #d33;
+}
+
+.taskCardList > .task > .taskBtns > i {
+  padding: 1.3rem;
+}
+.taskCardList > .task > .taskBtns > i:hover {
+  background-color: var(--mainColor3);
 }
 
 .taskCardList > .task > .taskTitle {
