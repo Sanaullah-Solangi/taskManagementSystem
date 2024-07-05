@@ -1,10 +1,8 @@
 //* GETTING ELEMENTS
-var navLogInBtn = document.querySelector(".navLogInBtn");
-var navLogOutBtn = document.querySelector(".navLogOutBtn");
-var navDelAllBtn = document.querySelector(".navDelAllBtn");
-var formLogInBtn = document.querySelector(".formLogInBtn");
-var navSignUpBtn = document.querySelector(".navSignUpBtn");
+var logInBtns = document.querySelector(".logInBtns");
+var logOutBtns = document.querySelector(".logOutBtns");
 var navLogo = document.querySelector(".logo");
+var formLogInBtn = document.querySelector(".formLogInBtn");
 var formSignUpBtn = document.querySelector(".formSignUpBtn");
 var todId;
 let toDosList = document.querySelector(".toDos");
@@ -1086,6 +1084,7 @@ function showModalAndHideUls(event) {
   //? HIDING ALL LISTS AND SHOWING MODAL
   for (list of taskCardList) {
     list.classList.replace("d-flex", "d-none");
+    list.classList.remove("heightWidth");
   }
   modalContainer.classList.replace("d-none", "d-flex");
   modalContent.classList.replace("animate__bounceOut", "animate__bounceIn");
@@ -1161,16 +1160,16 @@ function hideModalAndShowUls() {
 
 //* FUNCTION TO SHOW LOG OUT BTN
 function showLogOutBtn() {
+  let header = document.querySelector(".header")
   if (getLoggedUser()) {
-    navSignUpBtn.classList.add("d-none");
-    navLogInBtn.classList.add("d-none");
-    navLogOutBtn.classList.remove("d-none");
-    navDelAllBtn.classList.remove("d-none");
+    logInBtns.classList.replace("d-flex", "d-none");
+    logOutBtns.classList.replace("d-none", "d-flex");
+    header.classList.add("peddingRight")
   } else {
-    navSignUpBtn.classList.remove("d-none");
-    navLogInBtn.classList.remove("d-none");
-    navLogOutBtn.classList.add("d-none");
-    navDelAllBtn.classList.add("d-none");
+    logInBtns.classList.replace("d-none", "d-flex");
+    logOutBtns.classList.replace("d-flex", "d-none");
+    header.classList.remove("peddingRight")
+
   }
 }
 

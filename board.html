@@ -38,18 +38,20 @@
         /></a>
 
         <!-- FORM BTNS -->
-        <div class="formBtns">
+        <div class="logInBtns d-flex  ">
           <a href="./signUp.html" class="btn navSignUpBtn pointer">sign up</a>
           <a href="./logIn.html" class="btn navLogInBtn pointer">log In</a>
-          <a href="#" onclick="logOut()" class="btn d-none navLogOutBtn pointer"
-            >log Out</a
-          >
+        </div>
+        <div class="logOutBtns d-none">
+          <a href="#" onclick="logOut()" class="btn navLogOutBtn pointer"
+            ><i class="fa-solid fa-right-from-bracket"></i
+          ></a>
           <a
             href="#"
             onclick="deleteAllTasks()"
-            class="btn d-none navDelAllBtn pointer"
-            >delete All tasks</a
-          >
+            class="btn navDelAllBtn pointer"
+            ><i class="fa-solid fa-trash"></i
+          ></a>
         </div>
       </header>
     </div>
@@ -209,7 +211,9 @@
               <div class="row grid grid-two-cols">
                 <!--=== COL 1 ===-->
                 <div class="col1">
-                  <label for="modalTile">add title</label>
+                  <label class="modalTitleLabel" for="modalTile"
+                    >add title</label
+                  >
                   <input
                     type="text"
                     id="modalTitle"

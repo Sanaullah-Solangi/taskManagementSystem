@@ -174,6 +174,10 @@ html {
 .d-none {
   display: none;
 }
+
+.d-inline-block {
+  display: inline-block;
+}
 .w-100 {
   width: 100%;
 }
@@ -257,21 +261,25 @@ body,
 }
 header {
   background-color: var(--mainColor3);
-  padding: 2rem 3rem;
+  padding: 0rem 3rem;
   margin-bottom: 20px;
   color: var(--white);
   font-size: 2.5rem;
 }
 
-header > a > img{
-  /* border: 2px solid red; */
+.peddingRight{
+padding-right: 0% !important;
+}
+
+header > a > img {
   height: 5rem;
 }
 
 .logo {
   font-size: 2rem;
 }
-.formBtns > button,
+
+.header :is(.logInBtns, .logOutBtns) > a,
 .formLogInBtn,
 .formSignUpBtn {
   background-color: var(--btn-bg);
@@ -283,23 +291,48 @@ header > a > img{
   -ms-transition: all 0.1s linear;
   -o-transition: all 0.1s linear;
 }
-.formBtns > button:hover,
+.header > :is(.logInBtns, .logOutBtns) > a:hover,
 .formLogInBtn:hover,
 .formSignUpBtn:hover {
   background-color: var(--mainColor3);
   color: var(--btn-bg);
   border: 1px solid var(--btn-bg);
 }
-.formBtns > button {
+
+:is(.logInBtns, .logOutBtns) > a {
   font-size: 2rem;
   padding: 10px 20px;
+  border: 1px solid var(--mainColor1);
   border-radius: 10px;
   -webkit-border-radius: 10px;
   -moz-border-radius: 10px;
   -ms-border-radius: 10px;
   -o-border-radius: 10px;
 }
-
+.header > .logOutBtns > a {
+  border-radius: 0px;
+  -webkit-border-radius: 0px;
+  -moz-border-radius: 0px;
+  -ms-border-radius: 0px;
+  -o-border-radius: 0px;
+}
+.header > .logInBtns {
+  margin-block: 1rem;
+  gap: 1rem;
+}
+.header .logOutBtns > a {
+  background-color: var(--mainColor3);
+  color: var(--btn-bg);
+}
+.header .logOutBtns > a:hover {
+  background-color: var(--btn-bg);
+  color: var(--mainColor3);
+  border: 1px solid transparent;
+}
+.header .logOutBtns > a:nth-child(2):hover {
+  background-color: #d33;
+  color: white;
+}
 /*!=============== WELCOME SECTION STYLING ===============*/
 /*?=== WELCOME CONTAINER ===*/
 .welcomeContainer {
@@ -452,10 +485,10 @@ h2 {
 .todoProjectsContainer > .addTodosBtn {
   width: 98%;
   border-radius: 10px;
-  -webkit-border-radius:;
-  -moz-border-radius:;
-  -ms-border-radius:;
-  -o-border-radius:;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  -o-border-radius: 10px;
 }
 .taskCardList > .task {
   padding: 2rem 3rem;
@@ -491,6 +524,7 @@ h2 {
 
 .taskCardList > .task > .taskTitle {
   font-size: 3rem;
+  margin-top: 2rem;
 }
 
 .taskCardList > .task > .taskDescription {
@@ -568,7 +602,7 @@ h2 {
 }
 
 .modalContent {
-  height: 75%;
+  height: 100%;
   width: 50%;
   background-color: #fff;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
@@ -631,8 +665,9 @@ label,
   top: 4%;
   color: #fff;
 }
+
 /*!=============== FORMS SECTION ===============*/
-.formBtns > :is(button, a),
+:is(.logInBtns, .logOutBtns) > a,
 .formLogInBtn,
 .formSignUpBtn {
   background-color: var(--btn-bg);
@@ -645,22 +680,14 @@ label,
   -o-transition: all 0.1s linear;
   font-weight: 500;
 }
-.formBtns > :is(button, a):hover,
+:is(.logInBtns, .logOutBtns) > a:hover,
 .formLogInBtn:hover,
 .formSignUpBtn:hover {
   background-color: var(--mainColor3);
   color: var(--btn-bg);
   border: 1px solid var(--btn-bg);
 }
-.formBtns > :is(button, a) {
-  font-size: 2rem;
-  padding: 10px 20px;
-  border-radius: 10px;
-  -webkit-border-radius: 10px;
-  -moz-border-radius: 10px;
-  -ms-border-radius: 10px;
-  -o-border-radius: 10px;
-}
+
 /*!=============== mainContainer section starts ===============*/
 .vh {
   height: 100vh;

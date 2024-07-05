@@ -52,6 +52,7 @@
 
   .modalContent {
     width: 80%;
+    height: 100%;
   }
 }
 
@@ -77,10 +78,59 @@
   #features > ul li {
     list-style-position: outside;
   }
+
+  .modalContent > .modalContentBody :is(input, textarea, select) {
+    font-size: 1.6rem;
+    padding: 0.5rem 1rem;
+  }
+
+  .modalContent,
+  .modalHeading {
+    border-radius: 0.5rem;
+    -webkit-border-radius: 0.5rem;
+    -moz-border-radius: 0.5rem;
+    -ms-border-radius: 0.5rem;
+    -o-border-radius: 0.5rem;
+  }
+
+  .modalContent {
+    padding: 0;
+  }
+
+  .modalContentBody {
+    padding: 0 1rem;
+  }
+
+  .modalHeading {
+    font-size: 2rem;
+    padding: 1rem 0%;
+  }
+
+  .row {
+    gap: 0;
+  }
+
+  label,
+  .addTodos {
+    display: inline-block;
+    font-size: 1.7rem;
+    font-weight: 500;
+    margin-top: 0.5rem;
+  }
+
+  .addTodos{
+    padding: 0.5rem;
+  }
+
+  .modalContent > i {
+    font-size: 2rem;
+    right: 1%;
+    top: 1%;
+  }
 }
 @media (width <= 565px) {
   .header {
-    padding: 2rem 1rem;
+    padding: 0rem 1rem;
   }
   .modalContent {
     height: 100%;
@@ -102,9 +152,6 @@
     width: 90%;
   }
 
-  .modalContent {
-    width: 90%;
-  }
   #listTypes > .list {
     width: 90%;
   }
