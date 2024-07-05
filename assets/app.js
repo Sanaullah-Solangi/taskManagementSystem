@@ -15,6 +15,7 @@ let modalHeading = document.querySelector(".modalHeading"); // MODAL HEADING
 let modalStatus = document.querySelector("#modalStatus"); // STATUS INPUT IN MODAL
 let taskToDrop;
 var flagForUl = "";
+var flagToEditTask = "";
 var formDataCompleted = true; // FLAG TO CHECK EMPTY INPUT
 
 //! ==============================================
@@ -353,11 +354,11 @@ function logOut() {
 
 //* FUNCTION TO COLLECT DATA FROM MODAL AND SAVE TO LOCAL STORAGE
 function saveDataToLocalStorageFromModal() {
-  let modalTitle = document.querySelector("#modalTitle").value;
-  let modalDeadLine = document.querySelector("#modalDeadLine").value;
-  let modalStatus = document.querySelector("#modalStatus").value;
-  let modalPriority = document.querySelector("#modalPriority").value;
-  let modalDescription = document.querySelector("#modalDescription").value;
+  let modalTitle = document.querySelector("#modalTitle");
+  let modalDeadLine = document.querySelector("#modalDeadLine");
+  let modalStatus = document.querySelector("#modalStatus");
+  let modalPriority = document.querySelector("#modalPriority");
+  let modalDescription = document.querySelector("#modalDescription");
   let taskId = Math.round(Math.random() * 100000);
   let inputs = document.querySelectorAll(".modalContent input,textarea");
   let inputsAreFilled = true;
@@ -367,11 +368,11 @@ function saveDataToLocalStorageFromModal() {
       inputsAreFilled = false;
     }
   }
-  if (inputsAreFilled) {
-    var usersData = getData();
-    var currentUserEmail = getLoggedUser();
-    var userObj;
-    var userObjIndex;
+  var usersData = getData();
+  var currentUserEmail = getLoggedUser();
+  if (inputsAreFilled && flagForUl && !flagToEditTask) {
+    var userObj; // CURRENT USER
+    var userObjIndex; // CURRENT USER INDEX
 
     if (!currentUserEmail) {
       Swal.fire({
@@ -390,6 +391,7 @@ function saveDataToLocalStorageFromModal() {
       hideModalAndShowUls();
       return false;
     }
+
     usersData.forEach((user, index) => {
       if (user.email == currentUserEmail) {
         userObj = user;
@@ -399,13 +401,14 @@ function saveDataToLocalStorageFromModal() {
 
     var todoData = {
       todoTaskId: taskId,
-      taskTitle: modalTitle,
-      taskDescription: modalDescription,
-      taskDeaLine: modalDeadLine,
-      taskStatus: modalStatus,
-      taskPriority: modalPriority,
+      taskTitle: modalTitle.value,
+      taskDescription: modalDescription.value,
+      taskDeaLine: modalDeadLine.value,
+      taskStatus: modalStatus.value,
+      taskPriority: modalPriority.value,
       taskPriorityId: `ID${taskId}`,
     };
+
     if (flagForUl.classList.contains("toDos")) {
       userObj.todos.push(todoData);
       usersData[userObjIndex].userObj;
@@ -419,6 +422,35 @@ function saveDataToLocalStorageFromModal() {
       usersData[userObjIndex].userObj;
       setDataCollection(usersData);
     }
+    inputs.forEach((item) => {
+      item.value = "";
+    });
+    hideModalAndShowUls();
+  } else if (inputsAreFilled && !flagForUl && flagToEditTask) {
+    for (user of usersData) {
+      if (user.email == currentUserEmail) {
+        for (arrayOfObject in user) {
+          if (Array.isArray(user[arrayOfObject])) {
+            for (objsOfArray in user[arrayOfObject]) {
+              if (
+                user[arrayOfObject][objsOfArray].todoTaskId == flagToEditTask
+              ) {
+                user[arrayOfObject][objsOfArray].taskTitle = modalTitle.value;
+                user[arrayOfObject][objsOfArray].taskDescription =
+                  modalDescription.value;
+                user[arrayOfObject][objsOfArray].taskStatus = modalStatus.value;
+                user[arrayOfObject][objsOfArray].taskDeaLine =
+                  modalDeadLine.value;
+                user[arrayOfObject][objsOfArray].taskPriority =
+                  modalPriority.value;
+                break;
+              }
+            }
+          }
+        }
+      }
+    }
+    setDataCollection(usersData);
     hideModalAndShowUls();
     inputs.forEach((item) => {
       item.value = "";
@@ -559,7 +591,6 @@ function deleteTask(event) {
         if (typeof user[arrayOfObject] == "object") {
           user[arrayOfObject].forEach((obj, index) => {
             if (obj.todoTaskId == cardId) {
-              console.log(obj.todoTaskId, index);
               user[arrayOfObject].splice(index, index + 1);
             }
           });
@@ -710,20 +741,26 @@ showPriorityLevel();
 //* FUNCTION TO DUBLICATE TASK
 function copyTask(event) {
   let taskUl = event.target.closest("ul");
-  let taskTitle = taskUl.querySelector(".taskTitle");
-  let taskDescription = taskUl.querySelector(".taskDescription");
-  let taskStatus = taskUl.querySelector(".taskStatus > .status");
-  let taskPriority = taskUl.querySelector(".taskPriority > select");
-  let taskDeadLine = taskUl.querySelector(".taskDeadLine > span");
+  let taskTitle = taskUl.querySelector(".taskTitle").innerHTML.trim();
+  let taskDescription = taskUl
+    .querySelector(".taskDescription")
+    .innerHTML.trim();
+  let taskStatus = taskUl
+    .querySelector(".taskStatus > .status")
+    .innerHTML.trim();
+  let taskPriority = taskUl.querySelector(".taskPriority > select").value;
+  let taskDeadLine = taskUl
+    .querySelector(".taskDeadLine > span")
+    .innerHTML.trim();
   let taskId = Math.round(Math.random() * 100000);
 
   var duplicateData = {
     todoTaskId: taskId,
-    taskTitle: taskTitle.innerHTML.trim(),
-    taskDescription: taskDescription.innerHTML.trim(),
-    taskDeaLine: taskDeadLine.innerHTML.trim(),
-    taskStatus: taskStatus.innerHTML.trim(),
-    taskPriority: taskPriority.value,
+    taskTitle: taskTitle,
+    taskDescription: taskDescription,
+    taskDeaLine: taskDeadLine,
+    taskStatus: taskStatus,
+    taskPriority: taskPriority,
     taskPriorityId: `ID${taskId}`,
   };
   let usersData = getData();
@@ -751,11 +788,6 @@ function copyTask(event) {
   }
   setDataCollection(usersData);
   displayUserTasks();
-}
-
-//* FUNCTION TO DUBLICATE TASK
-function editTask(event) {
-  // showModalAndHideUls();
 }
 
 //* FUNCTION TO ADJUST THE HEIGHT AND WIDTH OF EMPTY UL ELEMENTS
@@ -827,7 +859,7 @@ function displayUserTasks() {
                     <div
                       class="taskBtns p-absolute d-flex jc-center al-center pointer"
                     >
-                    <i class="fa-regular fa-pen-to-square edit transition-1ms" onclick="editTask()"></i>
+                    <i class="fa-regular fa-pen-to-square edit transition-1ms" onclick="showModalAndHideUls(event)"></i>
                     <i class="fa-regular fa-copy transition-1ms" onclick="copyTask(event)"></i>
                     <i class="fa-solid fa-xmark transition-1ms cancelBtn" onclick="deleteTask(event)"></i>
                   </div>
@@ -897,7 +929,7 @@ function displayUserTasks() {
                     <div
                       class="taskBtns p-absolute d-flex jc-center al-center pointer"
                     >
-                    <i class="fa-regular fa-pen-to-square edit transition-1ms" onclick="editTask()"></i>
+                    <i class="fa-regular fa-pen-to-square edit transition-1ms" onclick="showModalAndHideUls(event)"></i>
                     <i class="fa-regular fa-copy transition-1ms" onclick="copyTask(event)"></i>
                     <i class="fa-solid fa-xmark transition-1ms cancelBtn" onclick="deleteTask(event)"></i>
                   </div>
@@ -967,7 +999,7 @@ function displayUserTasks() {
                     <div
                       class="taskBtns p-absolute d-flex jc-center al-center pointer"
                     >
-                    <i class="fa-regular fa-pen-to-square edit transition-1ms" onclick="editTask()"></i>
+                    <i class="fa-regular fa-pen-to-square edit transition-1ms" onclick="showModalAndHideUls(event)"></i>
                     <i class="fa-regular fa-copy transition-1ms" onclick="copyTask(event)"></i>
                     <i class="fa-solid fa-xmark transition-1ms cancelBtn" onclick="deleteTask(event)"></i>
                   </div>
@@ -1040,27 +1072,77 @@ displayUserTasks();
 
 //* FUNCTION TO SHOW THE MODAL AND HIDE THE UL ELEMENTS
 function showModalAndHideUls(event) {
+  let clickedBtn = event.target;
   let container = event.target.closest(".todoProjectsContainer"); // MODAL CONTAINER
   let ul = container.querySelector("ul"); // PARENT UL OF CLICKED BTN
-  if (ul.classList.contains("toDos")) {
-    modalHeading.innerHTML = "Add A New Task";
-    modalStatus.selectedIndex = 0;
-  } else if (ul.classList.contains("inProgress")) {
-    modalHeading.innerHTML = "Add In progress task";
-    modalStatus.selectedIndex = 1;
-  } else if (ul.classList.contains("completed")) {
-    modalHeading.innerHTML = "Add A completed task";
-    modalStatus.selectedIndex = 2;
-  }
-
+  let modalTitle = document.querySelector("#modalTitle");
+  let modalDeadLine = document.querySelector("#modalDeadLine");
+  let modalStatus = document.querySelector("#modalStatus");
+  let modalPriority = document.querySelector("#modalPriority");
+  let modalDescription = document.querySelector("#modalDescription");
   let modalContainer = document.querySelector(".modalContainer");
   let taskCardList = document.querySelectorAll(".taskCardList");
-  for (let uls of taskCardList) {
-    uls.classList.replace("d-flex", "d-none");
+
+  //? HIDING ALL LISTS AND SHOWING MODAL
+  for (list of taskCardList) {
+    list.classList.replace("d-flex", "d-none");
   }
   modalContainer.classList.replace("d-none", "d-flex");
   modalContent.classList.replace("animate__bounceOut", "animate__bounceIn");
-  flagForUl = ul;
+
+  //? IF EVENT TARGET IS EDIT BTN THIS PROGRAME WILL RUN
+  if (clickedBtn.classList.contains("edit")) {
+    //! GETTING MODAL'S VALUES & TARGET TAST TO EDIT
+    let taskToEdit = event.target.closest("li"); // PARENT LI OF CLICKED BTN
+    let idOftaskToEdit = event.target.closest("li").id; // ID OF PARENT LI OF CLICKED BTN
+    let taskTitle = taskToEdit.querySelector(".taskTitle").innerHTML;
+    let taskDescription =
+      taskToEdit.querySelector(".taskDescription").innerHTML;
+    let taskStatus = taskToEdit.querySelector(
+      ".taskStatus > .status"
+    ).innerHTML;
+    let taskPriority = taskToEdit.querySelector(".taskPriority > select").value;
+    let taskDeadLine = taskToEdit.querySelector(
+      ".taskDeadLine > span"
+    ).innerHTML;
+
+    //! EDITING HEADINGS ACCORDING TO THE LIST
+    if (ul.classList.contains("toDos")) {
+      modalHeading.innerHTML = "Edit Todo Task";
+    } else if (ul.classList.contains("inProgress")) {
+      modalHeading.innerHTML = "Edit in pogress task";
+    } else if (ul.classList.contains("completed")) {
+      modalHeading.innerHTML = "Edit completed task";
+    }
+    //! ASSINGING TASK'S VALUES TO MODAL'S INPUTS
+    modalTitle.value = taskTitle.trim();
+    modalDescription.value = taskDescription.trim();
+    modalDeadLine.value = taskDeadLine.trim();
+    modalStatus.value = taskStatus.trim();
+    modalPriority.value = taskPriority;
+    //! ADJUSTING MODAL'S STATUS INPUT ACCORDING TO THE TASK STATUS
+    if (taskStatus.trim() == "todo") {
+      modalStatus.selectedIndex = 0;
+    } else if (taskStatus.trim() == "in progress") {
+      modalStatus.selectedIndex = 1;
+    } else if (taskStatus.trim() == "completed") {
+      modalStatus.selectedIndex = 2;
+    }
+
+    flagToEditTask = idOftaskToEdit;
+  } else {
+    if (ul.classList.contains("toDos")) {
+      modalHeading.innerHTML = "Add A New Task";
+      modalStatus.selectedIndex = 0;
+    } else if (ul.classList.contains("inProgress")) {
+      modalHeading.innerHTML = "Add In progress task";
+      modalStatus.selectedIndex = 1;
+    } else if (ul.classList.contains("completed")) {
+      modalHeading.innerHTML = "Add A completed task";
+      modalStatus.selectedIndex = 2;
+    }
+    flagForUl = ul;
+  }
 }
 
 //* FUNCTION TO HIDE THE MODAL AND SHOW THE UL ELEMENTS
