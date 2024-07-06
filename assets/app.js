@@ -368,24 +368,20 @@ function saveDataToLocalStorageFromModal() {
     }
   }
   console.log(
-    "edit condition  " +
-      Boolean(inputsAreFilled && !flagForUl && flagToEditTask)
+    "modal condition " +
+      Boolean(inputsAreFilled && flagForUl && !flagToEditTask)
   );
-
-  // console.log(
-  //   "modal condition  " +
-  //     Boolean(inputsAreFilled && flagForUl && !flagToEditTask)
-  // );
-  // console.log("inputs " + inputsAreFilled);
-  // console.log("flagToEditTask " + Boolean(!flagToEditTask));
-  // console.log("flagForUl " + Boolean(flagForUl));
-
-  console.log("inputs " + inputsAreFilled);
-  console.log("flagToEditTask " + Boolean(flagToEditTask));
-  console.log("flagForUl " + Boolean(!flagForUl));
-  var usersData = getData();
-  var currentUserEmail = getLoggedUser();
-  if (inputsAreFilled && !flagToEditTask && flagForUl) {
+  console.log("inputsAreFilled " + inputsAreFilled);
+  console.log("flagForUl " + Boolean(flagForUl));
+  console.log("!flagToEditTask " + !flagToEditTask);
+  console.log("")
+  console.log(
+    "edit condition " + Boolean(inputsAreFilled && !flagForUl && flagToEditTask)
+  );
+  console.log("inputsAreFilled " + inputsAreFilled);
+  console.log("!flagForUl " + Boolean(!flagForUl));
+  console.log("flagToEditTask " + flagToEditTask);
+  if (inputsAreFilled && flagForUl && !flagToEditTask) {
     var usersData = getData();
     var currentUserEmail = getLoggedUser();
     var userObj; // CURRENT USER

@@ -118,7 +118,7 @@
     margin-top: 0.5rem;
   }
 
-  .addTodos{
+  .addTodos {
     padding: 0.5rem;
   }
 
@@ -131,6 +131,10 @@
 @media (width <= 565px) {
   .header {
     padding: 0rem 1rem;
+  }
+
+  :is(.logInBtns, .logOutBtns) > a {
+    padding: 10px 15px;
   }
   .modalContent {
     height: fit-content;
