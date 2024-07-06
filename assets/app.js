@@ -363,12 +363,31 @@ function saveDataToLocalStorageFromModal() {
 
   for (input of inputs) {
     if (input.value == "") {
+      console.log(input);
       inputsAreFilled = false;
     }
   }
+  console.log(
+    "edit condition  " +
+      Boolean(inputsAreFilled && !flagForUl && flagToEditTask)
+  );
+
+  // console.log(
+  //   "modal condition  " +
+  //     Boolean(inputsAreFilled && flagForUl && !flagToEditTask)
+  // );
+  // console.log("inputs " + inputsAreFilled);
+  // console.log("flagToEditTask " + Boolean(!flagToEditTask));
+  // console.log("flagForUl " + Boolean(flagForUl));
+
+  console.log("inputs " + inputsAreFilled);
+  console.log("flagToEditTask " + Boolean(flagToEditTask));
+  console.log("flagForUl " + Boolean(!flagForUl));
   var usersData = getData();
   var currentUserEmail = getLoggedUser();
-  if (inputsAreFilled && flagForUl && !flagToEditTask) {
+  if (inputsAreFilled && !flagToEditTask && flagForUl) {
+    var usersData = getData();
+    var currentUserEmail = getLoggedUser();
     var userObj; // CURRENT USER
     var userObjIndex; // CURRENT USER INDEX
 
@@ -401,7 +420,7 @@ function saveDataToLocalStorageFromModal() {
       todoTaskId: taskId,
       taskTitle: modalTitle.value,
       taskDescription: modalDescription.value,
-      taskDeaLine: modalDeadLine.value,
+      taskDeadLine: modalDeadLine.value,
       taskStatus: modalStatus.value,
       taskPriority: modalPriority.value,
       taskPriorityId: `ID${taskId}`,
@@ -425,6 +444,8 @@ function saveDataToLocalStorageFromModal() {
     });
     hideModalAndShowUls();
   } else if (inputsAreFilled && !flagForUl && flagToEditTask) {
+    var usersData = getData();
+    var currentUserEmail = getLoggedUser();
     for (user of usersData) {
       if (user.email == currentUserEmail) {
         for (arrayOfObject in user) {
@@ -437,7 +458,7 @@ function saveDataToLocalStorageFromModal() {
                 user[arrayOfObject][objsOfArray].taskDescription =
                   modalDescription.value;
                 user[arrayOfObject][objsOfArray].taskStatus = modalStatus.value;
-                user[arrayOfObject][objsOfArray].taskDeaLine =
+                user[arrayOfObject][objsOfArray].taskDeadLine =
                   modalDeadLine.value;
                 user[arrayOfObject][objsOfArray].taskPriority =
                   modalPriority.value;
@@ -508,72 +529,75 @@ function setLoggedUserEmail(currentUserEmail) {
 
 //* FUNCTION TO DELETE ALL TASKS
 function deleteAllTasks() {
+  let flagToShowError = 0;
   let usersData = getData();
   let currentUserEmail = getLoggedUser();
   for (user of usersData) {
     if (user.email == currentUserEmail) {
       for (arrayOfObject in user) {
-        if (
-          typeof user[arrayOfObject] == "object" &&
-          user[arrayOfObject].length != 0
-        ) {
-          Swal.fire({
-            customClass: {
-              container: "sweatContainer",
-              popup: "sweatPopup",
-              title: "sweatTitle",
-              htmlContainer: "sweatPara",
-              confirmButton: "sweatBtn",
-              cancelButton: "sweatBtn",
-            },
-            title: "Are you sure?",
-            text: "This will delete all your tasks!",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Yes, delete all!",
-          }).then((result) => {
-            if (result.isConfirmed) {
-              Swal.fire({
-                customClass: {
-                  container: "sweatContainer",
-                  popup: "sweatPopup",
-                  title: "sweatTitle",
-                  htmlContainer: "sweatPara",
-                  confirmButton: "sweatBtn",
-                  cancelButton: "sweatBtn",
-                },
-                title: "Deleted!",
-                text: "All your tasks have been deleted.",
-                icon: "success",
-              }).then(() => {
-                user[arrayOfObject] = [];
-
-                displayUserTasks();
-              });
-            }
-          });
-          user[arrayOfObject] = [];
-          displayUserTasks();
-          setDataCollection(usersData);
-        } else {
-          Swal.fire({
-            customClass: {
-              container: "sweatContainer",
-              popup: "sweatPopup",
-              title: "sweatTitle",
-              htmlContainer: "sweatPara",
-              confirmButton: "sweatBtn",
-              cancelButton: "sweatBtn",
-            },
-            title: "No Tasks",
-            text: "There are no tasks to delete.",
-            icon: "info",
-          });
+        if (typeof user[arrayOfObject] == "object") {
+          if (user[arrayOfObject].length != 0) {
+            Swal.fire({
+              customClass: {
+                container: "sweatContainer",
+                popup: "sweatPopup",
+                title: "sweatTitle",
+                htmlContainer: "sweatPara",
+                confirmButton: "sweatBtn",
+                cancelButton: "sweatBtn",
+              },
+              title: "Are you sure?",
+              text: "This will delete all your tasks!",
+              icon: "warning",
+              showCancelButton: true,
+              confirmButtonColor: "#3085d6",
+              cancelButtonColor: "#d33",
+              confirmButtonText: "Yes, delete all!",
+            }).then((result) => {
+              if (result.isConfirmed) {
+                Swal.fire({
+                  customClass: {
+                    container: "sweatContainer",
+                    popup: "sweatPopup",
+                    title: "sweatTitle",
+                    htmlContainer: "sweatPara",
+                    confirmButton: "sweatBtn",
+                    cancelButton: "sweatBtn",
+                  },
+                  title: "Deleted!",
+                  text: "All your tasks have been deleted.",
+                  icon: "success",
+                }).then(() => {
+                  user.todos = [];
+                  user.inProgress = [];
+                  user.completed = [];
+                  setDataCollection(usersData);
+                  displayUserTasks();
+                });
+              }
+            });
+          } else {
+            flagToShowError += 1;
+          }
         }
       }
     }
+  }
+
+  if (flagToShowError == 3) {
+    Swal.fire({
+      customClass: {
+        container: "sweatContainer",
+        popup: "sweatPopup",
+        title: "sweatTitle",
+        htmlContainer: "sweatPara",
+        confirmButton: "sweatBtn",
+        cancelButton: "sweatBtn",
+      },
+      title: "No Tasks",
+      text: "There are no tasks to delete.",
+      icon: "info",
+    });
   }
 }
 
@@ -739,25 +763,19 @@ showPriorityLevel();
 //* FUNCTION TO DUBLICATE TASK
 function copyTask(event) {
   let taskUl = event.target.closest("ul");
-  let taskTitle = taskUl.querySelector(".taskTitle").innerHTML.trim();
-  let taskDescription = taskUl
-    .querySelector(".taskDescription")
-    .innerHTML.trim();
-  let taskStatus = taskUl
-    .querySelector(".taskStatus > .status")
-    .innerHTML.trim();
+  let taskTitle = taskUl.querySelector(".taskTitle").innerHTML;
+  let taskDescription = taskUl.querySelector(".taskDescription").innerHTML;
+  let taskStatus = taskUl.querySelector(".taskStatus > .status").innerHTML;
   let taskPriority = taskUl.querySelector(".taskPriority > select").value;
-  let taskDeadLine = taskUl
-    .querySelector(".taskDeadLine > span")
-    .innerHTML.trim();
+  let taskDeadLine = taskUl.querySelector(".taskDeadLine > span").innerHTML;
   let taskId = Math.round(Math.random() * 100000);
 
   var duplicateData = {
     todoTaskId: taskId,
-    taskTitle: taskTitle,
-    taskDescription: taskDescription,
-    taskDeaLine: taskDeadLine,
-    taskStatus: taskStatus,
+    taskTitle: taskTitle.trim(),
+    taskDescription: taskDescription.trim(),
+    taskDeadLine: taskDeadLine.trim(),
+    taskStatus: taskStatus.trim(),
     taskPriority: taskPriority,
     taskPriorityId: `ID${taskId}`,
   };
@@ -768,15 +786,12 @@ function copyTask(event) {
       for (arrayOfObject in user) {
         if (Array.isArray(user[arrayOfObject])) {
           if (taskUl.classList.contains("toDos")) {
-            console.log(user.todos);
             user.todos.push(duplicateData);
             break;
           } else if (taskUl.classList.contains("inProgress")) {
-            console.log(user.inProgress);
             user.inProgress.push(duplicateData);
             break;
           } else if (taskUl.classList.contains("completed")) {
-            console.log(user.completed);
             user.completed.push(duplicateData);
             break;
           }
@@ -874,7 +889,7 @@ function displayUserTasks() {
                       <p class="taskDeadLine d-flex jc-between">
                       <strong>dead line :</strong> 
                       <span>${
-                        user[arrayOfObject][objsOfArray].taskDeaLine ||
+                        user[arrayOfObject][objsOfArray].taskDeadLine ||
                         "not mentioned"
                       }</span> 
                       
@@ -944,7 +959,7 @@ function displayUserTasks() {
                       <p class="taskDeadLine d-flex jc-between">
                       <strong>dead line :</strong> 
                       <span>${
-                        user[arrayOfObject][objsOfArray].taskDeaLine ||
+                        user[arrayOfObject][objsOfArray].taskDeadLine ||
                         "not mentioned"
                       }</span> 
                       
@@ -1014,7 +1029,7 @@ function displayUserTasks() {
                       <p class="taskDeadLine d-flex jc-between">
                       <strong>dead line :</strong> 
                       <span>${
-                        user[arrayOfObject][objsOfArray].taskDeaLine ||
+                        user[arrayOfObject][objsOfArray].taskDeadLine ||
                         "not mentioned"
                       }</span> 
                       
@@ -1160,16 +1175,15 @@ function hideModalAndShowUls() {
 
 //* FUNCTION TO SHOW LOG OUT BTN
 function showLogOutBtn() {
-  let header = document.querySelector(".header")
+  let header = document.querySelector(".header");
   if (getLoggedUser()) {
     logInBtns.classList.replace("d-flex", "d-none");
     logOutBtns.classList.replace("d-none", "d-flex");
-    header.classList.add("peddingRight")
+    header.classList.add("peddingRight");
   } else {
     logInBtns.classList.replace("d-none", "d-flex");
     logOutBtns.classList.replace("d-flex", "d-none");
-    header.classList.remove("peddingRight")
-
+    header.classList.remove("peddingRight");
   }
 }
 

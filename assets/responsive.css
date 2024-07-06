@@ -52,7 +52,7 @@
 
   .modalContent {
     width: 80%;
-    height: 100%;
+    height: fit-content;
   }
 }
 
@@ -133,7 +133,7 @@
     padding: 0rem 1rem;
   }
   .modalContent {
-    height: 100%;
+    height: fit-content;
   }
   .grid-two-cols {
     grid-template-columns: 1fr;
