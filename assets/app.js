@@ -340,7 +340,7 @@ function logOut() {
       }).then(() => {
         localStorage.removeItem("loggedInUserEmail"); // Remove the email of the logged-in user from local storage
         showLogOutBtn();
-        location.href = "../logIn.html";
+        location.href = "../index.html";
       });
     }
   });
@@ -363,24 +363,9 @@ function saveDataToLocalStorageFromModal() {
 
   for (input of inputs) {
     if (input.value == "") {
-      console.log(input);
       inputsAreFilled = false;
     }
   }
-  console.log(
-    "modal condition " +
-      Boolean(inputsAreFilled && flagForUl && !flagToEditTask)
-  );
-  console.log("inputsAreFilled " + inputsAreFilled);
-  console.log("flagForUl " + Boolean(flagForUl));
-  console.log("!flagToEditTask " + !flagToEditTask);
-  console.log("")
-  console.log(
-    "edit condition " + Boolean(inputsAreFilled && !flagForUl && flagToEditTask)
-  );
-  console.log("inputsAreFilled " + inputsAreFilled);
-  console.log("!flagForUl " + Boolean(!flagForUl));
-  console.log("flagToEditTask " + flagToEditTask);
   if (inputsAreFilled && flagForUl && !flagToEditTask) {
     var usersData = getData();
     var currentUserEmail = getLoggedUser();
@@ -438,6 +423,7 @@ function saveDataToLocalStorageFromModal() {
     inputs.forEach((item) => {
       item.value = "";
     });
+    flagForUl = "";
     hideModalAndShowUls();
   } else if (inputsAreFilled && !flagForUl && flagToEditTask) {
     var usersData = getData();
@@ -470,6 +456,7 @@ function saveDataToLocalStorageFromModal() {
     inputs.forEach((item) => {
       item.value = "";
     });
+    flagToEditTask = "";
   } else {
     Swal.fire({
       customClass: {
@@ -733,8 +720,6 @@ function updateTaskPriority(event) {
     }
   }
   setDataCollection(usersData);
-  console.log(event.target.value);
-  console.log(selectedPriorityId);
   showPriorityLevel();
 }
 //* FUNCTION TO CHANGE COLOR BASED ON PRIORITY LEVEL
