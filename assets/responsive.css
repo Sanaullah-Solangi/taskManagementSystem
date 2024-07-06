@@ -51,7 +51,7 @@
   }
 
   .modalContent {
-    width: 80%;
+    width: 90%;
     height: fit-content;
   }
 }
@@ -81,7 +81,7 @@
 
   .modalContent > .modalContentBody :is(input, textarea, select) {
     font-size: 1.6rem;
-    padding: 0.5rem 1rem;
+    padding: 1rem;
   }
 
   .modalContent,
@@ -138,6 +138,7 @@
   }
   .modalContent {
     height: fit-content;
+    padding-bottom: 1rem;
   }
   .grid-two-cols {
     grid-template-columns: 1fr;
