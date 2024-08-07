@@ -11,6 +11,7 @@ let completedList = document.querySelector(".completed");
 let modalContent = document.querySelector(".modalContent");
 let modalHeading = document.querySelector(".modalHeading"); // MODAL HEADING
 let modalStatus = document.querySelector("#modalStatus"); // STATUS INPUT IN MODAL
+
 let taskToDrop;
 var flagForUl = "";
 var flagToEditTask = "";
@@ -19,6 +20,46 @@ var formDataCompleted = true; // FLAG TO CHECK EMPTY INPUT
 //! ==============================================
 //! SIGN-IN AND LOG-IN FUNCTIONALITIES
 //! ==============================================
+
+function getUserData() {
+  let users = JSON.parse(localStorage.getItem("dataCollection")) ?? [];
+  let currentUser = getLoggedUser();
+  let usersTasks = [];
+  for (let user of users) {
+    if (user.email == currentUser) {
+      Object.keys(user).forEach((arrayOfObject) => {
+        if (Array.isArray(user[arrayOfObject])) {
+          usersTasks.push(user[arrayOfObject]);
+        }
+      });
+    }
+  }
+  return usersTasks;
+}
+
+function setUserData(taskArrays) {
+  let users = JSON.parse(localStorage.getItem("dataCollection")) ?? [];
+  let userInd;
+  let currentUser = getLoggedUser();
+  users.forEach((user, ind) => {
+    if (user.email == currentUser) {
+      userInd = ind;
+      Object.keys(user).forEach((arrayOfObject) => {
+        if (Array.isArray(user[arrayOfObject])) {
+          if (arrayOfObject == "todos") {
+            user[arrayOfObject] = taskArrays[0];
+          } else if (arrayOfObject == "inProgress") {
+            user[arrayOfObject] = taskArrays[1];
+          } else if (arrayOfObject == "completed") {
+            user[arrayOfObject] = taskArrays[2];
+          }
+        }
+      });
+      users[userInd] = user;
+    }
+  });
+  localStorage.setItem("dataCollection", JSON.stringify(users));
+}
 
 //*PROGRAME TO CHECK PASSWORD STRENGTH LEVEL IN SIGNUP FORM
 var capitalLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -361,17 +402,14 @@ function saveDataToLocalStorageFromModal() {
   let inputs = document.querySelectorAll(".modalContent input,textarea");
   let inputsAreFilled = true;
 
-  for (input of inputs) {
+  for (let input of inputs) {
     if (input.value == "") {
       inputsAreFilled = false;
     }
   }
   if (inputsAreFilled && flagForUl && !flagToEditTask) {
-    var usersData = getData();
-    var currentUserEmail = getLoggedUser();
-    var userObj; // CURRENT USER
-    var userObjIndex; // CURRENT USER INDEX
-
+    let userTasks = getUserData();
+    let currentUserEmail = getLoggedUser();
     if (!currentUserEmail) {
       Swal.fire({
         customClass: {
@@ -389,14 +427,6 @@ function saveDataToLocalStorageFromModal() {
       hideModalAndShowUls();
       return false;
     }
-
-    usersData.forEach((user, index) => {
-      if (user.email == currentUserEmail) {
-        userObj = user;
-        userObjIndex = index;
-      }
-    });
-
     var todoData = {
       todoTaskId: taskId,
       taskTitle: modalTitle.value,
@@ -408,17 +438,14 @@ function saveDataToLocalStorageFromModal() {
     };
 
     if (flagForUl.classList.contains("toDos")) {
-      userObj.todos.push(todoData);
-      usersData[userObjIndex].userObj;
-      setDataCollection(usersData);
+      userTasks[0].push(todoData);
+      setUserData(userTasks);
     } else if (flagForUl.classList.contains("inProgress")) {
-      userObj.inProgress.push(todoData);
-      usersData[userObjIndex].userObj;
-      setDataCollection(usersData);
+      userTasks[1].push(todoData);
+      setUserData(userTasks);
     } else if (flagForUl.classList.contains("completed")) {
-      userObj.completed.push(todoData);
-      usersData[userObjIndex].userObj;
-      setDataCollection(usersData);
+      userTasks[2].push(todoData);
+      setUserData(userTasks);
     }
     inputs.forEach((item) => {
       item.value = "";
@@ -426,32 +453,20 @@ function saveDataToLocalStorageFromModal() {
     flagForUl = "";
     hideModalAndShowUls();
   } else if (inputsAreFilled && !flagForUl && flagToEditTask) {
-    var usersData = getData();
-    var currentUserEmail = getLoggedUser();
-    for (user of usersData) {
-      if (user.email == currentUserEmail) {
-        for (arrayOfObject in user) {
-          if (Array.isArray(user[arrayOfObject])) {
-            for (objsOfArray in user[arrayOfObject]) {
-              if (
-                user[arrayOfObject][objsOfArray].todoTaskId == flagToEditTask
-              ) {
-                user[arrayOfObject][objsOfArray].taskTitle = modalTitle.value;
-                user[arrayOfObject][objsOfArray].taskDescription =
-                  modalDescription.value;
-                user[arrayOfObject][objsOfArray].taskStatus = modalStatus.value;
-                user[arrayOfObject][objsOfArray].taskDeadLine =
-                  modalDeadLine.value;
-                user[arrayOfObject][objsOfArray].taskPriority =
-                  modalPriority.value;
-                break;
-              }
-            }
-          }
+    let userTasks = getUserData();
+    for (taskArr of userTasks) {
+      for (task of taskArr) {
+        if (task.todoTaskId == flagToEditTask) {
+          task.taskTitle = modalTitle.value;
+          task.taskDescription = modalDescription.value;
+          task.taskStatus = modalStatus.value;
+          task.taskDeadLine = modalDeadLine.value;
+          task.taskPriority = modalPriority.value;
+          break;
         }
       }
+      setUserData(userTasks);
     }
-    setDataCollection(usersData);
     hideModalAndShowUls();
     inputs.forEach((item) => {
       item.value = "";
@@ -486,20 +501,6 @@ function getLoggedUser() {
   var currentUserEmail = localStorage.getItem("loggedInUserEmail");
   return currentUserEmail;
 }
-function extractUserData() {
-  var userData = JSON.parse(localStorage.getItem("dataCollection")) ?? []; // COLLECTION OF USER DATA'S OBJECTS / ARRAY OF OBJECTS
-  let userTodos = [];
-  for (user of userData) {
-    if (user.email == getLoggedUser()) {
-      for (arrayOfObject in user) {
-        if (Array.isArray(user[arrayOfObject])) {
-          userTodos.push(user[arrayOfObject]);
-        }
-      }
-    }
-  }
-  return userTodos;
-}
 
 //* FUNCTION TO SET DATA TO LOCAL STORAGE
 function setDataCollection(usersData) {
@@ -512,61 +513,56 @@ function setLoggedUserEmail(currentUserEmail) {
 
 //* FUNCTION TO DELETE ALL TASKS
 function deleteAllTasks() {
+  let arrOfTaskArrs = getUserData();
   let flagToShowError = 0;
-  let usersData = getData();
-  let currentUserEmail = getLoggedUser();
-  for (user of usersData) {
-    if (user.email == currentUserEmail) {
-      for (arrayOfObject in user) {
-        if (typeof user[arrayOfObject] == "object") {
-          if (user[arrayOfObject].length != 0) {
-            Swal.fire({
-              customClass: {
-                container: "sweatContainer",
-                popup: "sweatPopup",
-                title: "sweatTitle",
-                htmlContainer: "sweatPara",
-                confirmButton: "sweatBtn",
-                cancelButton: "sweatBtn",
-              },
-              title: "Are you sure?",
-              text: "This will delete all your tasks!",
-              icon: "warning",
-              showCancelButton: true,
-              confirmButtonColor: "#3085d6",
-              cancelButtonColor: "#d33",
-              confirmButtonText: "Yes, delete all!",
-            }).then((result) => {
-              if (result.isConfirmed) {
-                Swal.fire({
-                  customClass: {
-                    container: "sweatContainer",
-                    popup: "sweatPopup",
-                    title: "sweatTitle",
-                    htmlContainer: "sweatPara",
-                    confirmButton: "sweatBtn",
-                    cancelButton: "sweatBtn",
-                  },
-                  title: "Deleted!",
-                  text: "All your tasks have been deleted.",
-                  icon: "success",
-                }).then(() => {
-                  user.todos = [];
-                  user.inProgress = [];
-                  user.completed = [];
-                  setDataCollection(usersData);
-                  displayUserTasks();
-                });
-              }
-            });
-          } else {
-            flagToShowError += 1;
-          }
+  for (taskArrs of arrOfTaskArrs) {
+    if (taskArrs.length != 0) {
+      Swal.fire({
+        customClass: {
+          container: "sweatContainer",
+          popup: "sweatPopup",
+          title: "sweatTitle",
+          htmlContainer: "sweatPara",
+          confirmButton: "sweatBtn",
+          cancelButton: "sweatBtn",
+        },
+        title: "Are you sure?",
+        text: "This will delete all your tasks!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete all!",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          Swal.fire({
+            customClass: {
+              container: "sweatContainer",
+              popup: "sweatPopup",
+              title: "sweatTitle",
+              htmlContainer: "sweatPara",
+              confirmButton: "sweatBtn",
+              cancelButton: "sweatBtn",
+            },
+            title: "Deleted!",
+            text: "All your tasks have been deleted.",
+            icon: "success",
+          }).then(() => {
+            // ARR OF TODOS TASKS
+            arrOfTaskArrs[0] = [];
+            // ARR OF IN PROGRESS TSKS
+            arrOfTaskArrs[1] = [];
+            // ARR OF COMPLETED TASK
+            arrOfTaskArrs[2] = [];
+            setUserData(arrOfTaskArrs);
+            displayUserTasks();
+          });
         }
-      }
+      });
+    } else {
+      flagToShowError += 1;
     }
   }
-
   if (flagToShowError == 3) {
     Swal.fire({
       customClass: {
@@ -582,28 +578,23 @@ function deleteAllTasks() {
       icon: "info",
     });
   }
+  setUserData(arrOfTaskArrs);
 }
 
 //* FUNCTION TO DELET TARGETD TASK
 function deleteTask(event) {
   let cancelBtn = event.target;
   let cardId = cancelBtn.closest("li").id;
-  let usersData = getData();
-  let currentUserEmail = getLoggedUser();
-  for (user of usersData) {
-    if (user.email == currentUserEmail) {
-      for (arrayOfObject in user) {
-        if (typeof user[arrayOfObject] == "object") {
-          user[arrayOfObject].forEach((obj, index) => {
-            if (obj.todoTaskId == cardId) {
-              user[arrayOfObject].splice(index, index + 1);
-            }
-          });
-        }
+  let arrOfTaskArrs = getUserData();
+
+  for (taskArr of arrOfTaskArrs) {
+    taskArr.forEach((obj, ind) => {
+      if (obj.todoTaskId == cardId) {
+        taskArr.splice(ind, ind + 1);
       }
-    }
+    });
   }
-  setDataCollection(usersData);
+  setUserData(arrOfTaskArrs);
   displayUserTasks();
 }
 
@@ -614,23 +605,15 @@ function deleteTask(event) {
 //* Function to Handle Drag Start Event
 function dragStart(event) {
   let cardId = event.target.id;
-  let usersData = getData();
-  let currentUserEmail = getLoggedUser();
-  for (user of usersData) {
-    if (user.email == currentUserEmail) {
-      for (arrayOfObject in user) {
-        if (typeof user[arrayOfObject] == "object") {
-          user[arrayOfObject].forEach((objs, index) => {
-            if (objs.todoTaskId == cardId) {
-              taskToDrop = user[arrayOfObject].splice(index, index + 1);
-            }
-          });
-        }
+  let userTasks = getUserData();
+  for (taskArr of userTasks) {
+    taskArr.forEach((obj, ind) => {
+      if (obj.todoTaskId == cardId) {
+        taskToDrop = taskArr.splice(ind, ind + 1);
       }
-      break;
-    }
+    });
   }
-  setDataCollection(usersData);
+  setUserData(userTasks);
   event.target.style.boxShadow = "0 0 10px rgba(0,0,0,0.3)";
   event.target.style.opacity = "0";
   event.target.style.border = "2px solid var(--mainColor1)";
@@ -659,20 +642,17 @@ function drop(event) {
   } else {
     targetedUl = target;
   }
-  let usersData = getData();
-  let currentUserEmail = getLoggedUser();
-  for (user of usersData) {
-    if (user.email == currentUserEmail) {
-      if (targetedUl.classList.contains("toDos")) {
-        user.todos.push(taskToDrop[0]);
-      } else if (targetedUl.classList.contains("inProgress")) {
-        user.inProgress.push(taskToDrop[0]);
-      } else if (targetedUl.classList.contains("completed")) {
-        user.completed.push(taskToDrop[0]);
-      }
-      setDataCollection(usersData);
-      break;
+  let userTasks = getUserData();
+  for (taskArr of userTasks) {
+    if (targetedUl.classList.contains("toDos")) {
+      userTasks[0].push(taskToDrop[0]);
+    } else if (targetedUl.classList.contains("inProgress")) {
+      userTasks[1].push(taskToDrop[0]);
+    } else if (targetedUl.classList.contains("completed")) {
+      userTasks[2].push(taskToDrop[0]);
     }
+    setUserData(userTasks);
+    break;
   }
 
   displayUserTasks();
@@ -704,22 +684,15 @@ function updateStatus() {
 function updateTaskPriority(event) {
   let selectedPriorityId = event.target.id;
   let selectedPriority = event.target.value;
-  let usersData = getData();
-  let currentUserEmail = getLoggedUser();
-  for (user of usersData) {
-    if (user.email == currentUserEmail) {
-      for (arrayOfObject in user) {
-        if (typeof user[arrayOfObject] == "object") {
-          user[arrayOfObject].forEach((obj, index) => {
-            if (obj.taskPriorityId == selectedPriorityId) {
-              obj.taskPriority = selectedPriority;
-            }
-          });
-        }
+  let userTasks = getUserData();
+  for (taskArr of userTasks) {
+    for (task of taskArr) {
+      if (task.taskPriorityId == selectedPriorityId) {
+        task.taskPriority = selectedPriority;
       }
     }
   }
-  setDataCollection(usersData);
+  setUserData(userTasks);
   showPriorityLevel();
 }
 //* FUNCTION TO CHANGE COLOR BASED ON PRIORITY LEVEL
@@ -760,305 +733,213 @@ function copyTask(event) {
     taskPriority: taskPriority,
     taskPriorityId: `ID${taskId}`,
   };
-  let usersData = getData();
-  let currentUserEmail = getLoggedUser();
-  for (user of usersData) {
-    if (user.email == currentUserEmail) {
-      for (arrayOfObject in user) {
-        if (Array.isArray(user[arrayOfObject])) {
-          if (taskUl.classList.contains("toDos")) {
-            user.todos.push(duplicateData);
-            break;
-          } else if (taskUl.classList.contains("inProgress")) {
-            user.inProgress.push(duplicateData);
-            break;
-          } else if (taskUl.classList.contains("completed")) {
-            user.completed.push(duplicateData);
-            break;
-          }
-        }
-      }
+  let userTasks = getUserData();
+  for (taskArr of userTasks) {
+    if (taskUl.classList.contains("toDos")) {
+      userTasks[0].push(duplicateData);
+      break;
+    } else if (taskUl.classList.contains("inProgress")) {
+      userTasks[1].push(duplicateData);
+      break;
+    } else if (taskUl.classList.contains("completed")) {
+      userTasks[2].push(duplicateData);
+      break;
     }
   }
-  setDataCollection(usersData);
+  setUserData(userTasks);
   displayUserTasks();
 }
 
 //* FUNCTION TO ADJUST THE HEIGHT AND WIDTH OF EMPTY UL ELEMENTS
 function resizeUl() {
   // RESIZING UL
-  let usersData = getData();
-  let currentUserEmail = getLoggedUser();
-  for (user of usersData) {
-    if (user.email == currentUserEmail) {
-      for (arrayOfObject in user) {
-        if (typeof user[arrayOfObject] == "object") {
-          //todo====== todos ======
-          if (arrayOfObject == "todos" && user.todos.length == 0) {
-            toDosList.classList.add("heightWidth");
-            toDosList.innerHTML = "<p class='d-flex'>add new task</p>";
-          } else if (arrayOfObject == "todos" && user.todos.length !== 0) {
-            toDosList.classList.remove("heightWidth");
-            toDosList.innerHTML = "<p class='d-none'>add new task</p>";
-          }
-
-          //todo====== in progress ======
-          if (arrayOfObject == "inProgress" && user.inProgress.length == 0) {
-            inProgressList.classList.add("heightWidth");
-            inProgressList.innerHTML = "<p class='d-flex'>add new task</p>";
-          } else if (
-            arrayOfObject == "inProgress" &&
-            user.inProgress.length !== 0
-          ) {
-            inProgressList.classList.remove("heightWidth");
-            inProgressList.innerHTML = "<p class='d-none'>add new task</p>";
-          }
-
-          //todo====== completed ======
-          if (arrayOfObject == "completed" && user.completed.length == 0) {
-            completedList.classList.add("heightWidth");
-            completedList.innerHTML = "<p class='d-flex'>add new task</p>";
-          } else {
-            completedList.classList.remove("heightWidth");
-            completedList.innerHTML = "<p class='d-none'>add new task</p>";
-          }
-        }
-      }
+  let userTasks = getUserData();
+  userTasks.forEach((taskArr, index) => {
+    //todo====== todos ======
+    if (index == 0 && taskArr.length == 0) {
+      toDosList.classList.add("heightWidth");
+      toDosList.innerHTML = "<p class='d-flex'>add new task</p>";
+    } else if (index == 0 && taskArr.length !== 0) {
+      toDosList.classList.remove("heightWidth");
+      toDosList.innerHTML = "<p class='d-none'>add new task</p>";
     }
-  }
+    //todo====== in progress ======
+    if (index == 1 && taskArr.length == 0) {
+      inProgressList.classList.add("heightWidth");
+      inProgressList.innerHTML = "<p class='d-flex'>add new task</p>";
+    } else if (index == 1 && taskArr.length !== 0) {
+      inProgressList.classList.remove("heightWidth");
+      inProgressList.innerHTML = "<p class='d-none'>add new task</p>";
+    }
+
+    //todo====== completed ======
+    if (index == 2 && taskArr.length == 0) {
+      completedList.classList.add("heightWidth");
+      completedList.innerHTML = "<p class='d-flex'>add new task</p>";
+    } else {
+      completedList.classList.remove("heightWidth");
+      completedList.innerHTML = "<p class='d-none'>add new task</p>";
+    }
+  });
 }
 resizeUl();
 //!
+
+//* HELPER FUNCTION TO CREATE A TASK ITEM
+window.createTaskItem = (task) => {
+  return ` <li
+                id="${task.todoTaskId}"
+                class="task w-100 transition-1ms p-relative"
+                draggable="true"
+                ondragstart="dragStart(event)"
+                ondragend="dragEnd(event)"
+                >
+                <!--?=== CANCEL BTN ===-->
+                    <div
+                      class="taskBtns p-absolute d-flex jc-center al-center pointer"
+                    >
+                    <i class="fa-regular fa-pen-to-square edit transition-1ms" onclick="showModalAndHideUls(event)"></i>
+                    <i class="fa-regular fa-copy transition-1ms" onclick="copyTask(event)"></i>
+                    <i class="fa-solid fa-xmark transition-1ms cancelBtn" onclick="deleteTask(event)"></i>
+                  </div>
+                    <p class="taskTitle">${
+                      task.taskTitle || "not mentioned"
+                    } </p>
+                    <p class="taskDescription">
+                    ${task.taskDescription || "not mentioned"}
+                    </p>
+                  <p class="taskDeadLine d-flex jc-between">
+                      <strong>dead line :</strong> 
+                      <span>${task.taskDeadLine || "not mentioned"}</span>      
+                  </p>
+                    <p class="taskRemainingTime d-flex jc-between">
+                <strong>remaining Time :</strong>
+                <span class="remainingTime d-flex"
+                  ><span
+                    class="remainingMonths d-flex dir-col al-center jc-center"
+                    ><span>01</span>mons
+                  </span>
+                  <span class="remainingDays d-flex dir-col al-center jc-center"
+                    ><span>30</span>days
+                  </span>
+                  <span
+                    class="remainingHours d-flex dir-col al-center jc-center"
+                    ><span>120</span>hors
+                  </span>
+                  <span
+                    class="remainingMinutes d-flex dir-col al-center jc-center"
+                    ><span>1800</span>mins
+                  </span>
+                  <span
+                    class="remainingSeconds d-flex dir-col al-center jc-center"
+                    ><span>1800</span>secs
+                  </span>
+                </span>
+              </p>
+                  <p class="taskStatus d-flex jc-between">
+                    <strong>status :</strong><span class="status">${
+                      task.taskStatus || "not mentioned"
+                    } </span>
+                  </p>
+
+                <p class="taskPriority d-flex jc-between al-center">
+                <strong>priority :</strong>
+                <select
+                onchange="updateTaskPriority(event)"
+                class="pointer"
+                name="priority"
+                id="${task.taskPriorityId}"
+              >
+                <option value="heigh" ${
+                  task.taskPriority == "heigh" ? "selected" : ""
+                }>heigh</option>
+                <option value="medium"${
+                  task.taskPriority == "medium" ? "selected" : ""
+                }>medium</option>
+                <option value="low"${
+                  task.taskPriority == "low" ? "selected" : ""
+                }>low</option>
+                </select>
+              </p>
+            </li>`;
+};
+
 //* FUNCTION TO RETRIEVE DATA FROM LOCAL STORAGE, CHECK THE LOGGED-IN USER'S ID, AND DISPLAY THEIR DATA
 function displayUserTasks() {
-  let UsersData = getData();
-  let CurrentUserEmail = getLoggedUser();
+  let userTasks = getUserData();
+  let usersData = getData();
+  let currentUserEmail = getLoggedUser();
   resizeUl();
-
-  for (user of UsersData) {
-    for (arrayOfObject in user) {
-      if (user.email == CurrentUserEmail) {
-        navLogo.innerHTML = `<i class="fa-solid fa-user"></i>&nbsp;&nbsp;Hi, ${user.userName}`;
-        if (typeof user[arrayOfObject] == "object") {
-          if (arrayOfObject == "todos") {
-            for (objsOfArray in user[arrayOfObject]) {
-              toDosList.innerHTML += ` <li
-                id="${user[arrayOfObject][objsOfArray].todoTaskId}"
-                class="task w-100 transition-1ms p-relative"
-                draggable="true"
-                ondragstart="dragStart(event)"
-                ondragend="dragEnd(event)"
-                >
-                <!--?=== CANCEL BTN ===-->
-                    <div
-                      class="taskBtns p-absolute d-flex jc-center al-center pointer"
-                    >
-                    <i class="fa-regular fa-pen-to-square edit transition-1ms" onclick="showModalAndHideUls(event)"></i>
-                    <i class="fa-regular fa-copy transition-1ms" onclick="copyTask(event)"></i>
-                    <i class="fa-solid fa-xmark transition-1ms cancelBtn" onclick="deleteTask(event)"></i>
-                  </div>
-                    <p class="taskTitle">${
-                      user[arrayOfObject][objsOfArray].taskTitle ||
-                      "not mentioned"
-                    } </p>
-                    <p class="taskDescription">
-                    ${
-                      user[arrayOfObject][objsOfArray].taskDescription ||
-                      "not mentioned"
-                    }
-                    </p>
-                      <p class="taskDeadLine d-flex jc-between">
-                      <strong>dead line :</strong> 
-                      <span>${
-                        user[arrayOfObject][objsOfArray].taskDeadLine ||
-                        "not mentioned"
-                      }</span> 
-                      
-                  </p>
-                  <p class="taskStatus d-flex jc-between">
-                    <strong>status :</strong><span class="status">${
-                      user[arrayOfObject][objsOfArray].taskStatus ||
-                      "not mentioned"
-                    } </span>
-                  </p>
-
-                <p class="taskPriority d-flex jc-between al-center">
-                <strong>priority :</strong>
-                <select
-                onchange="updateTaskPriority(event)"
-                class="pointer"
-                name="priority"
-                id="${user[arrayOfObject][objsOfArray].taskPriorityId}"
-              >
-                <option value="heigh" ${
-                  user[arrayOfObject][objsOfArray].taskPriority == "heigh"
-                    ? "selected"
-                    : ""
-                }>heigh</option>
-                <option value="medium"${
-                  user[arrayOfObject][objsOfArray].taskPriority == "medium"
-                    ? "selected"
-                    : ""
-                }>medium</option>
-                <option value="low"${
-                  user[arrayOfObject][objsOfArray].taskPriority == "low"
-                    ? "selected"
-                    : ""
-                }>low</option>
-                </select>
-              </p>
-            </li>`;
-            }
-          }
-          if (arrayOfObject == "inProgress") {
-            for (objsOfArray in user[arrayOfObject]) {
-              inProgressList.innerHTML += ` <li
-                id="${user[arrayOfObject][objsOfArray].todoTaskId}"
-                class="task w-100 transition-1ms p-relative"
-                draggable="true"
-                ondragstart="dragStart(event)"
-                ondragend="dragEnd(event)"
-                >
-                <!--?=== CANCEL BTN ===-->
-                    <div
-                      class="taskBtns p-absolute d-flex jc-center al-center pointer"
-                    >
-                    <i class="fa-regular fa-pen-to-square edit transition-1ms" onclick="showModalAndHideUls(event)"></i>
-                    <i class="fa-regular fa-copy transition-1ms" onclick="copyTask(event)"></i>
-                    <i class="fa-solid fa-xmark transition-1ms cancelBtn" onclick="deleteTask(event)"></i>
-                  </div>
-                    <p class="taskTitle">${
-                      user[arrayOfObject][objsOfArray].taskTitle ||
-                      "not mentioned"
-                    } </p>
-                    <p class="taskDescription">
-                    ${
-                      user[arrayOfObject][objsOfArray].taskDescription ||
-                      "not mentioned"
-                    }
-                    </p>
-                      <p class="taskDeadLine d-flex jc-between">
-                      <strong>dead line :</strong> 
-                      <span>${
-                        user[arrayOfObject][objsOfArray].taskDeadLine ||
-                        "not mentioned"
-                      }</span> 
-                      
-                  </p>
-                  <p class="taskStatus d-flex jc-between">
-                    <strong>status :</strong><span class="status">${
-                      user[arrayOfObject][objsOfArray].taskStatus ||
-                      "not mentioned"
-                    } </span>
-                  </p>
-
-                <p class="taskPriority d-flex jc-between al-center">
-                <strong>priority :</strong>
-                <select
-                onchange="updateTaskPriority(event)"
-                class="pointer"
-                name="priority"
-                id="${user[arrayOfObject][objsOfArray].taskPriorityId}"
-              >
-                <option value="heigh" ${
-                  user[arrayOfObject][objsOfArray].taskPriority == "heigh"
-                    ? "selected"
-                    : ""
-                }>heigh</option>
-                <option value="medium"${
-                  user[arrayOfObject][objsOfArray].taskPriority == "medium"
-                    ? "selected"
-                    : ""
-                }>medium</option>
-                <option value="low"${
-                  user[arrayOfObject][objsOfArray].taskPriority == "low"
-                    ? "selected"
-                    : ""
-                }>low</option>
-                </select>
-              </p>
-            </li>`;
-            }
-          }
-          if (arrayOfObject == "completed") {
-            for (objsOfArray in user[arrayOfObject]) {
-              completedList.innerHTML += ` <li
-                id="${user[arrayOfObject][objsOfArray].todoTaskId}"
-                class="task w-100 transition-1ms p-relative"
-                draggable="true"
-                ondragstart="dragStart(event)"
-                ondragend="dragEnd(event)"
-                >
-                <!--?=== CANCEL BTN ===-->
-                    <div
-                      class="taskBtns p-absolute d-flex jc-center al-center pointer"
-                    >
-                    <i class="fa-regular fa-pen-to-square edit transition-1ms" onclick="showModalAndHideUls(event)"></i>
-                    <i class="fa-regular fa-copy transition-1ms" onclick="copyTask(event)"></i>
-                    <i class="fa-solid fa-xmark transition-1ms cancelBtn" onclick="deleteTask(event)"></i>
-                  </div>
-                    <p class="taskTitle">${
-                      user[arrayOfObject][objsOfArray].taskTitle ||
-                      "not mentioned"
-                    } </p>
-                    <p class="taskDescription">
-                    ${
-                      user[arrayOfObject][objsOfArray].taskDescription ||
-                      "not mentioned"
-                    }
-                    </p>
-                      <p class="taskDeadLine d-flex jc-between">
-                      <strong>dead line :</strong> 
-                      <span>${
-                        user[arrayOfObject][objsOfArray].taskDeadLine ||
-                        "not mentioned"
-                      }</span> 
-                      
-                  </p>
-                  <p class="taskStatus d-flex jc-between">
-                    <strong>status :</strong><span class="status">${
-                      user[arrayOfObject][objsOfArray].taskStatus ||
-                      "not mentioned"
-                    } </span>
-                  </p>
-
-                <p class="taskPriority d-flex jc-between al-center">
-                <strong>priority :</strong>
-                <select
-                onchange="updateTaskPriority(event)"
-                class="pointer"
-                name="priority"
-                id="${user[arrayOfObject][objsOfArray].taskPriorityId}"
-              >
-                <option value="heigh" ${
-                  user[arrayOfObject][objsOfArray].taskPriority == "heigh"
-                    ? "selected"
-                    : ""
-                }>heigh</option>
-                <option value="medium"${
-                  user[arrayOfObject][objsOfArray].taskPriority == "medium"
-                    ? "selected"
-                    : ""
-                }>medium</option>
-                <option value="low"${
-                  user[arrayOfObject][objsOfArray].taskPriority == "low"
-                    ? "selected"
-                    : ""
-                }>low</option>
-                </select>
-              </p>
-            </li>`;
-            }
-          }
-        }
+  userTasks.forEach((taskArr, index) => {
+    taskArr.forEach((objOfTask) => {
+      let taskData = objOfTask;
+      if (index == 0) {
+        toDosList.innerHTML += createTaskItem(taskData);
+      } else if (index == 1) {
+        inProgressList.innerHTML += createTaskItem(taskData);
+      } else if (index == 2) {
+        completedList.innerHTML += createTaskItem(taskData);
       }
-    }
-  }
+    });
+  });
   updateStatus();
   showPriorityLevel();
 }
 
 displayUserTasks();
+
+//! FUNCTION TO CALCULATE AND DISPLAY THE REMAINING TIME UNTIL THE TASK DEADLINE
+window.displayRemainingTime = (taskId, ...remainingTime) => {
+  let tasks = document.querySelectorAll(".task");
+  tasks.forEach((task) => {
+    if (task.id == taskId) {
+      let remainingMonths = task.querySelector(".remainingMonths > span");
+      let remainingDays = task.querySelector(".remainingDays > span");
+      let remainingHours = task.querySelector(".remainingHours > span");
+      let remainingMins = task.querySelector(".remainingMinutes > span");
+      let remainingSecs = task.querySelector(".remainingSeconds > span");
+      remainingMonths.innerHTML = remainingTime[0];
+      remainingDays.innerHTML = remainingTime[1];
+      remainingHours.innerHTML = remainingTime[2];
+      remainingMins.innerHTML = remainingTime[3];
+      remainingSecs.innerHTML = remainingTime[4];
+    }
+  });
+};
+
+function calculateRemainingTime() {
+  let userTasks = getUserData();
+  userTasks.forEach((taskArr) => {
+    taskArr.forEach((task) => {
+      let deadLine = task.taskDeadLine;
+      let convertedDeadLine = new Date(deadLine);
+      let currentDate = new Date();
+      if (
+        currentDate.getTime() == convertedDeadLine.getTime() ||
+        currentDate.getTime() > convertedDeadLine.getTime()
+      ) {
+        let remainingTime = [0, 0, 0, 0, 0];
+        displayRemainingTime(task.todoTaskId, ...remainingTime);
+      } else {
+        let diff = convertedDeadLine - currentDate;
+        let months = Math.floor(diff / (1000 * 60 * 60 * 24 * 30));
+        let days = Math.floor(
+          (diff % (1000 * 60 * 60 * 24 * 30)) / (1000 * 60 * 60 * 24)
+        );
+        let hours = Math.floor(
+          (diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+        );
+        let minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        let seconds = Math.floor((diff % (1000 * 60)) / 1000);
+        let remainingTime = [months, days, hours, minutes, seconds];
+        displayRemainingTime(task.todoTaskId, ...remainingTime);
+      }
+    });
+  });
+}
+setInterval(() => {
+  calculateRemainingTime();
+}, 1000);
 
 //! ==============================================
 //! MODAL FUNCTIONALITY

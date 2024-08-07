@@ -28,7 +28,7 @@
   }
 }
 
-@media (width <=960px) {
+@media (width <=970px) {
   /*?=== ALL TODOS CONTAINER ===*/
   .hero-container > .todoProjectsContainer {
     flex: 1 1 45%;
