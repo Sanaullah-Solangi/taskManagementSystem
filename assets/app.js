@@ -21,46 +21,6 @@ var formDataCompleted = true; // FLAG TO CHECK EMPTY INPUT
 //! SIGN-IN AND LOG-IN FUNCTIONALITIES
 //! ==============================================
 
-function getUserData() {
-  let users = JSON.parse(localStorage.getItem("dataCollection")) ?? [];
-  let currentUser = getLoggedUser();
-  let usersTasks = [];
-  for (let user of users) {
-    if (user.email == currentUser) {
-      Object.keys(user).forEach((arrayOfObject) => {
-        if (Array.isArray(user[arrayOfObject])) {
-          usersTasks.push(user[arrayOfObject]);
-        }
-      });
-    }
-  }
-  return usersTasks;
-}
-
-function setUserData(taskArrays) {
-  let users = JSON.parse(localStorage.getItem("dataCollection")) ?? [];
-  let userInd;
-  let currentUser = getLoggedUser();
-  users.forEach((user, ind) => {
-    if (user.email == currentUser) {
-      userInd = ind;
-      Object.keys(user).forEach((arrayOfObject) => {
-        if (Array.isArray(user[arrayOfObject])) {
-          if (arrayOfObject == "todos") {
-            user[arrayOfObject] = taskArrays[0];
-          } else if (arrayOfObject == "inProgress") {
-            user[arrayOfObject] = taskArrays[1];
-          } else if (arrayOfObject == "completed") {
-            user[arrayOfObject] = taskArrays[2];
-          }
-        }
-      });
-      users[userInd] = user;
-    }
-  });
-  localStorage.setItem("dataCollection", JSON.stringify(users));
-}
-
 //*PROGRAME TO CHECK PASSWORD STRENGTH LEVEL IN SIGNUP FORM
 var capitalLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 var smallLetters = "abcdefghijklmnopqrstuvwxyz";
@@ -391,6 +351,48 @@ function logOut() {
 //! LOCAL STORAGE MANAGEMENT
 //! ==============================================
 
+//* FUNCTION TO GET ALL USERS DATA FROM LOCAL STORAGE AND FILTER CURRENT USER
+function getUserData() {
+  let users = JSON.parse(localStorage.getItem("dataCollection")) ?? [];
+  let currentUser = getLoggedUser();
+  let usersTasks = [];
+  for (let user of users) {
+    if (user.email == currentUser) {
+      Object.keys(user).forEach((arrayOfObject) => {
+        if (Array.isArray(user[arrayOfObject])) {
+          usersTasks.push(user[arrayOfObject]);
+        }
+      });
+    }
+  }
+  return usersTasks;
+}
+
+//* FUNCTION TO SET CURRENT USER DATA IN LOCAL STORAGE
+function setUserData(taskArrays) {
+  let users = JSON.parse(localStorage.getItem("dataCollection")) ?? [];
+  let userInd;
+  let currentUser = getLoggedUser();
+  users.forEach((user, ind) => {
+    if (user.email == currentUser) {
+      userInd = ind;
+      Object.keys(user).forEach((arrayOfObject) => {
+        if (Array.isArray(user[arrayOfObject])) {
+          if (arrayOfObject == "todos") {
+            user[arrayOfObject] = taskArrays[0];
+          } else if (arrayOfObject == "inProgress") {
+            user[arrayOfObject] = taskArrays[1];
+          } else if (arrayOfObject == "completed") {
+            user[arrayOfObject] = taskArrays[2];
+          }
+        }
+      });
+      users[userInd] = user;
+    }
+  });
+  localStorage.setItem("dataCollection", JSON.stringify(users));
+}
+
 //* FUNCTION TO COLLECT DATA FROM MODAL AND SAVE TO LOCAL STORAGE
 function saveDataToLocalStorageFromModal() {
   let modalTitle = document.querySelector("#modalTitle");
@@ -433,6 +435,8 @@ function saveDataToLocalStorageFromModal() {
       taskDescription: modalDescription.value,
       taskDeadLine: modalDeadLine.value,
       taskStatus: modalStatus.value,
+      taskStatusForInput: modalStatus.value,
+      taskStatusId: `ST${taskId}`,
       taskPriority: modalPriority.value,
       taskPriorityId: `ID${taskId}`,
     };
@@ -490,21 +494,10 @@ function saveDataToLocalStorageFromModal() {
   }
 }
 
-//* FUNCTION TO RETRIEVE DATA FROM LOCAL STORAGE FOR GLOBAL USE
-function getData() {
-  var userDataCollection =
-    JSON.parse(localStorage.getItem("dataCollection")) ?? []; // COLLECTION OF USER DATA'S OBJECTS / ARRAY OF OBJECTS
-  return userDataCollection;
-}
-
+//* FUNCTION TO GET CURRENT USER'S EMAIL IN LOCAL STORAGE
 function getLoggedUser() {
   var currentUserEmail = localStorage.getItem("loggedInUserEmail");
   return currentUserEmail;
-}
-
-//* FUNCTION TO SET DATA TO LOCAL STORAGE
-function setDataCollection(usersData) {
-  localStorage.setItem("dataCollection", JSON.stringify(usersData));
 }
 
 function setLoggedUserEmail(currentUserEmail) {
@@ -604,6 +597,7 @@ function deleteTask(event) {
 
 //* Function to Handle Drag Start Event
 function dragStart(event) {
+  let taskCardLists = document.querySelectorAll(".taskCardList");
   let cardId = event.target.id;
   let userTasks = getUserData();
   for (taskArr of userTasks) {
@@ -651,7 +645,9 @@ function drop(event) {
     } else if (targetedUl.classList.contains("completed")) {
       userTasks[2].push(taskToDrop[0]);
     }
+    let statusId = taskToDrop[0].taskStatusId;
     setUserData(userTasks);
+    updateStatus(targetedUl, statusId);
     break;
   }
 
@@ -663,22 +659,88 @@ function drop(event) {
 //! ==============================================
 
 //* FUNCTION TO UPDATE THE STATUS OF A TASK BASED ON ITS UL LOCATION
-function updateStatus() {
-  //UPDATING STATUS
-  let statusCards = document.querySelectorAll(".taskStatus");
-  for (let i = 0; i < statusCards.length; i++) {
-    if (statusCards[i].closest(".inProgress")) {
-      let status = statusCards[i].querySelector(".status");
-      status.innerHTML = "in progress";
-    } else if (statusCards[i].closest(".completed")) {
-      let status = statusCards[i].querySelector(".status");
-      status.innerHTML = "completed";
-    } else if (statusCards[i].closest(".toDos")) {
-      let status = statusCards[i].querySelector(".status");
-      status.innerHTML = "todo";
+function updateStatus(targetedUl, statusId) {
+  let usersTasks = getUserData();
+  console.log(targetedUl);
+  if (targetedUl) {
+    usersTasks.forEach((taskArr) => {
+      taskArr.forEach((task) => {
+        if (
+          task.taskStatusId == statusId &&
+          targetedUl.classList.contains("toDos")
+        ) {
+          task.taskStatus = "todos";
+        } else if (
+          task.taskStatusId == statusId &&
+          targetedUl.classList.contains("inProgress")
+        ) {
+          task.taskStatus = "inProgress";
+        } else if (
+          task.taskStatusId == statusId &&
+          targetedUl.classList.contains("completed")
+        ) {
+          task.taskStatus = "completed";
+        }
+      });
+    });
+  }
+  setUserData(usersTasks);
+}
+
+//* FUNCTION TO UPDATE TASK Status
+function updateTaskStatusByInput(event) {
+  let selectedStatusId = event.target.id;
+  let selectedStatus = event.target.value;
+  let userTasks = getUserData();
+  for (taskArr of userTasks) {
+    for (task of taskArr) {
+      if (task.taskStatusId == selectedStatusId) {
+        task.taskStatusForInput = selectedStatus;
+      }
     }
   }
+  setUserData(userTasks);
+  showStatusLevel();
+  changeUlBasedOnTaskStatus(selectedStatusId, selectedStatus);
 }
+
+function changeUlBasedOnTaskStatus(statusId, status) {
+  let userTasks = getUserData();
+  userTasks.forEach((taskArr) => {
+    taskArr.forEach((task, ind) => {
+      if (task.taskStatusId == statusId && status == "todo") {
+        let temp = taskArr.splice(ind, ind + 1);
+        userTasks[0].push(temp[0]);
+      } else if (task.taskStatusId == statusId && status == "in progress") {
+        let temp = taskArr.splice(ind, ind + 1);
+        userTasks[1].push(temp[0]);
+      } else if (task.taskStatusId == statusId && status == "completed") {
+        let temp = taskArr.splice(ind, ind + 1);
+        userTasks[2].push(temp[0]);
+      }
+    });
+  });
+  setUserData(userTasks);
+  displayUserTasks();
+}
+
+function showStatusLevel() {
+  let statusLevel = document.querySelectorAll(".inputTaskStatus > select");
+  for (let selectedStatus of statusLevel) {
+    if (selectedStatus.value == "todo") {
+      selectedStatus.classList.remove("green", "blue");
+      selectedStatus.classList.add("red");
+    } else if (selectedStatus.value == "in progress") {
+      selectedStatus.classList.remove("red", "green");
+      selectedStatus.classList.add("blue");
+    } else if (selectedStatus.value == "completed") {
+      selectedStatus.classList.remove("blue", "red");
+      selectedStatus.classList.add("green");
+    }
+    selectedStatus.blur();
+  }
+}
+showStatusLevel();
 
 //* FUNCTION TO UPDATE TASK PRIORITY
 function updateTaskPriority(event) {
@@ -720,6 +782,9 @@ function copyTask(event) {
   let taskTitle = taskUl.querySelector(".taskTitle").innerHTML;
   let taskDescription = taskUl.querySelector(".taskDescription").innerHTML;
   let taskStatus = taskUl.querySelector(".taskStatus > .status").innerHTML;
+  let taskStatusByInput = taskUl.querySelector(
+    ".inputTaskStatus > select"
+  ).value;
   let taskPriority = taskUl.querySelector(".taskPriority > select").value;
   let taskDeadLine = taskUl.querySelector(".taskDeadLine > span").innerHTML;
   let taskId = Math.round(Math.random() * 100000);
@@ -730,6 +795,8 @@ function copyTask(event) {
     taskDescription: taskDescription.trim(),
     taskDeadLine: taskDeadLine.trim(),
     taskStatus: taskStatus.trim(),
+    taskStatusForInput: taskStatusByInput.trim(),
+    taskStatusId: `ST${taskId}`,
     taskPriority: taskPriority,
     taskPriorityId: `ID${taskId}`,
   };
@@ -783,7 +850,6 @@ function resizeUl() {
   });
 }
 resizeUl();
-//!
 
 //* HELPER FUNCTION TO CREATE A TASK ITEM
 window.createTaskItem = (task) => {
@@ -817,22 +883,22 @@ window.createTaskItem = (task) => {
                 <span class="remainingTime d-flex"
                   ><span
                     class="remainingMonths d-flex dir-col al-center jc-center"
-                    ><span>01</span>mons
+                    ><span>0</span>mons
                   </span>
                   <span class="remainingDays d-flex dir-col al-center jc-center"
-                    ><span>30</span>days
+                    ><span>0</span>days
                   </span>
                   <span
                     class="remainingHours d-flex dir-col al-center jc-center"
-                    ><span>120</span>hors
+                    ><span>0</span>hors
                   </span>
                   <span
                     class="remainingMinutes d-flex dir-col al-center jc-center"
-                    ><span>1800</span>mins
+                    ><span>0</span>mins
                   </span>
                   <span
                     class="remainingSeconds d-flex dir-col al-center jc-center"
-                    ><span>1800</span>secs
+                    ><span>0</span>secs
                   </span>
                 </span>
               </p>
@@ -841,6 +907,26 @@ window.createTaskItem = (task) => {
                       task.taskStatus || "not mentioned"
                     } </span>
                   </p>
+
+              <p class="inputTaskStatus d-none jc-between al-center">
+                <strong>status :</strong>
+                <select
+                  onchange="updateTaskStatusByInput(event)"
+                  class="pointer"
+                  name="priority"
+                  id="${task.taskStatusId}"
+                >
+                  <option value="todo" ${
+                    task.taskStatusForInput == "todo" ? "selected" : ""
+                  }>todo</option>
+                  <option value="in progress" ${
+                    task.taskStatusForInput == "in progress" ? "selected" : ""
+                  } >in progress</option>
+                  <option value="completed" ${
+                    task.taskStatusForInput == "completed" ? "selected" : ""
+                  }>completed</option>
+                </select>
+              </p>
 
                 <p class="taskPriority d-flex jc-between al-center">
                 <strong>priority :</strong>
@@ -867,8 +953,6 @@ window.createTaskItem = (task) => {
 //* FUNCTION TO RETRIEVE DATA FROM LOCAL STORAGE, CHECK THE LOGGED-IN USER'S ID, AND DISPLAY THEIR DATA
 function displayUserTasks() {
   let userTasks = getUserData();
-  let usersData = getData();
-  let currentUserEmail = getLoggedUser();
   resizeUl();
   userTasks.forEach((taskArr, index) => {
     taskArr.forEach((objOfTask) => {
@@ -884,6 +968,7 @@ function displayUserTasks() {
   });
   updateStatus();
   showPriorityLevel();
+  showStatusLevel();
 }
 
 displayUserTasks();

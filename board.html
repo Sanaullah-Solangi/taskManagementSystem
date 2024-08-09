@@ -76,7 +76,7 @@
             ondrop="drop(event)"
             class="taskCardList w-100 d-flex dir-col al-center toDos pointer"
           >
-            <li
+            <!-- <li
               id="${user[arrayOfObject][objsOfArray].todoTaskId}"
               class="task w-100 transition-1ms p-relative"
               draggable="true"
@@ -134,6 +134,19 @@
                 <strong>status :</strong><span class="status">todo </span>
               </p>
 
+              <p class="inputTaskStatus d-flex jc-between al-center">
+                <strong>status :</strong>
+                <select
+                  onchange="updateTaskStatusByInput(event)"
+                  class="pointer"
+                  name="priority"
+                  id="priority"
+                >
+                  <option value="todo">todo</option>
+                  <option value="inProgress">in progress</option>
+                  <option value="completed">completed</option>
+                </select>
+              </p>
               <p class="taskPriority d-flex jc-between al-center">
                 <strong>priority :</strong>
                 <select
@@ -147,7 +160,7 @@
                   <option value="low">low</option>
                 </select>
               </p>
-            </li>
+            </li> -->
           </ul>
 
           <!--?=== ADD TODO BTN ===-->
@@ -314,6 +327,11 @@
     </div>
     <!--!========== JAVASCRIPT SECTION ==========-->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script
+      src="https://unpkg.com/@dotlottie/player-component@latest/dist/dotlottie-player.mjs"
+      type="module"
+    ></script>
+
     <script src="./assets/app.js"></script>
   </body>
 </html>

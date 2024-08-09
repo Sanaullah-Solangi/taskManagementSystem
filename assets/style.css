@@ -3,6 +3,10 @@
   font-family: "jost";
   src: url(./Jost-Regular.ttf);
 }
+@font-face {
+  font-family: "poppins";
+  src: url(./Poppins-Regular.ttf);
+}
 
 * {
   margin: 0%;
@@ -42,7 +46,7 @@ html {
 /*!========== website theme ==========*/
 
 :root {
-  --mainColor1: rgb(55, 32, 81);
+  --mainColor1: #372051;
   --mainColor2: rgb(210, 149, 232);
   --mainColor3: rgb(68, 46, 107);
   --bg-gradient: linear-gradient(150deg, var(--mainColor1), var(--mainColor2));
@@ -194,11 +198,11 @@ html {
   border: none;
 }
 .radius-50per {
-  border-radius: 5%;
-  -webkit-border-radius: 5%;
-  -moz-border-radius: 5%;
-  -ms-border-radius: 5%;
-  -o-border-radius: 5%;
+  border-radius: 50%;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  -ms-border-radius: 50%;
+  -o-border-radius: 50%;
 }
 .transition-3ms {
   transition: all 0.3s linear;
@@ -479,6 +483,7 @@ h2 {
   justify-content: center;
   align-items: center;
 }
+
 #features,
 #listTypes,
 .taskCardList > .task,
@@ -533,7 +538,13 @@ h2 {
 
 .taskCardList
   > .task
-  > :is(.taskDeadLine, .taskRemainingTime, .taskStatus, select) {
+  > :is(
+    .taskDeadLine,
+    .taskRemainingTime,
+    .taskStatus,
+    .inputTaskStatus,
+    select
+  ) {
   margin-bottom: 0.5rem;
 }
 
@@ -544,11 +555,12 @@ h2 {
     .taskDeadLine,
     .taskRemainingTime,
     .taskStatus,
+    .inputTaskStatus,
     .taskPriority
   ) {
   font-size: 1.8rem;
 }
-.taskCardList > .task > .taskRemainingTime > .remainingTime{
+.taskCardList > .task > .taskRemainingTime > .remainingTime {
   gap: 1rem;
   line-height: 15px;
 }
@@ -575,9 +587,11 @@ h2 {
 .completed > .task > .taskStatus > .status {
   color: green;
 }
+.taskCardList > .task > :is(.inputTaskStatus, .taskPriority) > select {
+  width: 110px;
+}
 
-.taskCardList > .task > .taskPriority > select,
-.taskCardList > .task > .taskPriority > select > option {
+.taskCardList > .task > :is(.inputTaskStatus, .taskPriority) > select {
   border-radius: 3px;
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
@@ -587,7 +601,7 @@ h2 {
   font-weight: bold;
 }
 
-.taskCardList > .task > .taskPriority > select > option {
+.taskCardList > .task > :is(.inputTaskStatus, .taskPriority) > select > option {
   color: black;
 }
 .blue {
@@ -606,6 +620,16 @@ h2 {
 }
 .todoProjectsContainer > .addTodosBtn {
   background-color: #f8f6f6;
+}
+
+.dropBtnContainer {
+  padding: 1rem;
+}
+
+.dropTxt {
+  color: white;
+  font-size: 2rem;
+  font-family: "poppins", sans-serif;
 }
 
 /*!=============== MODAL STYLING ===============*/
