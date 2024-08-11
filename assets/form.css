@@ -1,0 +1,181 @@
+.poppins {
+  font-family: "poppins", sans-serif;
+}
+
+.formBody > .main-container {
+  margin: 0;
+  height: calc(100vh - 10rem);
+}
+
+.formBody,
+label {
+  background-color: #fff;
+}
+
+.formWrapper {
+  width: 40%;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  padding: 2rem 3rem;
+  border-radius: 1rem;
+  -webkit-border-radius: 1rem;
+  -moz-border-radius: 1rem;
+  -ms-border-radius: 1rem;
+  -o-border-radius: 1rem;
+}
+
+.formHeading > h2 {
+  font-size: 2.5rem;
+  line-height: 0.5rem;
+}
+
+.formHeading > p {
+  font-family: "jost", sans-serif;
+  font-size: 1.8rem;
+}
+.inputCover {
+  margin-top: 2rem;
+  height: 5rem;
+}
+
+label,
+input {
+  line-height: 3rem;
+  font-size: 1.6rem;
+  color: var(--mainColor3);
+}
+
+label {
+  background-color: #fff;
+  padding: 0rem 2rem;
+  left: 0;
+  top: -0.5rem;
+  color: var(--mainColor3);
+}
+
+input {
+  padding: 1rem 2rem;
+  background-color: transparent;
+  border: none;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  outline: none;
+  box-shadow: none;
+  z-index: 97;
+}
+
+input:focus {
+  border: 1px solid var(--mainColor3);
+}
+
+input:focus + label {
+  transform: translate(10px, -24px) scale(0.9);
+  -webkit-transform: translate(10px, -24px) scale(0.9);
+  -moz-transform: translate(10px, -24px) scale(0.9);
+  -ms-transform: translate(10px, -24px) scale(0.9);
+  -o-transform: translate(10px, -24px) scale(0.9);
+  z-index: 99;
+  font-weight: bold;
+  padding: 0rem 0.5rem;
+  font-size: 1.3rem;
+}
+
+.labelPositionChange {
+  transform: translate(10px, -24px) scale(0.9);
+  -webkit-transform: translate(10px, -24px) scale(0.9);
+  -moz-transform: translate(10px, -24px) scale(0.9);
+  -ms-transform: translate(10px, -24px) scale(0.9);
+  -o-transform: translate(10px, -24px) scale(0.9);
+  z-index: 99;
+  font-weight: bold;
+  padding: 0rem 1rem;
+  font-size: 1.3rem;
+}
+
+input,
+.signUpBtn,
+.signUpWithGoogle {
+  border-radius: 0.5rem;
+  -webkit-border-radius: 0.5rem;
+  -moz-border-radius: 0.5rem;
+  -ms-border-radius: 0.5rem;
+  -o-border-radius: 0.5rem;
+}
+
+.passwordIcons {
+  right: 0;
+  padding: 0rem 2rem;
+  font-size: 2.5rem;
+  z-index: 99;
+  color: var(--mainColor3);
+}
+
+.forgotPassword {
+  right: 0%;
+  bottom: -50%;
+  font-size: 1.3rem;
+}
+
+.forgotPassword:hover {
+  color: rgb(91, 91, 220);
+}
+
+.signUpBtn,
+.signUpWithGoogle {
+  padding: 1rem;
+  border: 2px solid transparent;
+}
+
+.signUpBtn {
+  margin-top: 3rem;
+  background-color: var(--mainColor3);
+}
+.signUpBtn:hover {
+  background-color: white;
+  border: 2px solid var(--mainColor3);
+  color: var(--mainColor3);
+  font-weight: bold;
+}
+.signUpBtn,
+.linkToLogIn {
+  font-size: 1.6rem;
+}
+
+.linkToLogIn {
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.or {
+  margin: 1rem 0;
+  font-size: 1.8rem;
+}
+
+.signUpWithGoogle {
+  gap: 2rem;
+  background-color: transparent;
+  border: 2px solid var(--mainColor3);
+  color: var(--mainColor3);
+  font-size: 1.6rem;
+  font-weight: 550;
+  letter-spacing: 0.5px;
+}
+.signUpWithGoogle:hover {
+  background-color: var(--mainColor3);
+  border: 1px solid var(--btn-bg);
+  color: white;
+}
+
+.signUpWithGoogle > img {
+  width: 2rem;
+  height: 2rem;
+}
+/*!=============== SPINER STYLING ===============*/
+.spinerContainer {
+  position: absolute;
+  z-index: 999;
+  background-color: rgba(255, 255, 255, 1);
+}
+
+.spinerText {
+  font-family: "jost", sans-serif;
+  font-size: 1.5rem;
+}

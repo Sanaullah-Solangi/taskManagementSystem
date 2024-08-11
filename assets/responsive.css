@@ -63,6 +63,12 @@
   }
 }
 
+@media (width <= 855px) {
+  .formWrapper {
+    width: 80%;
+  }
+}
+
 @media (width <=811px) {
   #listTypes > .list {
     width: 70%;
@@ -181,5 +187,10 @@
   }
   .sweatBtn {
     font-size: 1.3rem !important;
+  }
+}
+@media (width <= 500px) {
+  .formWrapper {
+    width: 90%;
   }
 }

@@ -3,13 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>myApp logIn page</title>
+    <title>myApp signUP page</title>
     <link
       rel="shortcut icon"
       href="./assets/images/logo.png"
       type="image/x-icon"
     />
-
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
@@ -49,18 +48,30 @@
         </div>
       </header>
     </div>
-    <!--!=============== LOG IN CONTAINER ===============-->
-
+    <!--!=============== SIGN UP CONTAINER ===============-->
     <div class="main-container d-flex jc-center al-center w-100">
-      <div class="formWrapper logInContainer">
+      <div class="formWrapper">
         <!--?=== FORM HEADING ===-->
         <div class="formHeading d-flex al-center jc-center dir-col">
-          <h2 class="poppins">welcome back</h2>
-          <p class="txt-cap">please enter your details to sign in</p>
+          <h2 class="poppins" onclick="addTodoToFireStore()">sign up</h2>
+          <p class="txt-none">Let's get started a new journey</p>
         </div>
         <!--?=== FORM INPUTS ===-->
         <!--=== 1st INPUT ===-->
+        <div class="inputCover p-relative w-100 d-flex jc-center al-center">
+          <input
+            oninput="updateLabelPosition(event)"
+            onkeyup="validateName(event)"
+            required
+            class="w-100 h-100 p-absolute transition-1ms txt-none poppins"
+            type="text"
+            name="name"
+            id="name"
+          />
+          <label class="p-absolute transition-2ms poppins" for="name"> name </label>
+        </div>
 
+        <!--=== 2ND INPUT ===-->
         <div class="inputCover p-relative w-100 d-flex jc-center al-center">
           <input
             oninput="updateLabelPosition(event)"
@@ -71,16 +82,15 @@
             id="email"
             required
           />
-          <label class="p-absolute transition-2ms poppins" for="email">
-            email
-          </label>
+          <label class="p-absolute transition-2ms poppins" for="email"> email </label>
         </div>
 
         <!--=== 3RD INPUT ===-->
         <div class="inputCover p-relative w-100 d-flex jc-center al-center">
           <input
-            oninput="updateLabelPosition(event)"
+            onkeypress="updateLabelPosition(event)"
             onkeyup="validatePassword(event)"
+            oninput="checkPasswordStatus()"
             required
             class="w-100 h-100 p-absolute transition-1ms txt-none poppins"
             type="password"
@@ -99,26 +109,31 @@
             <i class="fa-solid fa-eye show"></i>
             <i class="fa-solid fa-eye-slash hide d-none"></i>
           </div>
-          <p
-            onclick="resetPassword()"
-            class="forgotPassword txt-cap d-flex al-center jc-center pointer p-absolute"
-          >
-            forgot password?
-          </p>
         </div>
 
         <!--=== 4RTH INPUT ===-->
         <button
-          onclick="logIn()"
-          class="btn w-100 signUpBtn white pointer poppins"
+          onclick="signUp()"
+          class="btn w-100 signUpBtn white pointer transition-2ms poppins"
         >
-          log in
+          sign up
         </button>
 
         <!--=== 5T p-absoluteH ITEM ===-->
-        <p class="w-100 d-flex jc-center al-center linkToLogIn txt-cap">
-          don't have an account? <a href="./signIn.html">sign up</a>
+        <p class="w-100 d-flex jc-center al-center linkToLogIn">
+          Already have an account? <a href="./logIn.html">log in</a>
         </p>
+
+        <!--=== 6TH ITEM ===-->
+        <p class="w-100 d-flex jc-center al-center or">or</p>
+
+        <!--=== 7NTH ITEM ===-->
+        <button
+          onclick="signUpWithGoogle()"
+          class="btn w-100 signUpWithGoogle pointer d-flex al-center jc-center poppins transition-1ms"
+        >
+          <img src="./assets/images/google.png" alt="" />sign up with google
+        </button>
       </div>
       <!--!=============== SPINNER ===============-->
       <dialog
@@ -126,9 +141,7 @@
         class="spinerContainer d-none w-100 h-100 d-flex dir-col jc-center al-center"
       >
         <img src="./assets/images/loader.gif" alt="" />
-        <p class="txt-cap spinerText">
-          Please wait while we create your account...
-        </p>
+        <p class="txt-cap spinerText"></p>
       </dialog>
     </div>
   </body>

@@ -39,7 +39,7 @@
 
         <!-- FORM BTNS -->
         <div class="logInBtns d-flex">
-          <a href="./signUp.html" class="btn navSignUpBtn pointer">sign up</a>
+          <a href="./signIn.html" class="btn navSignUpBtn pointer">sign up</a>
           <a href="./logIn.html" class="btn navLogInBtn pointer">log In</a>
         </div>
         <div class="logOutBtns d-none">
@@ -111,6 +111,14 @@
         </footer>
       </div>
     </div>
+    <!--!=============== SPINNER ===============-->
+    <dialog
+      open
+      class="spinerContainer d-none w-100 h-100 d-flex dir-col jc-center al-center"
+    >
+      <img src="./assets/images/loader.gif" alt="" />
+      <p class="txt-cap spinerText"></p>
+    </dialog>
     <!--!========== DROP UP SECTION ==========-->
     <div class="drop-up d-flex al-center jc-center p-fixed">
       <a href="#home"
@@ -119,6 +127,6 @@
     </div>
     <!--!========== JAVASCRIPT SECTION ==========-->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="./assets/app.js"></script>
+    <script type="module" src="./assets/app.js"></script>
   </body>
 </html>
