@@ -752,61 +752,6 @@ label,
   height: 100%;
 }
 
-/* .signUpContainer,
-.logInContainer,
-:is(.signUpContainer, .logInContainer) input {
-  border-radius: 20px;
-  -webkit-border-radius: 20px;
-  -moz-border-radius: 20px;
-  -ms-border-radius: 20px;
-  -o-border-radius: 20px;
-}
-
-.signUpContainer,
-.logInContainer {
-  width: 500px;
-  margin: auto;
-  margin-top: 2rem;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
-  padding: 50px 20px;
-  color: white;
-  background-color: var(--mainColor3);
-}
-
-:is(.logInContainer, .signUpContainer) :is(label, input) {
-  margin-top: 10px;
-}
-:is(.logInContainer, .signUpContainer) label {
-  display: block;
-  font-size: 1.8rem;
-}
-
-:is(.logInContainer, .signUpContainer) input {
-  width: 100%;
-  padding: 10px 10px;
-  font-size: 1.6rem;
-  color: white;
-  background: var(--bg-gradient2);
-}
-
-:is(.logInContainer, .signUpContainer) input::placeholder {
-  color: rgba(255, 255, 255, 0.598);
-}
-
-.formSignUpBtn,
-.formLogInBtn {
-  width: 100%;
-  padding: 10px;
-  font-size: 1.8rem;
-  font-weight: bold;
-  border-radius: 20px;
-  -webkit-border-radius: 20px;
-  -moz-border-radius: 20px;
-  -ms-border-radius: 20px;
-  -o-border-radius: 20px;
-  margin-top: 40px;
-} */
-
 /*!=============== SWEAT ALERT STYLING ===============*/
 
 .sweatPopup {
@@ -834,6 +779,5 @@ label,
   font-family: "jost", sans-serif;
   font-size: 1.7rem;
   font-weight: bold;
-  color: #EE82EE;
-
+  color: #ee82ee;
 }
