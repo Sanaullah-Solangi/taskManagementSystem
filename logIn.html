@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>myApp logIn page</title>
+    <title>Access Your Account</title>
     <link
       rel="shortcut icon"
       href="./assets/images/logo.png"
@@ -22,7 +22,7 @@
     <link rel="stylesheet" href="./assets/responsive.css" />
     <link rel="stylesheet" href="./assets/responsiveForm.css" />
   </head>
-  <body class="d-flex dir-col jc-center al-center formBody">
+  <body class="formBody">
     <!--!========== HEADER SECTION ==========-->
     <div class="header-container w-100">
       <header class="header transition-3ms m-auto d-flex jc-between p-relative">
@@ -120,17 +120,16 @@
           don't have an account? <a href="./signIn.html">sign up</a>
         </p>
       </div>
-      <!--!=============== SPINNER ===============-->
-      <dialog
-        open
-        class="spinerContainer d-none w-100 h-100 d-flex dir-col jc-center al-center"
-      >
-        <img src="./assets/images/loader.gif" alt="" />
-        <p class="txt-cap spinerText">
-          Please wait while we create your account...
-        </p>
-      </dialog>
     </div>
+    <!--!=============== SPINNER ===============-->
+    <dialog
+      open
+      class="spinerContainer d-none border-none w-100 vh d-flex dir-col jc-center al-center"
+    >
+      <img src="./assets/images/loader.gif" alt="" />
+      <p class="txt-cap spinerText">
+      </p>
+    </dialog>
   </body>
 
   <script type="module" defer src="./assets/firebase.js"></script>

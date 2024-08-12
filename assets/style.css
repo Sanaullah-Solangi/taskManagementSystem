@@ -29,7 +29,10 @@
 html {
   font-size: 62.5%;
 }
-
+body {
+  position: relative;
+  min-height: 100vh;
+}
 .main-container,
 .header {
   max-width: 1440px;
@@ -498,10 +501,10 @@ h2 {
 .todoProjectsContainer > .addTodosBtn {
   width: 98%;
   border-radius: 10px;
-  -webkit-border-radius: 10px;
-  -moz-border-radius: 10px;
-  -ms-border-radius: 10px;
-  -o-border-radius: 10px;
+  -webkit-border-radius: ;
+  -moz-border-radius: ;
+  -ms-border-radius: ;
+  -o-border-radius: ;
 }
 .taskCardList > .task {
   padding: 2rem 2rem;
@@ -601,10 +604,10 @@ h2 {
 
 .taskCardList > .task > :is(.inputTaskStatus, .taskPriority) > select {
   border-radius: 3px;
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
-  -ms-border-radius: 3px;
-  -o-border-radius: 3px;
+  -webkit-border-radius: ;
+  -moz-border-radius: ;
+  -ms-border-radius: ;
+  -o-border-radius: ;
   padding: 0.4rem 1rem;
   font-weight: bold;
 }
@@ -648,10 +651,10 @@ h2 {
 .modalContent,
 .modalHeading {
   border-radius: 1rem;
-  -webkit-border-radius: 1rem;
-  -moz-border-radius: 1rem;
-  -ms-border-radius: 1rem;
-  -o-border-radius: 1rem;
+  -webkit-border-radius: ;
+  -moz-border-radius: ;
+  -ms-border-radius: ;
+  -o-border-radius: ;
 }
 
 .modalContent {
@@ -817,4 +820,20 @@ label,
 }
 .sweatBtn {
   font-size: 1.4rem !important;
+}
+/*!=============== SPINER STYLING ===============*/
+.spinerContainer {
+  position: fixed;
+  top: 0%;
+  left: 0%;
+  z-index: 999;
+  background-color: rgba(74, 66, 77, 0.893);
+}
+
+.spinerText {
+  font-family: "jost", sans-serif;
+  font-size: 1.7rem;
+  font-weight: bold;
+  color: #EE82EE;
+
 }

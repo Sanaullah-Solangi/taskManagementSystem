@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>myApp signUP page</title>
+    <title>Create Your Account</title>
     <link
       rel="shortcut icon"
       href="./assets/images/logo.png"
@@ -21,7 +21,7 @@
     <link rel="stylesheet" href="./assets/responsive.css" />
     <link rel="stylesheet" href="./assets/responsiveForm.css" />
   </head>
-  <body class="d-flex dir-col jc-center al-center formBody">
+  <body class="formBody">
     <!--!========== HEADER SECTION ==========-->
     <div class="header-container w-100">
       <header class="header transition-3ms m-auto d-flex jc-between p-relative">
@@ -68,7 +68,9 @@
             name="name"
             id="name"
           />
-          <label class="p-absolute transition-2ms poppins" for="name"> name </label>
+          <label class="p-absolute transition-2ms poppins" for="name">
+            name
+          </label>
         </div>
 
         <!--=== 2ND INPUT ===-->
@@ -82,7 +84,9 @@
             id="email"
             required
           />
-          <label class="p-absolute transition-2ms poppins" for="email"> email </label>
+          <label class="p-absolute transition-2ms poppins" for="email">
+            email
+          </label>
         </div>
 
         <!--=== 3RD INPUT ===-->
@@ -135,15 +139,16 @@
           <img src="./assets/images/google.png" alt="" />sign up with google
         </button>
       </div>
-      <!--!=============== SPINNER ===============-->
-      <dialog
-        open
-        class="spinerContainer d-none w-100 h-100 d-flex dir-col jc-center al-center"
-      >
-        <img src="./assets/images/loader.gif" alt="" />
-        <p class="txt-cap spinerText"></p>
-      </dialog>
     </div>
+
+    <!--!=============== SPINNER ===============-->
+    <dialog
+      open
+      class="spinerContainer d-none border-none w-100 vh d-flex dir-col jc-center al-center"
+    >
+      <img src="./assets/images/loader.gif" alt="" />
+      <p class="txt-cap spinerText"></p>
+    </dialog>
   </body>
 
   <script type="module" defer src="./assets/firebase.js"></script>

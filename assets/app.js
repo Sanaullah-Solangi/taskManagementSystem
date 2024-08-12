@@ -21,13 +21,13 @@ import {
   onSnapshot,
 } from "./firebase.js";
 //* GETTING ELEMENTS
+let mainContainer = document.querySelector(".main-container");
 let logInContainer = document.querySelector(".logInContainer");
 let logInBtns = document.querySelector(".logInBtns");
 let logOutBtns = document.querySelector(".logOutBtns");
 let navLogo = document.querySelector(".logo");
 let formLogInBtn = document.querySelector(".formLogInBtn");
 let formSignUpBtn = document.querySelector(".formSignUpBtn");
-let todId;
 let toDosList = document.querySelector(".toDos");
 let inProgressList = document.querySelector(".inProgress");
 let completedList = document.querySelector(".completed");
@@ -162,145 +162,7 @@ window.showPasswordStatus = function (
   }
 };
 
-//* FUNCTION TO ENSURE PASSWORD WILL CONTAIN MINIMUM 8 CHARACTERS IN SIGN UP FORM
-// function validateLengthOfPassword() {
-//   var newPassword = document.querySelector("#newPassword");
-//   if (newPassword.value.length < 8) {
-//     Swal.fire({
-//       customClass: {
-//         container: "sweatContainer",
-//         popup: "sweatPopup",
-//         title: "sweatTitle",
-//         htmlContainer: "sweatPara",
-//         confirmButton: "sweatBtn",
-//         cancelButton: "sweatBtn",
-//       },
-//       icon: "warning",
-//       title: "sorry...",
-//       text: "please enter minimam 8 characters!",
-//     });
-//   }
-// }
-
 //* FUNCTION TO SIGN UP
-window.signUpAndStoreUserData = () => {
-  //*  SIGNUP ELEMENTS
-  var signUpContainer = document.querySelector(".signUpContainer");
-  var inputs = signUpContainer.querySelectorAll("input");
-  var signingUserName = signUpContainer.querySelector("#signingUserName");
-  var signingEmail = signUpContainer.querySelector("#signingEmail");
-  var newPassword = signUpContainer.querySelector("#newPassword");
-  var confirmPassword = signUpContainer.querySelector("#confirmPassword");
-  var signingAddress = signUpContainer.querySelector("#signingAddress");
-  //* ENSURES NO INPUT FIELD IS EMPTY BEFORE PROCEEDING.
-  for (var i = 0; i < inputs.length; i++) {
-    if (inputs[i].value == "") {
-      formDataCompleted = false;
-    }
-  }
-  //* IF NO INPUT IS EMPTY CODE WILL BE EXECUTED
-  if (formDataCompleted) {
-    validateLengthOfPassword();
-    var usersData = getData(); // GETTING COMPLETE DATA OF USERS
-    // COLLECTION OF USER DATA'S OBJECTS / ARRAY OF OBJECTS
-    //* ENSURES THE SAME EMAIL CANNOT BE USED MORE THAN ONCE.
-    for (var i = 0; i < usersData.length; i++) {
-      if (usersData[i].email == signingEmail.value) {
-        Swal.fire({
-          customClass: {
-            container: "sweatContainer",
-            popup: "sweatPopup",
-            title: "sweatTitle",
-            htmlContainer: "sweatPara",
-            confirmButton: "sweatBtn",
-            cancelButton: "sweatBtn",
-          },
-          icon: "error",
-          title: "Oops...",
-          text: "The email already exist!",
-        });
-        return false;
-      }
-    }
-    //* ENSURES THE NEW PASSWORD AND CONFIRM PASSWORD FEILDS MATCHS.
-    if (newPassword.value != confirmPassword.value) {
-      Swal.fire({
-        customClass: {
-          container: "sweatContainer",
-          popup: "sweatPopup",
-          title: "sweatTitle",
-          htmlContainer: "sweatPara",
-          confirmButton: "sweatBtn",
-          cancelButton: "sweatBtn",
-        },
-        icon: "error",
-        title: "Oops...",
-        text: "password is not correct!",
-      });
-      return false;
-    }
-
-    //* COLLECTING USER SIGN-UP DATA AND EMAILS, STORING THEM IN ARRAYS, AND SAVING TO LOCAL STORAGE
-    // COMPLETE DATA
-    var signUpData = {
-      userName: signingUserName.value,
-      email: signingEmail.value,
-      userNewPassword: newPassword.value,
-      userConfirmPassword: confirmPassword.value,
-      userSigningAddress: signingAddress.value,
-      todos: [],
-      inProgress: [],
-      completed: [],
-    };
-    // JUST EMAIL
-    var currentUserEmail = signingEmail.value;
-    usersData.push(signUpData);
-    setDataCollection(usersData);
-    setLoggedUserEmail(currentUserEmail);
-
-    //* EMPTY ALL INPUTS
-    inputs.forEach((val) => {
-      val.value = "";
-    });
-    //* SHOWING ALERT FOR SUCCESSFULLY SIGNING UP
-    Swal.fire({
-      customClass: {
-        container: "sweatContainer",
-        popup: "sweatPopup",
-        title: "sweatTitle",
-        htmlContainer: "sweatPara",
-        confirmButton: "sweatBtn",
-        cancelButton: "sweatBtn",
-      },
-      title: "Thank You!",
-      text: "You have Signed Up!",
-      icon: "success",
-    });
-    setTimeout(() => {
-      location.href = "../logIn.html";
-    }, 1000);
-    showLogOutBtn();
-  }
-
-  //* IF ANY INUT IS EMPTY WARNING WILL BE GIVEN TO THE USER
-  else {
-    Swal.fire({
-      customClass: {
-        container: "sweatContainer",
-        popup: "sweatPopup",
-        title: "sweatTitle",
-        htmlContainer: "sweatPara",
-        confirmButton: "sweatBtn",
-        cancelButton: "sweatBtn",
-      },
-      icon: "warning",
-      title: "sorry...",
-      text: "please enter complete detail!",
-    });
-    formDataCompleted = true;
-  }
-};
-
 window.signUp = function () {
   let name = document.querySelector("#name");
   let email = document.querySelector("#email");
@@ -548,148 +410,6 @@ window.addUserDataToFireStore = async function (user) {
   }
 };
 
-//* FUNCTION TO LOG IN
-// function logIn() {
-//   //*  LOGIN ELEMENTS
-//   var logInContainer = document.querySelector(".logInContainer");
-//   var inputs = logInContainer.querySelectorAll("input");
-//   var logInEmail = logInContainer.querySelector("#logInEmail").value;
-//   var logInPassword = logInContainer.querySelector("#logInPassword").value;
-//   // var logInAddress = logInContainer.querySelector("#logInAddress").value;
-//   //* ENSURES NO INPUT FIELD IS EMPTY BEFORE PROCEEDING.
-//   for (var i = 0; i < inputs.length; i++) {
-//     if (inputs[i].value == "") {
-//       formDataCompleted = false;
-//     }
-//   }
-//   //* IF NO INPUT IS EMPTY CODE WILL BE EXECUTED
-//   if (formDataCompleted) {
-//     var usersData = getData();
-//     var emailFlag = false;
-//     var passwordFlag = false;
-
-//     for (var i = 0; i < usersData.length; i++) {
-//       if (usersData[i].email == logInEmail) {
-//         emailFlag = true;
-//         if (usersData[i].userConfirmPassword == logInPassword) {
-//           passwordFlag = true;
-//           break;
-//         }
-//         break;
-//       }
-//     }
-//     if (emailFlag && passwordFlag) {
-//       inputs.forEach((val) => {
-//         val.value = "";
-//       });
-//       Swal.fire({
-//         customClass: {
-//           container: "sweatContainer",
-//           popup: "sweatPopup",
-//           title: "sweatTitle",
-//           htmlContainer: "sweatPara",
-//           confirmButton: "sweatBtn",
-//           cancelButton: "sweatBtn",
-//         },
-//         title: "congratulation!",
-//         text: "You are loged In!",
-//         icon: "success",
-//       });
-//       var currentUserEmail = logInEmail;
-//       setLoggedUserEmail(currentUserEmail);
-
-//       setTimeout(() => {
-//         location.href = "../board.html";
-//       }, 1400);
-//     } else if (emailFlag && !passwordFlag) {
-//       Swal.fire({
-//         customClass: {
-//           container: "sweatContainer",
-//           popup: "sweatPopup",
-//           title: "sweatTitle",
-//           htmlContainer: "sweatPara",
-//           confirmButton: "sweatBtn",
-//           cancelButton: "sweatBtn",
-//         },
-//         title: "sorry!",
-//         text: "The password is incorrect",
-//         icon: "error",
-//       });
-//     } else if (!emailFlag) {
-//       Swal.fire({
-//         customClass: {
-//           container: "sweatContainer",
-//           popup: "sweatPopup",
-//           title: "sweatTitle",
-//           htmlContainer: "sweatPara",
-//           confirmButton: "sweatBtn",
-//           cancelButton: "sweatBtn",
-//         },
-//         title: "sorry!",
-//         text: "The user is not found",
-//         icon: "error",
-//       });
-//     }
-//   } //* IF ANY INUT IS EMPTY WARNING WILL BE GIVEN TO THE USER
-//   else {
-//     Swal.fire({
-//       customClass: {
-//         container: "sweatContainer",
-//         popup: "sweatPopup",
-//         title: "sweatTitle",
-//         htmlContainer: "sweatPara",
-//         confirmButton: "sweatBtn",
-//         cancelButton: "sweatBtn",
-//       },
-//       icon: "error",
-//       title: "Incomplete Form",
-//       text: "Please fill in all the fields before submitting.",
-//     });
-//     formDataCompleted = true;
-//   }
-// }
-
-// //* FUNCTION TO LOG OUT
-// function logOut() {
-//   Swal.fire({
-//     customClass: {
-//       container: "sweatContainer",
-//       popup: "sweatPopup",
-//       title: "sweatTitle",
-//       htmlContainer: "sweatPara",
-//       confirmButton: "sweatBtn",
-//       cancelButton: "sweatBtn",
-//     },
-//     title: "Are you sure?",
-//     text: "You will be logged out!",
-//     icon: "warning",
-//     showCancelButton: true,
-//     confirmButtonColor: "#3085d6",
-//     cancelButtonColor: "#d33",
-//     confirmButtonText: "Yes, log out!",
-//   }).then((result) => {
-//     if (result.isConfirmed) {
-//       Swal.fire({
-//         customClass: {
-//           container: "sweatContainer",
-//           popup: "sweatPopup",
-//           title: "sweatTitle",
-//           htmlContainer: "sweatPara",
-//           confirmButton: "sweatBtn",
-//           cancelButton: "sweatBtn",
-//         },
-//         title: "Logged Out!",
-//         text: "You have been logged out successfully.",
-//         icon: "success",
-//       }).then(() => {
-//         localStorage.removeItem("loggedInUserEmail"); // Remove the email of the logged-in user from local storage
-//         showLogOutBtn();
-//         location.href = "../index.html";
-//       });
-//     }
-//   });
-// }
-
 //* LOG IN FUNCTION
 window.logIn = function () {
   let email = logInContainer.querySelector("#email");
@@ -858,6 +578,68 @@ window.logOut = function () {
       // An error happened.
     });
 };
+
+//! RESET PASSWORD
+window.resetPassword = function () {
+  let email = logInContainer.querySelector("#email");
+  let formData = true;
+  if (!email.value) {
+    formData = false;
+  }
+
+  if (formData) {
+    sendPasswordResetEmail(auth, email.value)
+      .then(() => {
+        Swal.fire({
+          customClass: {
+            container: "sweatContainer",
+            popup: "sweatPopup",
+            title: "sweatTitle",
+            htmlContainer: "sweatPara",
+            confirmButton: "sweatBtn",
+            cancelButton: "sweatBtn",
+          },
+          icon: "success",
+          title: "Email Sent!",
+          text: "Password reset email has been sent to your email. Please check your inbox.",
+        });
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        Swal.fire({
+          customClass: {
+            container: "sweatContainer",
+            popup: "sweatPopup",
+            title: "sweatTitle",
+            htmlContainer: "sweatPara",
+            confirmButton: "sweatBtn",
+            cancelButton: "sweatBtn",
+          },
+          icon: "error",
+          title: "Error",
+          text: `Error: ${errorMessage}`,
+        });
+      });
+  } else {
+    Swal.fire({
+      customClass: {
+        container: "sweatContainer",
+        popup: "sweatPopup",
+        title: "sweatTitle",
+        htmlContainer: "sweatPara",
+        confirmButton: "sweatBtn",
+        cancelButton: "sweatBtn",
+      },
+      icon: "warning",
+      title: "Sorry...",
+      text: "Please fill in the email field.",
+    });
+
+    formData = true;
+  }
+};
+
 onAuthStateChanged(auth, (user) => {
   if (user) {
     const uid = user.uid;
@@ -875,48 +657,7 @@ onAuthStateChanged(auth, (user) => {
 //! LOCAL STORAGE MANAGEMENT
 //! ==============================================
 
-//* FUNCTION TO GET ALL USERS DATA FROM LOCAL STORAGE AND FILTER CURRENT USER
-window.getUserData = () => {
-  let users = JSON.parse(localStorage.getItem("dataCollection")) ?? [];
-  let currentUser = getLoggedUser();
-  let usersTasks = [];
-  for (let user of users) {
-    if (user.email == currentUser) {
-      Object.keys(user).forEach((arrayOfObject) => {
-        if (Array.isArray(user[arrayOfObject])) {
-          usersTasks.push(user[arrayOfObject]);
-        }
-      });
-    }
-  }
-  return usersTasks;
-};
-
-//* FUNCTION TO SET CURRENT USER DATA IN LOCAL STORAGE
-window.setUserData = (taskArrays) => {
-  let users = JSON.parse(localStorage.getItem("dataCollection")) ?? [];
-  let userInd;
-  let currentUser = getLoggedUser();
-  users.forEach((user, ind) => {
-    if (user.email == currentUser) {
-      userInd = ind;
-      Object.keys(user).forEach((arrayOfObject) => {
-        if (Array.isArray(user[arrayOfObject])) {
-          if (arrayOfObject == "todos") {
-            user[arrayOfObject] = taskArrays[0];
-          } else if (arrayOfObject == "inProgress") {
-            user[arrayOfObject] = taskArrays[1];
-          } else if (arrayOfObject == "completed") {
-            user[arrayOfObject] = taskArrays[2];
-          }
-        }
-      });
-      users[userInd] = user;
-    }
-  });
-  localStorage.setItem("dataCollection", JSON.stringify(users));
-};
-
+//* FUNCTION TO GET DATA FROM FIRESTORE DATA BASE
 window.getDataFromDataBase = async () => {
   const userDataRef = doc(db, "users", uid);
   const userDataObj = await getDoc(userDataRef);
@@ -936,6 +677,7 @@ window.getDataFromDataBase = async () => {
   return arrOfTaskArrs;
 };
 
+//* FUNCTION TO UPDATE DATA IN FIRESTORE DATA BASE
 window.updateDataInDataBase = async (arrOfTaskArrs) => {
   const userDataRef = doc(db, "users", uid);
   try {
@@ -949,7 +691,7 @@ window.updateDataInDataBase = async (arrOfTaskArrs) => {
   }
 };
 // ! CATCH KO SAHI KRNA HAI ALERT LAGA K
-//* FUNCTION TO COLLECT DATA FROM MODAL AND SAVE TO LOCAL STORAGE
+//* FUNCTION TO COLLECT DATA FROM MODAL AND SAVE TO FIRESTORE DATA BASE
 window.saveDataToLocalStorageFromModal = async () => {
   const userDataRef = doc(db, "users", uid);
   let arrOfTaskArrs = await getDataFromDataBase();
@@ -1160,48 +902,18 @@ window.deleteAllTasks = async () => {
 //! SPINER WAGERA LAGANA HAI
 //* FUNCTION TO DELET TARGETD TASK
 window.deleteTask = async (event) => {
-  let taskUl = event.target.closest("ul");
   let taskLi = event.target.closest("li");
-  let taskTitle = taskLi.querySelector(".taskTitle").innerHTML;
-  let taskDescription = taskLi.querySelector(".taskDescription").innerHTML;
-  let taskStatus = taskLi.querySelector(".taskStatus > .status").innerHTML;
-  let taskStatusByInput = taskLi.querySelector(
-    ".taskStatus > .status"
-  ).innerHTML;
-  let taskPriority = taskLi.querySelector(".taskPriority > select").value;
-  let taskDeadLine = taskLi.querySelector(".taskDeadLine > span").innerHTML;
   let taskId = taskLi.id;
-  const userDataRef = doc(db, "users", uid);
+  let arrOfTaskArrs = await getDataFromDataBase();
+  arrOfTaskArrs.forEach((taskArr) => {
+    taskArr.forEach((obj, ind) => {
+      if (obj.todoTaskId == taskId) {
+        taskArr.splice(ind, ind + 1);
+      }
+    });
+  });
 
-  let duplicateData = {
-    taskDeadLine: taskDeadLine.trim(),
-    taskDescription: taskDescription.trim(),
-    taskPriority: taskPriority,
-    taskPriorityId: `ID${taskId}`,
-    taskStatus: taskStatus.trim(),
-    taskStatusForInput: taskStatusByInput.trim(),
-    taskStatusId: `ST${taskId}`,
-    taskTitle: taskTitle.trim(),
-    todoTaskId: Number(taskId),
-  };
-
-  try {
-    if (taskUl.classList.contains("toDos")) {
-      await updateDoc(userDataRef, {
-        todos: arrayRemove(duplicateData),
-      });
-    } else if (taskUl.classList.contains("inProgress")) {
-      await updateDoc(userDataRef, {
-        inProgress: arrayRemove(duplicateData),
-      });
-    } else if (taskUl.classList.contains("completed")) {
-      await updateDoc(userDataRef, {
-        completed: arrayRemove(duplicateData),
-      });
-    }
-  } catch (error) {
-    console.log(error);
-  }
+  updateDataInDataBase(arrOfTaskArrs);
 };
 
 //! ==============================================
@@ -1238,6 +950,7 @@ window.drop = async (event) => {
   let arrOfTaskArrs = await getDataFromDataBase();
   let taskId = localStorage.getItem("ID");
   let target = event.target;
+  let statusId;
   let targetedUl;
 
   if (!target.classList.contains("taskCardList")) {
@@ -1252,15 +965,19 @@ window.drop = async (event) => {
         taskToDrop = taskArry.splice(ind, ind + 1);
         if (targetedUl.classList.contains("toDos")) {
           arrOfTaskArrs[0].push(taskToDrop[0]);
+          statusId = taskToDrop[0].taskStatusId;
         } else if (targetedUl.classList.contains("inProgress")) {
           arrOfTaskArrs[1].push(taskToDrop[0]);
+          statusId = taskToDrop[0].taskStatusId;
         } else if (targetedUl.classList.contains("completed")) {
           arrOfTaskArrs[2].push(taskToDrop[0]);
+          statusId = taskToDrop[0].taskStatusId;
         }
       }
     });
   });
   updateDataInDataBase(arrOfTaskArrs);
+  updateStatus(targetedUl, statusId);
 };
 
 //! ==============================================
@@ -1268,68 +985,63 @@ window.drop = async (event) => {
 //! ==============================================
 
 //* FUNCTION TO UPDATE THE STATUS OF A TASK BASED ON ITS UL LOCATION
-window.updateStatus = (targetedUl, statusId) => {
-  let usersTasks = getUserData();
+window.updateStatus = async (targetedUl, statusId) => {
+  let arrOfTaskArrs = await getDataFromDataBase();
   if (targetedUl) {
-    usersTasks.forEach((taskArr) => {
+    arrOfTaskArrs.forEach((taskArr) => {
       taskArr.forEach((task) => {
-        if (
-          task.taskStatusId == statusId &&
-          targetedUl.classList.contains("toDos")
-        ) {
-          task.taskStatus = "todos";
-        } else if (
-          task.taskStatusId == statusId &&
-          targetedUl.classList.contains("inProgress")
-        ) {
-          task.taskStatus = "inProgress";
-        } else if (
-          task.taskStatusId == statusId &&
-          targetedUl.classList.contains("completed")
-        ) {
-          task.taskStatus = "completed";
+        if (task.taskStatusId == statusId) {
+          if (targetedUl.classList.contains("toDos")) {
+            task.taskStatus = "todos";
+          } else if (targetedUl.classList.contains("inProgress")) {
+            task.taskStatus = "inProgress";
+          } else if (targetedUl.classList.contains("completed")) {
+            console.log("completed");
+            task.taskStatus = "completed";
+          }
         }
       });
     });
+    updateDataInDataBase(arrOfTaskArrs);
   }
-  setUserData(usersTasks);
 };
 
 //* FUNCTION TO UPDATE TASK Status
-window.updateTaskStatusByInput = (event) => {
+window.updateTaskStatusByInput = async (event) => {
   let selectedStatusId = event.target.id;
   let selectedStatus = event.target.value;
-  let userTasks = getUserData();
-  for (taskArr of userTasks) {
-    for (task of taskArr) {
+  let arrOfTaskArrs = await getDataFromDataBase();
+  for (let taskArr of arrOfTaskArrs) {
+    for (let task of taskArr) {
       if (task.taskStatusId == selectedStatusId) {
         task.taskStatusForInput = selectedStatus;
       }
     }
   }
-  setUserData(userTasks);
-  showStatusLevel();
+  updateDataInDataBase(arrOfTaskArrs);
   changeUlBasedOnTaskStatus(selectedStatusId, selectedStatus);
+  showStatusLevel();
 };
 
-window.changeUlBasedOnTaskStatus = (statusId, status) => {
-  let userTasks = getUserData();
-  userTasks.forEach((taskArr) => {
+window.changeUlBasedOnTaskStatus = async (statusId, status) => {
+  let arrOfTaskArrs = await getDataFromDataBase();
+  arrOfTaskArrs.forEach((taskArr) => {
     taskArr.forEach((task, ind) => {
-      if (task.taskStatusId == statusId && status == "todo") {
-        let temp = taskArr.splice(ind, ind + 1);
-        userTasks[0].push(temp[0]);
-      } else if (task.taskStatusId == statusId && status == "in progress") {
-        let temp = taskArr.splice(ind, ind + 1);
-        userTasks[1].push(temp[0]);
-      } else if (task.taskStatusId == statusId && status == "completed") {
-        let temp = taskArr.splice(ind, ind + 1);
-        userTasks[2].push(temp[0]);
+      if (task.taskStatusId == statusId) {
+        if (status == "todo") {
+          let temp = taskArr.splice(ind, ind + 1);
+          arrOfTaskArrs[0].push(temp[0]);
+        } else if (status == "in progress") {
+          let temp = taskArr.splice(ind, ind + 1);
+          arrOfTaskArrs[1].push(temp[0]);
+        } else if (status == "completed") {
+          let temp = taskArr.splice(ind, ind + 1);
+          arrOfTaskArrs[2].push(temp[0]);
+        }
       }
     });
   });
-  setUserData(userTasks);
-  displayUserTasks();
+  updateDataInDataBase(arrOfTaskArrs);
 };
 
 window.showStatusLevel = () => {
@@ -1348,21 +1060,21 @@ window.showStatusLevel = () => {
     selectedStatus.blur();
   }
 };
-showStatusLevel();
 
 //* FUNCTION TO UPDATE TASK PRIORITY
-window.updateTaskPriority = (event) => {
+window.updateTaskPriority = async (event) => {
   let selectedPriorityId = event.target.id;
   let selectedPriority = event.target.value;
-  let userTasks = getUserData();
-  for (taskArr of userTasks) {
-    for (task of taskArr) {
+  let arrOfTaskArrs = await getDataFromDataBase();
+
+  for (let taskArr of arrOfTaskArrs) {
+    for (let task of taskArr) {
       if (task.taskPriorityId == selectedPriorityId) {
         task.taskPriority = selectedPriority;
       }
     }
   }
-  setUserData(userTasks);
+  updateDataInDataBase(arrOfTaskArrs);
   showPriorityLevel();
 };
 //* FUNCTION TO CHANGE COLOR BASED ON PRIORITY LEVEL
@@ -1459,7 +1171,6 @@ window.resizeUl = (arrOfTaskArrs) => {
     }
   });
 };
-// resizeUl();
 
 //* HELPER FUNCTION TO CREATE A TASK ITEM
 window.createTaskItem = (task) => {
@@ -1518,7 +1229,7 @@ window.createTaskItem = (task) => {
                     } </span>
                   </p>
 
-              <p class="inputTaskStatus d-none jc-between al-center">
+              <p class="inputTaskStatus d-none  jc-between al-center">
                 <strong>status :</strong>
                 <select
                   onchange="updateTaskStatusByInput(event)"
@@ -1530,7 +1241,10 @@ window.createTaskItem = (task) => {
                     task.taskStatusForInput == "todo" ? "selected" : ""
                   }>todo</option>
                   <option value="in progress" ${
-                    task.taskStatusForInput == "inProgress" ? "selected" : ""
+                    task.taskStatusForInput === "inProgress" ||
+                    task.taskStatusForInput === "in progress"
+                      ? "selected"
+                      : ""
                   } >in progress</option>
                   <option value="completed" ${
                     task.taskStatusForInput == "completed" ? "selected" : ""
@@ -1574,7 +1288,6 @@ window.displayUserTasks = (arrOfTaskArrs) => {
       }
     });
   });
-  updateStatus();
   showPriorityLevel();
   showStatusLevel();
 };
@@ -1598,9 +1311,9 @@ window.displayRemainingTime = (taskId, ...remainingTime) => {
   });
 };
 
-window.calculateRemainingTime = () => {
-  let userTasks = getUserData();
-  userTasks.forEach((taskArr) => {
+window.calculateRemainingTime = async () => {
+  let arrOfTaskArrs = await getDataFromDataBase();
+  arrOfTaskArrs.forEach((taskArr) => {
     taskArr.forEach((task) => {
       let deadLine = task.taskDeadLine;
       let convertedDeadLine = new Date(deadLine);

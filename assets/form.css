@@ -3,8 +3,7 @@
 }
 
 .formBody > .main-container {
-  margin: 0;
-  height: calc(100vh - 10rem);
+  margin-top: 4rem;
 }
 
 .formBody,
@@ -167,15 +166,4 @@ input,
 .signUpWithGoogle > img {
   width: 2rem;
   height: 2rem;
-}
-/*!=============== SPINER STYLING ===============*/
-.spinerContainer {
-  position: absolute;
-  z-index: 999;
-  background-color: rgba(255, 255, 255, 1);
-}
-
-.spinerText {
-  font-family: "jost", sans-serif;
-  font-size: 1.5rem;
 }

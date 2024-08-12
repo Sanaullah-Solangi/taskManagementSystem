@@ -50,13 +50,6 @@
     width: 100%;
   }
 
-  .taskStatus {
-    display: none;
-  }
-  .inputTaskStatus {
-    display: flex;
-  }
-
   .modalContent {
     width: 90%;
     height: fit-content;
@@ -139,6 +132,12 @@
     font-size: 2rem;
     right: 1%;
     top: 1%;
+  }
+  .taskStatus {
+    display: none;
+  }
+  .inputTaskStatus {
+    display: flex;
   }
 }
 @media (width <= 565px) {
