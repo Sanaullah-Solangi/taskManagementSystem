@@ -33,7 +33,6 @@ let inProgressList = document.querySelector(".inProgress");
 let completedList = document.querySelector(".completed");
 let modalContent = document.querySelector(".modalContent");
 let modalHeading = document.querySelector(".modalHeading"); // MODAL HEADING
-let modalStatus = document.querySelector("#modalStatus"); // STATUS INPUT IN MODAL
 let nameValidation;
 let emailValidation;
 let passwordValidation;
@@ -680,8 +679,7 @@ onAuthStateChanged(auth, (user) => {
   if (user) {
     const uid = user.uid;
     console.log(user);
-    if (location.pathname == "/main.html") {
-      getUserDataFromFireStore();
+    if (location.pathname == "./board.html") {
     }
   } else {
     // User is signed out
@@ -756,11 +754,12 @@ window.saveDataToLocalStorageFromModal = async () => {
     taskDescription: modalDescription.value,
     taskDeadLine: modalDeadLine.value,
     taskStatus: modalStatus.value,
-    taskStatusForInput: modalStatus.value,
     taskStatusId: `ST${taskId}`,
     taskPriority: modalPriority.value,
     taskPriorityId: `ID${taskId}`,
   };
+  console.log(modalStatus.value);
+
   if (inputsAreFilled && flagForUl && !flagToEditTask) {
     if (!getLoggedUser()) {
       Swal.fire({
@@ -819,12 +818,14 @@ window.saveDataToLocalStorageFromModal = async () => {
     });
     flagForUl = "";
     hideModalAndShowUls();
+    updateStatus();
   } else if (inputsAreFilled && flagForUl && flagToEditTask) {
     try {
       arrOfTaskArrs.forEach((taskArry) => {
         taskArry.forEach((task, ind) => {
           if (task.todoTaskId == flagToEditTask) {
             taskArry[ind] = todoData;
+            console.log(todoData);
           }
         });
       });
@@ -851,6 +852,7 @@ window.saveDataToLocalStorageFromModal = async () => {
     }
 
     hideModalAndShowUls();
+    updateStatus();
     inputs.forEach((item) => {
       item.value = "";
     });
@@ -877,7 +879,7 @@ window.saveDataToLocalStorageFromModal = async () => {
 window.getRealTimeData = () => {
   spiner.classList.replace("d-none", "d-flex");
   spinerText.innerHTML = "Loading your data, please wait...";
-  if (location.pathname == "/board.html") {
+  if (getLoggedUser()) {
     let arrOfTaskArrs = [];
     try {
       onSnapshot(doc(db, "users", uid), (doc) => {
@@ -1155,13 +1157,35 @@ window.updateStatus = async (targetedUl, statusId) => {
       arrOfTaskArrs.forEach((taskArr) => {
         taskArr.forEach((task) => {
           if (task.taskStatusId == statusId) {
-            if (targetedUl.classList.contains("toDos")) {
-              task.taskStatus = "todos";
-            } else if (targetedUl.classList.contains("inProgress")) {
-              task.taskStatus = "inProgress";
-            } else if (targetedUl.classList.contains("completed")) {
-              console.log("completed");
+            let deadLine = task.taskDeadLine;
+            let convertedDeadLine = new Date(deadLine).getTime();
+            let currentDate = new Date().getTime();
+            if (
+              currentDate < convertedDeadLine &&
+              targetedUl.classList.contains("toDos")
+            ) {
+              task.taskStatus = "todo";
+              updateTaskStatusByInput(0, statusId, task.taskStatus);
+            } else if (
+              currentDate < convertedDeadLine &&
+              targetedUl.classList.contains("inProgress")
+            ) {
+              task.taskStatus = "in progress";
+              updateTaskStatusByInput(0, statusId, task.taskStatus);
+            } else if (
+              currentDate < convertedDeadLine &&
+              targetedUl.classList.contains("completed")
+            ) {
               task.taskStatus = "completed";
+              updateTaskStatusByInput(0, statusId, task.taskStatus);
+            } else if (
+              currentDate > convertedDeadLine &&
+              targetedUl.classList.contains(
+                "toDos" || "inProgress" || "completed"
+              )
+            ) {
+              task.taskStatus = "Missed deadline";
+              updateTaskStatusByInput(0, statusId, task.taskStatus);
             }
           }
         });
@@ -1182,26 +1206,35 @@ window.updateStatus = async (targetedUl, statusId) => {
       title: "Status Update Failed",
       text: "An error occurred while updating the task status. Please try again.",
     });
+    console.log(error);
   }
-  console.log(error);
 };
 
 //* FUNCTIONs TO UPDATE TASK Status
-window.updateTaskStatusByInput = async (event) => {
-  let selectedStatusId = event.target.id;
-  let selectedStatus = event.target.value;
+window.updateTaskStatusByInput = async (event, statusId, status) => {
   try {
     let arrOfTaskArrs = await getDataFromDataBase();
     for (let taskArr of arrOfTaskArrs) {
       for (let task of taskArr) {
-        if (task.taskStatusId == selectedStatusId) {
-          task.taskStatusForInput = selectedStatus;
+        if (event && !statusId && !status) {
+          let selectedStatusId = event.target.id;
+          let selectedStatus = event.target.value;
+          if (task.taskStatusId == selectedStatusId) {
+            task.taskStatus = selectedStatus;
+            updateDataInDataBase(arrOfTaskArrs);
+            changeUlBasedOnTaskStatus(selectedStatusId, selectedStatus);
+            showStatusLevel();
+          }
+        } else if (!event && statusId && status) {
+          if (task.taskStatusId == statusId) {
+            task.taskStatus = status;
+            updateDataInDataBase(arrOfTaskArrs);
+            changeUlBasedOnTaskStatus(statusId, status);
+            showStatusLevel();
+          }
         }
       }
     }
-    updateDataInDataBase(arrOfTaskArrs);
-    changeUlBasedOnTaskStatus(selectedStatusId, selectedStatus);
-    showStatusLevel();
   } catch (error) {
     Swal.fire({
       customClass: {
@@ -1435,16 +1468,16 @@ window.createTaskItem = (task) => {
                   id="${task.taskStatusId}"
                 >
                   <option value="todo" ${
-                    task.taskStatusForInput == "todo" ? "selected" : ""
+                    task.taskStatus == "todo" ? "selected" : ""
                   }>todo</option>
                   <option value="in progress" ${
-                    task.taskStatusForInput === "inProgress" ||
-                    task.taskStatusForInput === "in progress"
+                    task.taskStatus === "inProgress" ||
+                    task.taskStatus === "in progress"
                       ? "selected"
                       : ""
                   } >in progress</option>
                   <option value="completed" ${
-                    task.taskStatusForInput == "completed" ? "selected" : ""
+                    task.taskStatus == "completed" ? "selected" : ""
                   }>completed</option>
                 </select>
               </p>
@@ -1535,6 +1568,7 @@ window.calculateRemainingTime = async () => {
           let seconds = Math.floor((diff % (1000 * 60)) / 1000);
           let remainingTime = [months, days, hours, minutes, seconds];
           displayRemainingTime(task.todoTaskId, ...remainingTime);
+          updateStatus();
         }
       });
     });
@@ -1543,7 +1577,7 @@ window.calculateRemainingTime = async () => {
   }
 };
 setInterval(() => {
-  if (location.pathname == "./board.html") {
+  if (location.pathname == "/board.html") {
     calculateRemainingTime();
   }
 }, 1000);
@@ -1622,6 +1656,13 @@ window.showModalAndHideUls = (event) => {
         ".taskDeadLine > span"
       ).innerHTML;
 
+      //! ASSINGING TASK'S VALUES TO MODAL'S INPUTS
+      modalTitle.value = taskTitle.trim();
+      modalDescription.value = taskDescription.trim();
+      modalDeadLine.value = taskDeadLine.trim();
+      modalStatus.value = taskStatus;
+      modalPriority.value = taskPriority;
+
       //! EDITING HEADINGS ACCORDING TO THE LIST
       if (ul.classList.contains("toDos")) {
         modalHeading.innerHTML = "Edit Todo Task";
@@ -1630,12 +1671,7 @@ window.showModalAndHideUls = (event) => {
       } else if (ul.classList.contains("completed")) {
         modalHeading.innerHTML = "Edit completed task";
       }
-      //! ASSINGING TASK'S VALUES TO MODAL'S INPUTS
-      modalTitle.value = taskTitle.trim();
-      modalDescription.value = taskDescription.trim();
-      modalDeadLine.value = taskDeadLine.trim();
-      modalStatus.value = taskStatus.trim();
-      modalPriority.value = taskPriority;
+
       //! ADJUSTING MODAL'S STATUS INPUT ACCORDING TO THE TASK STATUS
       if (taskStatus.trim() == "todo") {
         modalStatus.selectedIndex = 0;
@@ -1673,6 +1709,7 @@ window.hideModalAndShowUls = () => {
     }
     modalContainer.classList.replace("d-flex", "d-none");
   }, 700);
+  getRealTimeData();
 };
 
 //* FUNCTION TO SHOW LOG OUT BTN
