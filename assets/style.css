@@ -291,6 +291,7 @@ header > a > img {
 }
 
 .logo {
+  cursor: pointer;
   font-size: 2rem;
 }
 
