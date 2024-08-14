@@ -53,6 +53,29 @@ const uid = localStorage.getItem("uid");
 //! SIGN-IN AND LOG-IN FUNCTIONALITIES
 //! ==============================================
 
+window.checkUserEmailVarification = () => {
+  let userData = auth.currentUser;
+  if (userData.emailVerified) {
+    return true;
+  } else {
+    Swal.fire({
+      customClass: {
+        container: "sweatContainer",
+        popup: "sweatPopup",
+        title: "sweatTitle",
+        htmlContainer: "sweatPara",
+        confirmButton: "sweatBtn",
+        cancelButton: "sweatBtn",
+      },
+      icon: "error",
+      title: "Action Restricted",
+      text: "Please verify your email using the link we sent to your email to add tasks or perform any actions.",
+    });
+
+    return false;
+  }
+};
+
 //* VALIDATE THE UESR NAME USING REGULAR EXPRESSION.
 window.validateName = (event) => {
   const usernameRegex = /^(?!\s*$).+/;
@@ -447,6 +470,7 @@ window.logIn = function () {
         });
 
         //* DOING EMPTY ALL INPUTS
+        setLoggedUserEmail(email.value);
         email.value = "";
         password.value = "";
 
@@ -540,6 +564,7 @@ window.logOut = function () {
     .then(() => {
       spiner.classList.replace("d-flex", "d-none");
       localStorage.removeItem("uid");
+      localStorage.removeItem("loggedInUserEmail");
       Swal.fire({
         customClass: {
           container: "sweatContainer",
@@ -579,7 +604,18 @@ window.logOut = function () {
     });
 };
 
-//! RESET PASSWORD
+//* FUNCTION TO GET CURRENT USER'S EMAIL IN LOCAL STORAGE
+window.getLoggedUser = () => {
+  var currentUserEmail = localStorage.getItem("loggedInUserEmail");
+  return currentUserEmail;
+};
+
+//* FUNCTION TO SET CURRENT USER'S EMAIL IN LOCAL STORAGE
+window.setLoggedUserEmail = (currentUserEmail) => {
+  localStorage.setItem("loggedInUserEmail", currentUserEmail);
+};
+
+//* FUNCTION TO RESET PASSWORD
 window.resetPassword = function () {
   let email = logInContainer.querySelector("#email");
   let formData = true;
@@ -654,7 +690,7 @@ onAuthStateChanged(auth, (user) => {
 });
 
 //! ==============================================
-//! LOCAL STORAGE MANAGEMENT
+//! FIRESTORE DATA BASE MANAGEMENT
 //! ==============================================
 
 //* FUNCTION TO GET DATA FROM FIRESTORE DATA BASE
@@ -686,13 +722,19 @@ window.updateDataInDataBase = async (arrOfTaskArrs) => {
       inProgress: arrOfTaskArrs[1],
       completed: arrOfTaskArrs[2],
     });
+    return true;
   } catch (error) {
     console.log(error);
   }
 };
-// ! CATCH KO SAHI KRNA HAI ALERT LAGA K
 //* FUNCTION TO COLLECT DATA FROM MODAL AND SAVE TO FIRESTORE DATA BASE
 window.saveDataToLocalStorageFromModal = async () => {
+  if (flagToEditTask) {
+    spinerText.innerHTML = "Saving your changes, please wait...";
+  } else {
+    spinerText.innerHTML = "Saving your new task, hold on...";
+  }
+  spiner.classList.replace("d-none", "d-flex");
   const userDataRef = doc(db, "users", uid);
   let arrOfTaskArrs = await getDataFromDataBase();
   let modalTitle = document.querySelector("#modalTitle");
@@ -720,8 +762,7 @@ window.saveDataToLocalStorageFromModal = async () => {
     taskPriorityId: `ID${taskId}`,
   };
   if (inputsAreFilled && flagForUl && !flagToEditTask) {
-    let currentUserEmail = getLoggedUser();
-    if (!currentUserEmail) {
+    if (!getLoggedUser()) {
       Swal.fire({
         customClass: {
           container: "sweatContainer",
@@ -753,7 +794,23 @@ window.saveDataToLocalStorageFromModal = async () => {
           completed: arrayUnion(todoData),
         });
       }
+      spiner.classList.replace("d-flex", "d-none");
     } catch (error) {
+      spiner.classList.replace("d-flex", "d-none");
+      Swal.fire({
+        customClass: {
+          container: "sweatContainer",
+          popup: "sweatPopup",
+          title: "sweatTitle",
+          htmlContainer: "sweatPara",
+          confirmButton: "sweatBtn",
+          cancelButton: "sweatBtn",
+        },
+        icon: "error",
+        title: "Task Not Added",
+        text: "There was an issue while adding the task. Please try again later.",
+      });
+
       console.log(error);
     }
 
@@ -763,15 +820,35 @@ window.saveDataToLocalStorageFromModal = async () => {
     flagForUl = "";
     hideModalAndShowUls();
   } else if (inputsAreFilled && flagForUl && flagToEditTask) {
-    arrOfTaskArrs.forEach((taskArry) => {
-      taskArry.forEach((task, ind) => {
-        if (task.todoTaskId == flagToEditTask) {
-          taskArry[ind] = todoData;
-        }
+    try {
+      arrOfTaskArrs.forEach((taskArry) => {
+        taskArry.forEach((task, ind) => {
+          if (task.todoTaskId == flagToEditTask) {
+            taskArry[ind] = todoData;
+          }
+        });
       });
-    });
 
-    updateDataInDataBase(arrOfTaskArrs);
+      await updateDataInDataBase(arrOfTaskArrs);
+      spiner.classList.replace("d-flex", "d-none");
+    } catch (error) {
+      spiner.classList.replace("d-flex", "d-none");
+      Swal.fire({
+        customClass: {
+          container: "sweatContainer",
+          popup: "sweatPopup",
+          title: "sweatTitle",
+          htmlContainer: "sweatPara",
+          confirmButton: "sweatBtn",
+          cancelButton: "sweatBtn",
+        },
+        icon: "error",
+        title: "Editing Failed",
+        text: "There was an issue while saving your changes. Please try again later.",
+      });
+
+      console.log(error);
+    }
 
     hideModalAndShowUls();
     inputs.forEach((item) => {
@@ -797,65 +874,80 @@ window.saveDataToLocalStorageFromModal = async () => {
   }
 };
 
-//! SPINER WAGERA LAGANE HEN
 window.getRealTimeData = () => {
-  let arrOfTaskArrs = [];
-  onSnapshot(doc(db, "users", uid), (doc) => {
-    let userData = doc.data();
-    for (let arrayOfObject in userData) {
-      if (Array.isArray(userData[arrayOfObject])) {
-        if (arrayOfObject == "todos") {
-          arrOfTaskArrs[0] = userData[arrayOfObject];
-        } else if (arrayOfObject == "inProgress") {
-          arrOfTaskArrs[1] = userData[arrayOfObject];
-        } else if (arrayOfObject == "completed") {
-          arrOfTaskArrs[2] = userData[arrayOfObject];
+  spiner.classList.replace("d-none", "d-flex");
+  spinerText.innerHTML = "Loading your data, please wait...";
+  if (location.pathname == "/board.html") {
+    let arrOfTaskArrs = [];
+    try {
+      onSnapshot(doc(db, "users", uid), (doc) => {
+        let userData = doc.data();
+        for (let arrayOfObject in userData) {
+          if (Array.isArray(userData[arrayOfObject])) {
+            if (arrayOfObject == "todos") {
+              arrOfTaskArrs[0] = userData[arrayOfObject];
+            } else if (arrayOfObject == "inProgress") {
+              arrOfTaskArrs[1] = userData[arrayOfObject];
+            } else if (arrayOfObject == "completed") {
+              arrOfTaskArrs[2] = userData[arrayOfObject];
+            }
+          }
         }
+        resizeUl(arrOfTaskArrs);
+        displayUserTasks(arrOfTaskArrs);
+      });
+    } catch (error) {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.log(errorCode);
+      spiner.classList.replace("d-flex", "d-none");
+      if (errorCode == "auth/network-request-failed") {
+        Swal.fire({
+          customClass: {
+            container: "sweatContainer",
+            popup: "sweatPopup",
+            title: "sweatTitle",
+            htmlContainer: "sweatPara",
+            confirmButton: "sweatBtn",
+            cancelButton: "sweatBtn",
+          },
+          icon: "error",
+          title: "Network Error",
+          text: "A network error occurred. Please check your internet connection and try again.",
+        });
+      } else {
+        Swal.fire({
+          customClass: {
+            container: "sweatContainer",
+            popup: "sweatPopup",
+            title: "sweatTitle",
+            htmlContainer: "sweatPara",
+            confirmButton: "sweatBtn",
+            cancelButton: "sweatBtn",
+          },
+          icon: "error",
+          title: "Data Fetch Failed",
+          text: "An error occurred while fetching the data. Please try again later.",
+        });
       }
     }
-    resizeUl(arrOfTaskArrs);
-    displayUserTasks(arrOfTaskArrs);
-  });
+  }
+  spiner.classList.replace("d-flex", "d-none");
 };
-
 getRealTimeData();
-
-//* FUNCTION TO GET CURRENT USER'S EMAIL IN LOCAL STORAGE
-window.getLoggedUser = () => {
-  var currentUserEmail = localStorage.getItem("loggedInUserEmail");
-  return currentUserEmail;
-};
-
-window.setLoggedUserEmail = (currentUserEmail) => {
-  localStorage.setItem("loggedInUserEmail", currentUserEmail);
-};
 
 //* FUNCTION TO DELETE ALL TASKS
 window.deleteAllTasks = async () => {
-  let flagToShowError = 0;
-  const userDataRef = doc(db, "users", uid);
-  let arrOfTaskArrs = await getDataFromDataBase();
+  if (checkUserEmailVarification()) {
+    spiner.classList.replace("d-none", "d-flex");
+    spinerText.innerHTML = "Clearing All Tasks... Hang Tight.";
+    let flagToShowError = 0;
+    try {
+      const userDataRef = doc(db, "users", uid);
+      let arrOfTaskArrs = await getDataFromDataBase();
 
-  arrOfTaskArrs.forEach((arrayOfObject) => {
-    if (arrayOfObject.length != 0) {
-      Swal.fire({
-        customClass: {
-          container: "sweatContainer",
-          popup: "sweatPopup",
-          title: "sweatTitle",
-          htmlContainer: "sweatPara",
-          confirmButton: "sweatBtn",
-          cancelButton: "sweatBtn",
-        },
-        title: "Are you sure?",
-        text: "This will delete all your tasks!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, delete all!",
-      }).then((result) => {
-        if (result.isConfirmed) {
+      arrOfTaskArrs.forEach((arrayOfObject) => {
+        if (arrayOfObject.length != 0) {
           Swal.fire({
             customClass: {
               container: "sweatContainer",
@@ -865,24 +957,96 @@ window.deleteAllTasks = async () => {
               confirmButton: "sweatBtn",
               cancelButton: "sweatBtn",
             },
-            title: "Deleted!",
-            text: "All your tasks have been deleted.",
-            icon: "success",
-          }).then(async () => {
-            await updateDoc(userDataRef, {
-              todos: [],
-              inProgress: [],
-              completed: [],
-            });
+            title: "Are you sure?",
+            text: "This will delete all your tasks!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete all!",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              Swal.fire({
+                customClass: {
+                  container: "sweatContainer",
+                  popup: "sweatPopup",
+                  title: "sweatTitle",
+                  htmlContainer: "sweatPara",
+                  confirmButton: "sweatBtn",
+                  cancelButton: "sweatBtn",
+                },
+                title: "Deleted!",
+                text: "All your tasks have been deleted.",
+                icon: "success",
+              }).then(async () => {
+                await updateDoc(userDataRef, {
+                  todos: [],
+                  inProgress: [],
+                  completed: [],
+                });
+              });
+              spiner.classList.replace("d-flex", "d-none");
+            }
           });
+        } else {
+          flagToShowError += 1;
         }
       });
-    } else {
-      flagToShowError += 1;
+    } catch (error) {
+      spiner.classList.replace("d-flex", "d-none");
+      Swal.fire({
+        customClass: {
+          container: "sweatContainer",
+          popup: "sweatPopup",
+          title: "sweatTitle",
+          htmlContainer: "sweatPara",
+          confirmButton: "sweatBtn",
+          cancelButton: "sweatBtn",
+        },
+        icon: "error",
+        title: "Deletion Failed",
+        text: "Unable to clear all tasks. Please try again or check your connection.",
+      });
     }
-  });
 
-  if (flagToShowError == 3) {
+    if (flagToShowError == 3) {
+      Swal.fire({
+        customClass: {
+          container: "sweatContainer",
+          popup: "sweatPopup",
+          title: "sweatTitle",
+          htmlContainer: "sweatPara",
+          confirmButton: "sweatBtn",
+          cancelButton: "sweatBtn",
+        },
+        title: "No Tasks",
+        text: "There are no tasks to delete.",
+        icon: "info",
+      });
+    }
+  }
+};
+
+//* FUNCTION TO DELET TARGETD TASK
+window.deleteTask = async (event) => {
+  spiner.classList.replace("d-none", "d-flex");
+  spinerText.innerHTML = "Removing Task... Just a Moment...";
+  let taskLi = event.target.closest("li");
+  let taskId = taskLi.id;
+  try {
+    let arrOfTaskArrs = await getDataFromDataBase();
+    arrOfTaskArrs.forEach((taskArr) => {
+      taskArr.forEach((obj, ind) => {
+        if (obj.todoTaskId == taskId) {
+          taskArr.splice(ind, ind + 1);
+        }
+      });
+    });
+
+    updateDataInDataBase(arrOfTaskArrs);
+    spiner.classList.replace("d-flex", "d-none");
+  } catch (error) {
+    spiner.classList.replace("d-flex", "d-none");
     Swal.fire({
       customClass: {
         container: "sweatContainer",
@@ -892,28 +1056,12 @@ window.deleteAllTasks = async () => {
         confirmButton: "sweatBtn",
         cancelButton: "sweatBtn",
       },
-      title: "No Tasks",
-      text: "There are no tasks to delete.",
-      icon: "info",
+      icon: "error",
+      title: "Task Deletion Failed",
+      text: "There was an issue deleting the task. Please try again.",
     });
+    console.logerror;
   }
-};
-
-//! SPINER WAGERA LAGANA HAI
-//* FUNCTION TO DELET TARGETD TASK
-window.deleteTask = async (event) => {
-  let taskLi = event.target.closest("li");
-  let taskId = taskLi.id;
-  let arrOfTaskArrs = await getDataFromDataBase();
-  arrOfTaskArrs.forEach((taskArr) => {
-    taskArr.forEach((obj, ind) => {
-      if (obj.todoTaskId == taskId) {
-        taskArr.splice(ind, ind + 1);
-      }
-    });
-  });
-
-  updateDataInDataBase(arrOfTaskArrs);
 };
 
 //! ==============================================
@@ -947,80 +1095,129 @@ window.dragOver = (event) => {
 //* Function to Handle Drop Event
 window.drop = async (event) => {
   event.preventDefault();
-  let arrOfTaskArrs = await getDataFromDataBase();
   let taskId = localStorage.getItem("ID");
   let target = event.target;
   let statusId;
   let targetedUl;
-
   if (!target.classList.contains("taskCardList")) {
     targetedUl = target.closest("ul");
   } else {
     targetedUl = target;
   }
-
-  arrOfTaskArrs.forEach((taskArry) => {
-    taskArry.forEach((task, ind) => {
-      if (task.todoTaskId == taskId) {
-        taskToDrop = taskArry.splice(ind, ind + 1);
-        if (targetedUl.classList.contains("toDos")) {
-          arrOfTaskArrs[0].push(taskToDrop[0]);
-          statusId = taskToDrop[0].taskStatusId;
-        } else if (targetedUl.classList.contains("inProgress")) {
-          arrOfTaskArrs[1].push(taskToDrop[0]);
-          statusId = taskToDrop[0].taskStatusId;
-        } else if (targetedUl.classList.contains("completed")) {
-          arrOfTaskArrs[2].push(taskToDrop[0]);
-          statusId = taskToDrop[0].taskStatusId;
-        }
-      }
-    });
-  });
-  updateDataInDataBase(arrOfTaskArrs);
-  updateStatus(targetedUl, statusId);
-};
-
-//! ==============================================
-//! TASK DISPLAY AND MANAGEMENT
-//! ==============================================
-
-//* FUNCTION TO UPDATE THE STATUS OF A TASK BASED ON ITS UL LOCATION
-window.updateStatus = async (targetedUl, statusId) => {
-  let arrOfTaskArrs = await getDataFromDataBase();
-  if (targetedUl) {
-    arrOfTaskArrs.forEach((taskArr) => {
-      taskArr.forEach((task) => {
-        if (task.taskStatusId == statusId) {
+  try {
+    let arrOfTaskArrs = await getDataFromDataBase();
+    arrOfTaskArrs.forEach((taskArry) => {
+      taskArry.forEach((task, ind) => {
+        if (task.todoTaskId == taskId) {
+          taskToDrop = taskArry.splice(ind, ind + 1);
           if (targetedUl.classList.contains("toDos")) {
-            task.taskStatus = "todos";
+            arrOfTaskArrs[0].push(taskToDrop[0]);
+            statusId = taskToDrop[0].taskStatusId;
           } else if (targetedUl.classList.contains("inProgress")) {
-            task.taskStatus = "inProgress";
+            arrOfTaskArrs[1].push(taskToDrop[0]);
+            statusId = taskToDrop[0].taskStatusId;
           } else if (targetedUl.classList.contains("completed")) {
-            console.log("completed");
-            task.taskStatus = "completed";
+            arrOfTaskArrs[2].push(taskToDrop[0]);
+            statusId = taskToDrop[0].taskStatusId;
           }
         }
       });
     });
     updateDataInDataBase(arrOfTaskArrs);
+    updateStatus(targetedUl, statusId);
+  } catch (error) {
+    Swal.fire({
+      customClass: {
+        container: "sweatContainer",
+        popup: "sweatPopup",
+        title: "sweatTitle",
+        htmlContainer: "sweatPara",
+        confirmButton: "sweatBtn",
+        cancelButton: "sweatBtn",
+      },
+      icon: "error",
+      title: "Drop Failed",
+      text: "There was an issue moving the task. Please try again.",
+    });
+    console.log(error);
   }
 };
 
-//* FUNCTION TO UPDATE TASK Status
+//! ==============================================
+//! TASK MANAGEMENT FUNCTIONALITIES
+//! ==============================================
+
+//* FUNCTION TO UPDATE THE STATUS OF A TASK BASED ON ITS UL LOCATION
+window.updateStatus = async (targetedUl, statusId) => {
+  try {
+    let arrOfTaskArrs = await getDataFromDataBase();
+    if (targetedUl) {
+      arrOfTaskArrs.forEach((taskArr) => {
+        taskArr.forEach((task) => {
+          if (task.taskStatusId == statusId) {
+            if (targetedUl.classList.contains("toDos")) {
+              task.taskStatus = "todos";
+            } else if (targetedUl.classList.contains("inProgress")) {
+              task.taskStatus = "inProgress";
+            } else if (targetedUl.classList.contains("completed")) {
+              console.log("completed");
+              task.taskStatus = "completed";
+            }
+          }
+        });
+      });
+      updateDataInDataBase(arrOfTaskArrs);
+    }
+  } catch (error) {
+    Swal.fire({
+      customClass: {
+        container: "sweatContainer",
+        popup: "sweatPopup",
+        title: "sweatTitle",
+        htmlContainer: "sweatPara",
+        confirmButton: "sweatBtn",
+        cancelButton: "sweatBtn",
+      },
+      icon: "error",
+      title: "Status Update Failed",
+      text: "An error occurred while updating the task status. Please try again.",
+    });
+  }
+  console.log(error);
+};
+
+//* FUNCTIONs TO UPDATE TASK Status
 window.updateTaskStatusByInput = async (event) => {
   let selectedStatusId = event.target.id;
   let selectedStatus = event.target.value;
-  let arrOfTaskArrs = await getDataFromDataBase();
-  for (let taskArr of arrOfTaskArrs) {
-    for (let task of taskArr) {
-      if (task.taskStatusId == selectedStatusId) {
-        task.taskStatusForInput = selectedStatus;
+  try {
+    let arrOfTaskArrs = await getDataFromDataBase();
+    for (let taskArr of arrOfTaskArrs) {
+      for (let task of taskArr) {
+        if (task.taskStatusId == selectedStatusId) {
+          task.taskStatusForInput = selectedStatus;
+        }
       }
     }
+    updateDataInDataBase(arrOfTaskArrs);
+    changeUlBasedOnTaskStatus(selectedStatusId, selectedStatus);
+    showStatusLevel();
+  } catch (error) {
+    Swal.fire({
+      customClass: {
+        container: "sweatContainer",
+        popup: "sweatPopup",
+        title: "sweatTitle",
+        htmlContainer: "sweatPara",
+        confirmButton: "sweatBtn",
+        cancelButton: "sweatBtn",
+      },
+      icon: "error",
+      title: "Status Update Failed",
+      text: "An error occurred while moving the task to the appropriate list. Please try again.",
+    });
+    console.log(error);
   }
-  updateDataInDataBase(arrOfTaskArrs);
-  changeUlBasedOnTaskStatus(selectedStatusId, selectedStatus);
-  showStatusLevel();
 };
 
 window.changeUlBasedOnTaskStatus = async (statusId, status) => {
@@ -1044,6 +1241,7 @@ window.changeUlBasedOnTaskStatus = async (statusId, status) => {
   updateDataInDataBase(arrOfTaskArrs);
 };
 
+//* FUNCTION TO CHANGE COLOR BASED ON STATUS
 window.showStatusLevel = () => {
   let statusLevel = document.querySelectorAll(".inputTaskStatus > select");
   for (let selectedStatus of statusLevel) {
@@ -1065,17 +1263,33 @@ window.showStatusLevel = () => {
 window.updateTaskPriority = async (event) => {
   let selectedPriorityId = event.target.id;
   let selectedPriority = event.target.value;
-  let arrOfTaskArrs = await getDataFromDataBase();
+  try {
+    let arrOfTaskArrs = await getDataFromDataBase();
 
-  for (let taskArr of arrOfTaskArrs) {
-    for (let task of taskArr) {
-      if (task.taskPriorityId == selectedPriorityId) {
-        task.taskPriority = selectedPriority;
+    for (let taskArr of arrOfTaskArrs) {
+      for (let task of taskArr) {
+        if (task.taskPriorityId == selectedPriorityId) {
+          task.taskPriority = selectedPriority;
+        }
       }
     }
+    updateDataInDataBase(arrOfTaskArrs);
+    showPriorityLevel();
+  } catch (error) {
+    Swal.fire({
+      customClass: {
+        container: "sweatContainer",
+        popup: "sweatPopup",
+        title: "sweatTitle",
+        htmlContainer: "sweatPara",
+        confirmButton: "sweatBtn",
+        cancelButton: "sweatBtn",
+      },
+      icon: "error",
+      title: "Priority Update Failed",
+      text: "An error occurred while updating the task priority. Please try again.",
+    });
   }
-  updateDataInDataBase(arrOfTaskArrs);
-  showPriorityLevel();
 };
 //* FUNCTION TO CHANGE COLOR BASED ON PRIORITY LEVEL
 window.showPriorityLevel = () => {
@@ -1096,7 +1310,7 @@ window.showPriorityLevel = () => {
 };
 showPriorityLevel();
 
-//* FUNCTION TO DUBLICATE TASK
+//* FUNCTION TO DUBLICATE TASKs
 window.copyTask = async (event) => {
   let taskUl = event.target.closest("ul");
   let taskLi = event.target.closest("li");
@@ -1137,39 +1351,22 @@ window.copyTask = async (event) => {
       });
     }
   } catch (error) {
+    Swal.fire({
+      customClass: {
+        container: "sweatContainer",
+        popup: "sweatPopup",
+        title: "sweatTitle",
+        htmlContainer: "sweatPara",
+        confirmButton: "sweatBtn",
+        cancelButton: "sweatBtn",
+      },
+      icon: "error",
+      title: "Copy Failed",
+      text: "An error occurred while copying the task. Please try again.",
+    });
+
     console.log(error);
   }
-};
-
-//* FUNCTION TO ADJUST THE HEIGHT AND WIDTH OF EMPTY UL ELEMENTS
-window.resizeUl = (arrOfTaskArrs) => {
-  arrOfTaskArrs.forEach((taskArr, index) => {
-    //todo====== todos ======
-    if (index == 0 && taskArr.length == 0) {
-      toDosList.classList.add("heightWidth");
-      toDosList.innerHTML = "<p class='d-flex'>add new task</p>";
-    } else if (index == 0 && taskArr.length !== 0) {
-      toDosList.classList.remove("heightWidth");
-      toDosList.innerHTML = "<p class='d-none'>add new task</p>";
-    }
-    //todo====== in progress ======
-    if (index == 1 && taskArr.length == 0) {
-      inProgressList.classList.add("heightWidth");
-      inProgressList.innerHTML = "<p class='d-flex'>add new task</p>";
-    } else if (index == 1 && taskArr.length !== 0) {
-      inProgressList.classList.remove("heightWidth");
-      inProgressList.innerHTML = "<p class='d-none'>add new task</p>";
-    }
-
-    //todo====== completed ======
-    if (index == 2 && taskArr.length == 0) {
-      completedList.classList.add("heightWidth");
-      completedList.innerHTML = "<p class='d-flex'>add new task</p>";
-    } else {
-      completedList.classList.remove("heightWidth");
-      completedList.innerHTML = "<p class='d-none'>add new task</p>";
-    }
-  });
 };
 
 //* HELPER FUNCTION TO CREATE A TASK ITEM
@@ -1312,42 +1509,79 @@ window.displayRemainingTime = (taskId, ...remainingTime) => {
 };
 
 window.calculateRemainingTime = async () => {
-  let arrOfTaskArrs = await getDataFromDataBase();
-  arrOfTaskArrs.forEach((taskArr) => {
-    taskArr.forEach((task) => {
-      let deadLine = task.taskDeadLine;
-      let convertedDeadLine = new Date(deadLine);
-      let currentDate = new Date();
-      if (
-        currentDate.getTime() == convertedDeadLine.getTime() ||
-        currentDate.getTime() > convertedDeadLine.getTime()
-      ) {
-        let remainingTime = [0, 0, 0, 0, 0];
-        displayRemainingTime(task.todoTaskId, ...remainingTime);
-      } else {
-        let diff = convertedDeadLine - currentDate;
-        let months = Math.floor(diff / (1000 * 60 * 60 * 24 * 30));
-        let days = Math.floor(
-          (diff % (1000 * 60 * 60 * 24 * 30)) / (1000 * 60 * 60 * 24)
-        );
-        let hours = Math.floor(
-          (diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-        );
-        let minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-        let seconds = Math.floor((diff % (1000 * 60)) / 1000);
-        let remainingTime = [months, days, hours, minutes, seconds];
-        displayRemainingTime(task.todoTaskId, ...remainingTime);
-      }
+  try {
+    let arrOfTaskArrs = await getDataFromDataBase();
+    arrOfTaskArrs.forEach((taskArr) => {
+      taskArr.forEach((task) => {
+        let deadLine = task.taskDeadLine;
+        let convertedDeadLine = new Date(deadLine);
+        let currentDate = new Date();
+        if (
+          currentDate.getTime() == convertedDeadLine.getTime() ||
+          currentDate.getTime() > convertedDeadLine.getTime()
+        ) {
+          let remainingTime = [0, 0, 0, 0, 0];
+          displayRemainingTime(task.todoTaskId, ...remainingTime);
+        } else {
+          let diff = convertedDeadLine - currentDate;
+          let months = Math.floor(diff / (1000 * 60 * 60 * 24 * 30));
+          let days = Math.floor(
+            (diff % (1000 * 60 * 60 * 24 * 30)) / (1000 * 60 * 60 * 24)
+          );
+          let hours = Math.floor(
+            (diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+          );
+          let minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+          let seconds = Math.floor((diff % (1000 * 60)) / 1000);
+          let remainingTime = [months, days, hours, minutes, seconds];
+          displayRemainingTime(task.todoTaskId, ...remainingTime);
+        }
+      });
     });
-  });
+  } catch (error) {
+    console.log(error);
+  }
 };
 setInterval(() => {
-  calculateRemainingTime();
+  if (location.pathname == "./board.html") {
+    calculateRemainingTime();
+  }
 }, 1000);
 
 //! ==============================================
-//! MODAL FUNCTIONALITY
+//! UI ELEMENTS MANAGEMENT (MODALS, LISTS, BUTTONS)
 //! ==============================================
+
+//* FUNCTION TO ADJUST THE HEIGHT AND WIDTH OF EMPTY UL ELEMENTS
+window.resizeUl = (arrOfTaskArrs) => {
+  arrOfTaskArrs.forEach((taskArr, index) => {
+    //todo====== todos ======
+    if (index == 0 && taskArr.length == 0) {
+      toDosList.classList.add("heightWidth");
+      toDosList.innerHTML = "<p class='d-flex'>add new task</p>";
+    } else if (index == 0 && taskArr.length !== 0) {
+      toDosList.classList.remove("heightWidth");
+      toDosList.innerHTML = "<p class='d-none'>add new task</p>";
+    }
+    //todo====== in progress ======
+    if (index == 1 && taskArr.length == 0) {
+      inProgressList.classList.add("heightWidth");
+      inProgressList.innerHTML = "<p class='d-flex'>add new task</p>";
+    } else if (index == 1 && taskArr.length !== 0) {
+      inProgressList.classList.remove("heightWidth");
+      inProgressList.innerHTML = "<p class='d-none'>add new task</p>";
+    }
+
+    //todo====== completed ======
+    if (index == 2 && taskArr.length == 0) {
+      completedList.classList.add("heightWidth");
+      completedList.innerHTML = "<p class='d-flex'>add new task</p>";
+    } else {
+      completedList.classList.remove("heightWidth");
+      completedList.innerHTML = "<p class='d-none'>add new task</p>";
+    }
+  });
+};
 
 //* FUNCTION TO SHOW THE MODAL AND HIDE THE UL ELEMENTS
 window.showModalAndHideUls = (event) => {
@@ -1361,66 +1595,70 @@ window.showModalAndHideUls = (event) => {
   let modalDescription = document.querySelector("#modalDescription");
   let modalContainer = document.querySelector(".modalContainer");
   let taskCardList = document.querySelectorAll(".taskCardList");
-  //? HIDING ALL LISTS AND SHOWING MODAL
-  for (let list of taskCardList) {
-    list.classList.replace("d-flex", "d-none");
-    list.classList.remove("heightWidth");
-  }
-  modalContainer.classList.replace("d-none", "d-flex");
-  modalContent.classList.replace("animate__bounceOut", "animate__bounceIn");
+  if (checkUserEmailVarification()) {
+    //? HIDING ALL LISTS AND SHOWING MODAL
+    for (let list of taskCardList) {
+      list.classList.replace("d-flex", "d-none");
+      list.classList.remove("heightWidth");
+    }
+    modalContainer.classList.replace("d-none", "d-flex");
+    modalContent.classList.replace("animate__bounceOut", "animate__bounceIn");
 
-  //? IF EVENT TARGET IS EDIT BTN THIS PROGRAME WILL RUN
-  if (clickedBtn.classList.contains("edit")) {
-    //! GETTING MODAL'S VALUES & TARGET TAST TO EDIT
-    let taskToEdit = event.target.closest("li"); // PARENT LI OF CLICKED BTN
-    let idOftaskToEdit = event.target.closest("li").id; // ID OF PARENT LI OF CLICKED BTN
-    let taskTitle = taskToEdit.querySelector(".taskTitle").innerHTML;
-    let taskDescription =
-      taskToEdit.querySelector(".taskDescription").innerHTML;
-    let taskStatus = taskToEdit.querySelector(
-      ".taskStatus > .status"
-    ).innerHTML;
-    let taskPriority = taskToEdit.querySelector(".taskPriority > select").value;
-    let taskDeadLine = taskToEdit.querySelector(
-      ".taskDeadLine > span"
-    ).innerHTML;
+    //? IF EVENT TARGET IS EDIT BTN THIS PROGRAME WILL RUN
+    if (clickedBtn.classList.contains("edit")) {
+      //! GETTING MODAL'S VALUES & TARGET TAST TO EDIT
+      let taskToEdit = event.target.closest("li"); // PARENT LI OF CLICKED BTN
+      let idOftaskToEdit = event.target.closest("li").id; // ID OF PARENT LI OF CLICKED BTN
+      let taskTitle = taskToEdit.querySelector(".taskTitle").innerHTML;
+      let taskDescription =
+        taskToEdit.querySelector(".taskDescription").innerHTML;
+      let taskStatus = taskToEdit.querySelector(
+        ".taskStatus > .status"
+      ).innerHTML;
+      let taskPriority = taskToEdit.querySelector(
+        ".taskPriority > select"
+      ).value;
+      let taskDeadLine = taskToEdit.querySelector(
+        ".taskDeadLine > span"
+      ).innerHTML;
 
-    //! EDITING HEADINGS ACCORDING TO THE LIST
-    if (ul.classList.contains("toDos")) {
-      modalHeading.innerHTML = "Edit Todo Task";
-    } else if (ul.classList.contains("inProgress")) {
-      modalHeading.innerHTML = "Edit in pogress task";
-    } else if (ul.classList.contains("completed")) {
-      modalHeading.innerHTML = "Edit completed task";
+      //! EDITING HEADINGS ACCORDING TO THE LIST
+      if (ul.classList.contains("toDos")) {
+        modalHeading.innerHTML = "Edit Todo Task";
+      } else if (ul.classList.contains("inProgress")) {
+        modalHeading.innerHTML = "Edit in pogress task";
+      } else if (ul.classList.contains("completed")) {
+        modalHeading.innerHTML = "Edit completed task";
+      }
+      //! ASSINGING TASK'S VALUES TO MODAL'S INPUTS
+      modalTitle.value = taskTitle.trim();
+      modalDescription.value = taskDescription.trim();
+      modalDeadLine.value = taskDeadLine.trim();
+      modalStatus.value = taskStatus.trim();
+      modalPriority.value = taskPriority;
+      //! ADJUSTING MODAL'S STATUS INPUT ACCORDING TO THE TASK STATUS
+      if (taskStatus.trim() == "todo") {
+        modalStatus.selectedIndex = 0;
+      } else if (taskStatus.trim() == "in progress") {
+        modalStatus.selectedIndex = 1;
+      } else if (taskStatus.trim() == "completed") {
+        modalStatus.selectedIndex = 2;
+      }
+      flagForUl = ul;
+      flagToEditTask = idOftaskToEdit;
+    } else {
+      if (ul.classList.contains("toDos")) {
+        modalHeading.innerHTML = "Add A New Task";
+        modalStatus.selectedIndex = 0;
+      } else if (ul.classList.contains("inProgress")) {
+        modalHeading.innerHTML = "Add In progress task";
+        modalStatus.selectedIndex = 1;
+      } else if (ul.classList.contains("completed")) {
+        modalHeading.innerHTML = "Add A completed task";
+        modalStatus.selectedIndex = 2;
+      }
+      flagForUl = ul;
     }
-    //! ASSINGING TASK'S VALUES TO MODAL'S INPUTS
-    modalTitle.value = taskTitle.trim();
-    modalDescription.value = taskDescription.trim();
-    modalDeadLine.value = taskDeadLine.trim();
-    modalStatus.value = taskStatus.trim();
-    modalPriority.value = taskPriority;
-    //! ADJUSTING MODAL'S STATUS INPUT ACCORDING TO THE TASK STATUS
-    if (taskStatus.trim() == "todo") {
-      modalStatus.selectedIndex = 0;
-    } else if (taskStatus.trim() == "in progress") {
-      modalStatus.selectedIndex = 1;
-    } else if (taskStatus.trim() == "completed") {
-      modalStatus.selectedIndex = 2;
-    }
-    flagForUl = ul;
-    flagToEditTask = idOftaskToEdit;
-  } else {
-    if (ul.classList.contains("toDos")) {
-      modalHeading.innerHTML = "Add A New Task";
-      modalStatus.selectedIndex = 0;
-    } else if (ul.classList.contains("inProgress")) {
-      modalHeading.innerHTML = "Add In progress task";
-      modalStatus.selectedIndex = 1;
-    } else if (ul.classList.contains("completed")) {
-      modalHeading.innerHTML = "Add A completed task";
-      modalStatus.selectedIndex = 2;
-    }
-    flagForUl = ul;
   }
 };
 

@@ -422,6 +422,10 @@ h2 {
   text-align: left;
 }
 
+footer{
+  padding-bottom: 5rem;
+}
+
 /*!=============== SAME STYLING OF ALL TODOS ===============*/
 
 /*?=== MAIN CONTAINER ===*/
@@ -501,10 +505,10 @@ h2 {
 .todoProjectsContainer > .addTodosBtn {
   width: 98%;
   border-radius: 10px;
-  -webkit-border-radius: ;
-  -moz-border-radius: ;
-  -ms-border-radius: ;
-  -o-border-radius: ;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  -o-border-radius: 10px;
 }
 .taskCardList > .task {
   padding: 2rem 2rem;
@@ -604,10 +608,10 @@ h2 {
 
 .taskCardList > .task > :is(.inputTaskStatus, .taskPriority) > select {
   border-radius: 3px;
-  -webkit-border-radius: ;
-  -moz-border-radius: ;
-  -ms-border-radius: ;
-  -o-border-radius: ;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -ms-border-radius: 3px;
+  -o-border-radius: 3px;
   padding: 0.4rem 1rem;
   font-weight: bold;
 }
@@ -647,6 +651,10 @@ h2 {
 
 .modalContainer {
   border: none;
+  position: fixed;
+  top: 0%;
+  left: 0%;
+  z-index: 80;
 }
 .modalContent,
 .modalHeading {
@@ -771,7 +779,7 @@ label,
   position: fixed;
   top: 0%;
   left: 0%;
-  z-index: 999;
+  z-index: 90;
   background-color: rgba(74, 66, 77, 0.893);
 }
 

@@ -33,7 +33,9 @@
     <div class="header-container w-100">
       <header class="header transition-3ms m-auto d-flex jc-between p-relative">
         <!-- LOGO -->
-        <a class="logo d-flex al-center jc-center"
+        <a
+          onclick="checkUserEmailVarification()"
+          class="logo d-flex al-center jc-center"
           ><img src="./assets/images/logo.png" alt=""
         /></a>
 
@@ -230,7 +232,7 @@
 
         <!--todo=== TODO MODAL TO ADD TODOS ===-->
         <dialog
-          class="todoModal modalContainer transition-3ms d-none jc-center w-100 h-100"
+          class="todoModal modalContainer transition-3ms d-none al-center jc-center w-100 h-100"
         >
           <!--?=== MODAL CONTENT ===-->
           <div
@@ -326,7 +328,7 @@
       class="spinerContainer d-none border-none w-100 vh d-flex dir-col jc-center al-center"
     >
       <img src="./assets/images/loader.gif" alt="" />
-      <p class="txt-cap spinerText">loading.....</p>
+      <p class="txt-cap spinerText"></p>
     </dialog>
 
     <!--!========== DROP UP SECTION ==========-->

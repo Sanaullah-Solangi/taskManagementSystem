@@ -30,6 +30,7 @@ label {
 .formHeading > p {
   font-family: "jost", sans-serif;
   font-size: 1.8rem;
+  text-align: center;
 }
 .inputCover {
   margin-top: 2rem;
