@@ -899,7 +899,7 @@ window.getRealTimeData = () => {
     } catch (error) {
       const errorCode = error.code;
       const errorMessage = error.message;
-      console.log(errorCode);
+      console.log(errorMessage);
       spiner.classList.replace("d-flex", "d-none");
       if (errorCode == "auth/network-request-failed") {
         Swal.fire({

@@ -393,37 +393,39 @@ h2 {
 /*?=== BOXES STYLING ===*/
 #features,
 #listTypes {
-  margin-block: 2rem;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  padding: 2rem;
   background: var(--bg-gradient);
+  margin-block: 2rem;
   color: #fff;
+  padding: 0 5rem;
 }
 
 #features > ul li {
   font-size: 2rem;
   text-align: left;
   margin-bottom: 1rem;
-  list-style-position: inside;
+  padding-left: 1rem;
 }
 
 #features > ul > li::marker {
   content: " ⭐ ";
 }
-
+#listTypes {
+  margin-bottom: 1rem;
+}
 #listTypes h3 {
   font-size: 2.5rem;
   font-weight: 500;
+  margin-bottom: 0.5rem;
 }
 #listTypes > .list {
-  width: 70%;
   margin-bottom: 1rem;
 }
 #listTypes > .list > :is(h3, p) {
   text-align: left;
 }
 
-footer{
+footer {
   padding-bottom: 5rem;
 }
 
