@@ -21,6 +21,7 @@ import {
   onSnapshot,
 } from "./firebase.js";
 //* GETTING ELEMENTS
+let body = document.querySelector("body");
 let mainContainer = document.querySelector(".main-container");
 let logInContainer = document.querySelector(".logInContainer");
 let logInBtns = document.querySelector(".logInBtns");
@@ -33,6 +34,7 @@ let inProgressList = document.querySelector(".inProgress");
 let completedList = document.querySelector(".completed");
 let modalContent = document.querySelector(".modalContent");
 let modalHeading = document.querySelector(".modalHeading"); // MODAL HEADING
+let dropUp = document.querySelector(".drop-up");
 let nameValidation;
 let emailValidation;
 let passwordValidation;
@@ -1749,3 +1751,13 @@ window.showLogOutBtn = () => {
 };
 
 showLogOutBtn();
+
+
+window.addEventListener("scroll", () => {
+  let scrollValue = window.scrollY;
+  if (scrollValue >= 550) {
+    body.classList.add("show");
+  } else {
+    body.classList.remove("show");
+  }
+});
