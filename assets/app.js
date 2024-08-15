@@ -1752,7 +1752,7 @@ window.showLogOutBtn = () => {
 
 showLogOutBtn();
 
-
+//* FUNCTION TO SHOW/HIDE THE DROP-UP BUTTON ON SCROLL
 window.addEventListener("scroll", () => {
   let scrollValue = window.scrollY;
   if (scrollValue >= 550) {
