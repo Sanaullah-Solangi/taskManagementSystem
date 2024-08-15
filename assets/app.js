@@ -47,6 +47,7 @@ let symbols = " !\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
 let storPassword = "";
 let spiner = document.querySelector(".spinerContainer");
 let spinerText = document.querySelector(".spinerText");
+let flagToHideSpiner = true;
 const uid = localStorage.getItem("uid");
 //! ==============================================
 //! SIGN-IN AND LOG-IN FUNCTIONALITIES
@@ -727,6 +728,7 @@ window.updateDataInDataBase = async (arrOfTaskArrs) => {
 };
 //* FUNCTION TO COLLECT DATA FROM MODAL AND SAVE TO FIRESTORE DATA BASE
 window.saveDataToLocalStorageFromModal = async () => {
+  flagToHideSpiner = false;
   if (flagToEditTask) {
     spinerText.innerHTML = "Saving your changes, please wait...";
   } else {
@@ -816,9 +818,9 @@ window.saveDataToLocalStorageFromModal = async () => {
       item.value = "";
     });
     hideModalAndShowUls();
-
     updateStatus(flagForUl, todoData.taskStatusId);
     flagForUl = "";
+    flagToHideSpiner = true;
   } else if (inputsAreFilled && flagForUl && flagToEditTask) {
     try {
       arrOfTaskArrs.forEach((taskArry) => {
@@ -857,6 +859,7 @@ window.saveDataToLocalStorageFromModal = async () => {
     updateStatus(flagForUl, todoData.taskStatusId);
     flagToEditTask = "";
     flagForUl = "";
+    flagToHideSpiner = true;
   } else {
     Swal.fire({
       customClass: {
@@ -896,6 +899,9 @@ window.getRealTimeData = () => {
         }
         resizeUl(arrOfTaskArrs);
         displayUserTasks(arrOfTaskArrs);
+        if (flagToHideSpiner) {
+          spiner.classList.replace("d-flex", "d-none");
+        }
       });
     } catch (error) {
       const errorCode = error.code;
@@ -933,7 +939,6 @@ window.getRealTimeData = () => {
       }
     }
   }
-  spiner.classList.replace("d-flex", "d-none");
 };
 getRealTimeData();
 
@@ -1285,7 +1290,10 @@ window.changeUlBasedOnTaskStatus = async (statusId, status) => {
 window.showStatusLevel = () => {
   let statusLevel = document.querySelectorAll(".inputTaskStatus > select");
   for (let selectedStatus of statusLevel) {
-    if (selectedStatus.value == "todo") {
+    if (
+      selectedStatus.value == "todo" ||
+      selectedStatus.value == "Missed deadline"
+    ) {
       selectedStatus.classList.remove("green", "blue");
       selectedStatus.classList.add("red");
     } else if (selectedStatus.value == "in progress") {
