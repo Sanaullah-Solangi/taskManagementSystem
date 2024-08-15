@@ -881,67 +881,69 @@ window.saveDataToLocalStorageFromModal = async () => {
 window.getRealTimeData = () => {
   spiner.classList.replace("d-none", "d-flex");
   spinerText.innerHTML = "Loading your data, please wait...";
-  if (getLoggedUser()) {
-    let arrOfTaskArrs = [];
-    try {
-      onSnapshot(doc(db, "users", uid), (doc) => {
-        let userData = doc.data();
-        for (let arrayOfObject in userData) {
-          if (Array.isArray(userData[arrayOfObject])) {
-            if (arrayOfObject == "todos") {
-              arrOfTaskArrs[0] = userData[arrayOfObject];
-            } else if (arrayOfObject == "inProgress") {
-              arrOfTaskArrs[1] = userData[arrayOfObject];
-            } else if (arrayOfObject == "completed") {
-              arrOfTaskArrs[2] = userData[arrayOfObject];
-            }
+  let arrOfTaskArrs = [];
+  try {
+    onSnapshot(doc(db, "users", uid), (doc) => {
+      let userData = doc.data();
+      for (let arrayOfObject in userData) {
+        if (Array.isArray(userData[arrayOfObject])) {
+          if (arrayOfObject == "todos") {
+            arrOfTaskArrs[0] = userData[arrayOfObject];
+          } else if (arrayOfObject == "inProgress") {
+            arrOfTaskArrs[1] = userData[arrayOfObject];
+          } else if (arrayOfObject == "completed") {
+            arrOfTaskArrs[2] = userData[arrayOfObject];
           }
         }
-        resizeUl(arrOfTaskArrs);
-        displayUserTasks(arrOfTaskArrs);
-        if (flagToHideSpiner) {
-          spiner.classList.replace("d-flex", "d-none");
-        }
-      });
-    } catch (error) {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      console.log(errorMessage);
-      spiner.classList.replace("d-flex", "d-none");
-      if (errorCode == "auth/network-request-failed") {
-        Swal.fire({
-          customClass: {
-            container: "sweatContainer",
-            popup: "sweatPopup",
-            title: "sweatTitle",
-            htmlContainer: "sweatPara",
-            confirmButton: "sweatBtn",
-            cancelButton: "sweatBtn",
-          },
-          icon: "error",
-          title: "Network Error",
-          text: "A network error occurred. Please check your internet connection and try again.",
-        });
-      } else {
-        Swal.fire({
-          customClass: {
-            container: "sweatContainer",
-            popup: "sweatPopup",
-            title: "sweatTitle",
-            htmlContainer: "sweatPara",
-            confirmButton: "sweatBtn",
-            cancelButton: "sweatBtn",
-          },
-          icon: "error",
-          title: "Data Fetch Failed",
-          text: "An error occurred while fetching the data. Please try again later.",
-        });
       }
+      resizeUl(arrOfTaskArrs);
+      displayUserTasks(arrOfTaskArrs);
+      if (flagToHideSpiner) {
+        spiner.classList.replace("d-flex", "d-none");
+      }
+    });
+  } catch (error) {
+    const errorCode = error.code;
+    const errorMessage = error.message;
+    console.log(errorMessage);
+    spiner.classList.replace("d-flex", "d-none");
+    if (errorCode == "auth/network-request-failed") {
+      Swal.fire({
+        customClass: {
+          container: "sweatContainer",
+          popup: "sweatPopup",
+          title: "sweatTitle",
+          htmlContainer: "sweatPara",
+          confirmButton: "sweatBtn",
+          cancelButton: "sweatBtn",
+        },
+        icon: "error",
+        title: "Network Error",
+        text: "A network error occurred. Please check your internet connection and try again.",
+      });
+    } else {
+      Swal.fire({
+        customClass: {
+          container: "sweatContainer",
+          popup: "sweatPopup",
+          title: "sweatTitle",
+          htmlContainer: "sweatPara",
+          confirmButton: "sweatBtn",
+          cancelButton: "sweatBtn",
+        },
+        icon: "error",
+        title: "Data Fetch Failed",
+        text: "An error occurred while fetching the data. Please try again later.",
+      });
     }
   }
 };
-getRealTimeData();
-
+if (getLoggedUser()) {
+  getRealTimeData();
+  setInterval(() => {
+    calculateRemainingTime();
+  }, 1000);
+}
 //* FUNCTION TO DELETE ALL TASKS
 window.deleteAllTasks = async () => {
   if (checkUserEmailVarification()) {
@@ -1598,11 +1600,6 @@ window.calculateRemainingTime = async () => {
     console.log(error);
   }
 };
-setInterval(() => {
-  if (location.pathname == "/board.html") {
-    calculateRemainingTime();
-  }
-}, 1000);
 
 //! ==============================================
 //! UI ELEMENTS MANAGEMENT (MODALS, LISTS, BUTTONS)
