@@ -758,7 +758,6 @@ window.saveDataToLocalStorageFromModal = async () => {
     taskPriority: modalPriority.value,
     taskPriorityId: `ID${taskId}`,
   };
-  console.log(modalStatus.value);
 
   if (inputsAreFilled && flagForUl && !flagToEditTask) {
     if (!getLoggedUser()) {
@@ -816,16 +815,16 @@ window.saveDataToLocalStorageFromModal = async () => {
     inputs.forEach((item) => {
       item.value = "";
     });
-    flagForUl = "";
     hideModalAndShowUls();
-    updateStatus();
+
+    updateStatus(flagForUl, todoData.taskStatusId);
+    flagForUl = "";
   } else if (inputsAreFilled && flagForUl && flagToEditTask) {
     try {
       arrOfTaskArrs.forEach((taskArry) => {
         taskArry.forEach((task, ind) => {
           if (task.todoTaskId == flagToEditTask) {
             taskArry[ind] = todoData;
-            console.log(todoData);
           }
         });
       });
@@ -851,11 +850,11 @@ window.saveDataToLocalStorageFromModal = async () => {
       console.log(error);
     }
 
-    hideModalAndShowUls();
-    updateStatus();
     inputs.forEach((item) => {
       item.value = "";
     });
+    hideModalAndShowUls();
+    updateStatus(flagForUl, todoData.taskStatusId);
     flagToEditTask = "";
     flagForUl = "";
   } else {
@@ -1161,31 +1160,39 @@ window.updateStatus = async (targetedUl, statusId) => {
             let convertedDeadLine = new Date(deadLine).getTime();
             let currentDate = new Date().getTime();
             if (
-              currentDate < convertedDeadLine &&
-              targetedUl.classList.contains("toDos")
+              targetedUl.classList.contains("toDos") &&
+              currentDate < convertedDeadLine
             ) {
               task.taskStatus = "todo";
               updateTaskStatusByInput(0, statusId, task.taskStatus);
             } else if (
-              currentDate < convertedDeadLine &&
-              targetedUl.classList.contains("inProgress")
+              targetedUl.classList.contains("inProgress") &&
+              currentDate < convertedDeadLine
             ) {
               task.taskStatus = "in progress";
               updateTaskStatusByInput(0, statusId, task.taskStatus);
             } else if (
-              currentDate < convertedDeadLine &&
-              targetedUl.classList.contains("completed")
+              targetedUl.classList.contains("completed") &&
+              currentDate < convertedDeadLine
             ) {
               task.taskStatus = "completed";
               updateTaskStatusByInput(0, statusId, task.taskStatus);
             } else if (
-              currentDate > convertedDeadLine &&
-              targetedUl.classList.contains(
-                "toDos" || "inProgress" || "completed"
-              )
+              targetedUl.classList.contains("toDos") &&
+              currentDate > convertedDeadLine
             ) {
               task.taskStatus = "Missed deadline";
               updateTaskStatusByInput(0, statusId, task.taskStatus);
+            } else if (
+              targetedUl.classList.contains("inProgress") &&
+              currentDate > convertedDeadLine
+            ) {
+              task.taskStatus = "Missed deadline";
+            } else if (
+              targetedUl.classList.contains("completed") &&
+              currentDate > convertedDeadLine
+            ) {
+              task.taskStatus = "Missed deadline";
             }
           }
         });
@@ -1479,6 +1486,11 @@ window.createTaskItem = (task) => {
                   <option value="completed" ${
                     task.taskStatus == "completed" ? "selected" : ""
                   }>completed</option>
+                  ${
+                    task.taskStatus == "Missed deadline"
+                      ? '<option value="Missed deadline" selected >Missed deadline</option>'
+                      : ""
+                  }
                 </select>
               </p>
 
@@ -1527,6 +1539,8 @@ window.displayRemainingTime = (taskId, ...remainingTime) => {
   let tasks = document.querySelectorAll(".task");
   tasks.forEach((task) => {
     if (task.id == taskId) {
+      let ul = task.closest("ul");
+      updateStatus(ul, taskId);
       let remainingMonths = task.querySelector(".remainingMonths > span");
       let remainingDays = task.querySelector(".remainingDays > span");
       let remainingHours = task.querySelector(".remainingHours > span");
@@ -1655,12 +1669,15 @@ window.showModalAndHideUls = (event) => {
       let taskDeadLine = taskToEdit.querySelector(
         ".taskDeadLine > span"
       ).innerHTML;
-
       //! ASSINGING TASK'S VALUES TO MODAL'S INPUTS
       modalTitle.value = taskTitle.trim();
       modalDescription.value = taskDescription.trim();
       modalDeadLine.value = taskDeadLine.trim();
-      modalStatus.value = taskStatus;
+      if (taskStatus.trim() == "Missed deadline") {
+        modalStatus.innerHTML += `<option value="Missed deadline" selected>Missed deadline</option>`;
+      } else {
+        modalStatus.value = taskStatus;
+      }
       modalPriority.value = taskPriority;
 
       //! EDITING HEADINGS ACCORDING TO THE LIST
